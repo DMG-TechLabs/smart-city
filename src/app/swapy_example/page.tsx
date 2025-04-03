@@ -1,11 +1,8 @@
 'use client'
 
 import React from "react";
-// import Image from "n /ext/image";
-// import { useEffect } from "react";
 import { useEffect, useMemo, useRef, useState } from 'react'
 import './style.css'
-// import { SlotItemMapArray, Swapy, utils } from  /'../../src'
 import { createSwapy, SlotItemMapArray, Swapy, utils } from "swapy";
 
 type Item = {
@@ -34,12 +31,12 @@ export default function Home() {
   useEffect(() => {
     swapyRef.current = createSwapy(containerRef.current!, {
       manualSwap: true,
-      // animation: 'dynamic'
-      // autoScrollOnDrag: true,
-      // swapMode: 'drop',
-      // enabled: true,
-      // dragAxis: 'x',
-      // dragOnHold: true
+      animation: 'dynamic',
+      autoScrollOnDrag: true,
+      swapMode: 'hover',
+      enabled: true,
+      dragAxis: 'both',
+      dragOnHold: false
     })
 
     swapyRef.current.onSwap((event) => {
