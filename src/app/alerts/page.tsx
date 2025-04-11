@@ -1,12 +1,12 @@
 "use client";
 
 // import { useUser } from "@/context/UserContext";
-import PocketBase from "pocketbase";
-const pb = new PocketBase("http://127.0.0.1:8090");
+
+import { usePocketBase } from "@/context/DatabaseContext";
 
 export default function Dashboard() {
   // const { user, logout } = useUser();
-
+  const pb = usePocketBase();
 
   const addJob = pb.send("/api/hello", {
     query: { "abc": 123 },
