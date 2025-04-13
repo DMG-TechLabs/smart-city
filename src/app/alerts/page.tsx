@@ -9,7 +9,11 @@ export default function Dashboard() {
   const pb = usePocketBase();
 
   const addJob = pb.send("/api/hello", {
-    query: { "abc": 123 },
+    query: { 
+      "query": "value > 2",
+      "title": "helloWorldTask",
+      "active": true
+    }
   });
 
 
