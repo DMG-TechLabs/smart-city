@@ -1,15 +1,12 @@
-export type AlertCondition = {
-    field: string;          // e.g., "temperature"
-    operator: ">" | "<" | "==" | ">=" | "<=" | "!=";
-    value: number;          // e.g., 30
-};
+import type PocketBase from 'pocketbase';
+import { AlertCondition } from './AlertCondition';
 
 export type AlertCallback = (alert: Alert) => void;
 
 export class Alert {
     id: string;
     name: string;
-    interval: number; // milliseconds
+    interval: number;
     condition: AlertCondition;
     lastTriggered: number | null = null;
     enabled: boolean = true;
@@ -29,41 +26,18 @@ export class Alert {
         this.callback = callback;
     }
 
-    /**
-     * Call this method periodically with new data to evaluate the condition.
-     */
     check(data: Record<string, any>): void {
         if (!this.enabled) return;
 
         const currentTime = Date.now();
-        if (
-            this.lastTriggered &&
-            currentTime - this.lastTriggered < this.interval
-        ) {
+        if (this.lastTriggered && currentTime - this.lastTriggered < this.interval) {
             return;
         }
 
-        const value = data[this.condition.field];
-
-        if (value === undefined) return;
-
-        const conditionMet = this.evaluate(value);
+        const conditionMet = this.condition.evaluate(data);
         if (conditionMet) {
             this.lastTriggered = currentTime;
             this.trigger();
-        }
-    }
-
-    private evaluate(value: number): boolean {
-        const { operator, value: conditionValue } = this.condition;
-        switch (operator) {
-            case ">": return value > conditionValue;
-            case "<": return value < conditionValue;
-            case "==": return value === conditionValue;
-            case ">=": return value >= conditionValue;
-            case "<=": return value <= conditionValue;
-            case "!=": return value !== conditionValue;
-            default: return false;
         }
     }
 
@@ -80,5 +54,20 @@ export class Alert {
 
     enable(): void {
         this.enabled = true;
+    }
+
+    async push(pb: PocketBase): Promise<boolean> {
+        try {
+            await pb.collection('alerts').create({
+                name: this.name,
+                interval: this.interval,
+                condition: this.condition.toJSON(),
+                enabled: this.enabled,
+            });
+            return true;
+        } catch (err) {
+            console.error('Failed to push alert:', err);
+            return false;
+        }
     }
 }
