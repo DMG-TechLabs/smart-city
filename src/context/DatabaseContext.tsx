@@ -10,7 +10,6 @@ const PocketBaseContext = createContext<PocketBase | null>(null);
 export function PocketBaseProvider({ children }: { children: ReactNode }) {
     const pb = useMemo(() => {
         const client = new PocketBase("http://127.0.0.1:8090");
-        client.authStore.token = "";
         return client;
     }, []);
 
