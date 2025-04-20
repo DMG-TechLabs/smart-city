@@ -1,10 +1,10 @@
 import type PocketBase from 'pocketbase';
-import { AlertCondition } from './AlertCondition';
+import { AlertCondition } from "./AlertCondition";
 
 export type AlertCallback = (alert: Alert) => void;
 
 export class Alert {
-    id: string;
+    id: string | undefined; // Auto assigned
     name: string;
     interval: number;
     condition: AlertCondition;
@@ -13,13 +13,11 @@ export class Alert {
     callback?: AlertCallback;
 
     constructor(
-        id: string,
         name: string,
         interval: number,
         condition: AlertCondition,
         callback?: AlertCallback
     ) {
-        this.id = id;
         this.name = name;
         this.interval = interval;
         this.condition = condition;
@@ -42,17 +40,18 @@ export class Alert {
     }
 
     private trigger(): void {
-        console.log(`Alert "${this.name}" triggered!`);
         if (this.callback) {
             this.callback(this);
         }
     }
 
     disable(): void {
+        // TODO: update db
         this.enabled = false;
     }
 
     enable(): void {
+        // TODO: update db
         this.enabled = true;
     }
 
@@ -61,7 +60,7 @@ export class Alert {
             await pb.collection('alerts').create({
                 name: this.name,
                 interval: this.interval,
-                condition: this.condition.toJSON(),
+                condition: JSON.stringify(this.condition.toJSON()),
                 enabled: this.enabled,
             });
             return true;
@@ -69,5 +68,10 @@ export class Alert {
             console.error('Failed to push alert:', err);
             return false;
         }
+    }
+
+    static fromPBRecord(record: any): Alert {
+        const condition = AlertCondition.fromJSON(JSON.parse(record.condition));
+        return new Alert(record.name, record.interval, condition, record.callback);
     }
 }

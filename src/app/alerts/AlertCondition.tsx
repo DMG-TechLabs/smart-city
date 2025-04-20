@@ -1,10 +1,4 @@
-export type Condition = {
-    field: string;
-    operator: ">" | "<" | "==" | ">=" | "<=" | "!=";
-    value: number;
-};
-
-export type LogicalOperator = "AND" | "OR";
+import { Condition, LogicalOperator } from './Condition'; // Assuming you have a separate `Condition` type.
 
 export class AlertCondition {
     private conditions: (Condition | AlertCondition)[] = [];
@@ -19,6 +13,9 @@ export class AlertCondition {
         return this;
     }
 
+    /**
+     * Evaluate the entire condition chain against input data
+     */
     evaluate(data: Record<string, any>): boolean {
         const results = this.conditions.map((c) => {
             if (c instanceof AlertCondition) {
@@ -39,9 +36,11 @@ export class AlertCondition {
             }
         });
 
-        return this.operator === "AND"
-            ? results.every(Boolean)
-            : results.some(Boolean);
+        if (this.operator === "AND") {
+            return results.every(Boolean);
+        } else {
+            return results.some(Boolean);
+        }
     }
 
     toJSON(): { operator: LogicalOperator; conditions: any[] } {
@@ -65,4 +64,3 @@ export class AlertCondition {
         return ac;
     }
 }
-

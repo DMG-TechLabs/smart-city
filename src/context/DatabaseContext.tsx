@@ -8,24 +8,25 @@ const PocketBaseContext = createContext<PocketBase | null>(null);
 
 // Provider component
 export function PocketBaseProvider({ children }: { children: ReactNode }) {
-  const pb = useMemo(() => {
-    const client = new PocketBase("http://127.0.0.1:8090"); // Replace with your PocketBase URL
-    return client;
-  }, []);
+    const pb = useMemo(() => {
+        const client = new PocketBase("http://127.0.0.1:8090");
+        client.authStore.token = "";
+        return client;
+    }, []);
 
-  return (
-    <PocketBaseContext.Provider value={pb}>
-      {children}
-    </PocketBaseContext.Provider>
-  );
+    return (
+        <PocketBaseContext.Provider value={pb}>
+        {children}
+        </PocketBaseContext.Provider>
+    );
 }
 
 // Custom hook to use PocketBase client
 export function usePocketBase() {
-  const context = useContext(PocketBaseContext);
-  if (!context) {
-    throw new Error("usePocketBase must be used within a PocketBaseProvider");
-  }
-  return context;
+    const context = useContext(PocketBaseContext);
+    if (!context) {
+        throw new Error("usePocketBase must be used within a PocketBaseProvider");
+    }
+    return context;
 }
 
