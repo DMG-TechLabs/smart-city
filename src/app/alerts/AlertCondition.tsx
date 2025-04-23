@@ -1,4 +1,4 @@
-import { Condition, LogicalOperator } from './Condition'; // Assuming you have a separate `Condition` type.
+import { Condition, LogicalOperator } from './Condition';
 
 export class AlertCondition {
     private conditions: (Condition | AlertCondition)[] = [];
