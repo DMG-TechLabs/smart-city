@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"net/mail"
@@ -12,6 +13,70 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/tools/mailer"
 )
+
+func RunAlerts(app *pocketbase.PocketBase, e *core.RecordEvent, alerts map[string]string) error {
+	for id, alertFilter := range alerts {
+		log.Println("alertFilter:", alertFilter)
+		log.Println("id:", id)
+		result, _ := e.App.FindFirstRecordByFilter(e.Record.Collection(), alertFilter, dbx.Params{"id": e.Record.Id})
+		// .AndWhere(dbx.HashExp{"id": e.Record.Id})
+		log.Println("result:", result)
+
+		if result != nil {
+			log.Println("result is not nil")
+			dbAlert, _ := e.App.FindRecordById("alerts", id)
+			message := &mailer.Message{
+				From: mail.Address{
+					Address: e.App.Settings().Meta.SenderAddress,
+					Name:    e.App.Settings().Meta.SenderName,
+				},
+				To:      []mail.Address{{Address: dbAlert.GetString("user_email")}},
+				Subject: "YOUR_SUBJECT...",
+				HTML:    "YOUR_HTML_BODY...",
+				// bcc, cc, attachments and custom headers are also supported...
+			}
+
+			if e.App.NewMailClient().Send(message) != nil {
+				log.Println("Error sending email")
+			} else {
+				log.Println("Email sent successfully")
+			}
+
+			alertsHistorycollection, err := app.FindCollectionByNameOrId("alertsHistory")
+			if err != nil {
+				log.Println("Error finding collection")
+				return err
+
+			}
+
+			alert, _ := app.FindRecordById("alerts", id)
+
+			record := core.NewRecord(alertsHistorycollection)
+			record.Set("alert", alert)
+			record.Set("record", result)
+			err = app.Save(record)
+			// record.Id
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func IfMetadata(app *pocketbase.PocketBase, e *core.RecordEvent) error {
+	app.Cron().MustAdd("", func() error {
+		res, err := http.Get(e.Record.GetString("endpoint"))
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		fmt.Println(res)
+		return nil
+	})
+
+	return nil
+}
 
 func main() {
 	alerts := make(map[string]string)
@@ -47,38 +112,28 @@ func main() {
 	//
 	// 	return nil
 	// })
+	// app.OnCollectionAfterCreateSuccess().BindFunc(func(e *core.CollectionEvent) error {
+	// 	if strings.Contains(e.Collection.Name, "metadata") {
+	// 		app.Cron().MustAdd("hello", "*/2 * * * *", func() {
+	// 			// TODO load
+	// 		})
+	// 	}
+	// 	// if e.Collection.Name
+	// 	return e.Next()
+	// })
 
 	app.OnRecordAfterCreateSuccess().BindFunc(func(e *core.RecordEvent) error {
-		for id, alertFilter := range alerts {
-			log.Println("alertFilter:", alertFilter)
-			log.Println("id:", id)
-			result, _ := e.App.FindFirstRecordByFilter(e.Record.Collection(), alertFilter, dbx.Params{"id": e.Record.Id})
-			// .AndWhere(dbx.HashExp{"id": e.Record.Id})
-			log.Println("result:", result)
-
-			if result != nil {
-				log.Println("result is not nil")
-				dbAlert, _ := e.App.FindRecordById("alerts", id)
-				message := &mailer.Message{
-					From: mail.Address{
-						Address: e.App.Settings().Meta.SenderAddress,
-						Name:    e.App.Settings().Meta.SenderName,
-					},
-					To:      []mail.Address{{Address: dbAlert.GetString("user_email")}},
-					Subject: "YOUR_SUBJECT...",
-					HTML:    "YOUR_HTML_BODY...",
-					// bcc, cc, attachments and custom headers are also supported...
-				}
-
-				if e.App.NewMailClient().Send(message) != nil {
-					log.Println("Error sending email")
-				} else {
-					log.Println("Email sent successfully")
-				}
-
-			}
+		var err error = nil
+		err = RunAlerts(app, e, alerts)
+		switch name := e.Record.Collection().Name; name {
+		case "metadata":
+			err = IfMetadata(app, e)
 		}
-
+		// case "metadata": err = If
+		// if (e.Record.Collection().Name == "metadata") err = IfIfMetadata(app, e)
+		if err != nil {
+			return err
+		}
 		return e.Next()
 	})
 
@@ -86,7 +141,7 @@ func main() {
 		// serves static files from the provided public dir (if exists)
 		se.Router.GET("/{path...}", apis.Static(os.DirFS("./pb_public"), false))
 
-		se.Router.GET("/api/hello",
+		se.Router.GET("/api/addalert",
 			func(c *core.RequestEvent) error {
 				// err := app.Cron().Add("hello", "*/2 * * * *", func() {
 				// 	log.Println("Hello!")
@@ -119,15 +174,15 @@ func main() {
 					log.Println("User email:", authUser.Get("email"))
 				}
 
-				// record.Set("title", c.Request.URL.Query().Get("title"))
-				// record.Set("active", c.Request.URL.Query().Get("active"))
+				record.Set("name", c.Request.URL.Query().Get("title"))
+				record.Set("enabled", c.Request.URL.Query().Get("active"))
 				record.Set("user_email", authUser.Get("email"))
 				// record.Set("frequency", c.Request.URL.Query().Get("query"))
 				// record.Set("level", c.Request.URL.Query().Get("query"))
 				// record.Set("description", c.Request.URL.Query().Get("query"))
 				// record.Set("created_at", c.Request.URL.Query().Get("query"))
 				// record.Set("updated_at", c.Request.URL.Query().Get("query"))
-				record.Set("query", c.Request.URL.Query().Get("query"))
+				record.Set("condition", c.Request.URL.Query().Get("query"))
 				err = app.Save(record)
 				// record.Id
 				if err != nil {
@@ -153,9 +208,9 @@ func main() {
 	})
 
 	// prints "Hello!" every 2 minutes
-	app.Cron().MustAdd("hello", "*/2 * * * *", func() {
-		log.Println("Hello!")
-	})
+	// app.Cron().MustAdd("hello", "*/2 * * * *", func() {
+	// 	log.Println("Hello!")
+	// })
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
