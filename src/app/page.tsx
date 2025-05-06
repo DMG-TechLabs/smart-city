@@ -5,11 +5,11 @@ import { AlertComponent } from '@/components/ui/alert-dialog';
 
 export default function Home() {
   return (
-    <div>
+    <>
         <h1>Hello World</h1>
-        <Button>Touch me</Button>
+        <Button className='button'>Touch me</Button>
         <ChartComponent />
         <AlertComponent />
-    </div>
+    </>
   );
 }
