@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 import { usePocketBase } from "@/context/DatabaseContext";
 import { Alert } from "./Alert";
 import { AlertCondition } from "./AlertCondition";
-import AlertUI from "./AlertUI";
 
 export default function Alerts() {
     const pb = usePocketBase();
@@ -32,7 +31,7 @@ export default function Alerts() {
 
     return (
         <>
-            <AlertUI />
+            <h1>Alerts</h1>
         </>
     );
 }
