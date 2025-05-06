@@ -6,7 +6,6 @@ export type AlertCallback = (alert: Alert) => void;
 export class Alert {
     id: string | undefined; // Auto assigned
     name: string;
-    interval: number;
     condition: AlertCondition;
     lastTriggered: number | null = null;
     enabled: boolean = true;
@@ -14,12 +13,10 @@ export class Alert {
 
     constructor(
         name: string,
-        interval: number,
         condition: AlertCondition,
         callback?: AlertCallback
     ) {
         this.name = name;
-        this.interval = interval;
         this.condition = condition;
         this.callback = callback;
     }
@@ -28,11 +25,8 @@ export class Alert {
         if (!this.enabled) return;
 
         const currentTime = Date.now();
-        if (this.lastTriggered && currentTime - this.lastTriggered < this.interval) {
-            return;
-        }
-
         const conditionMet = this.condition.evaluate(data);
+
         if (conditionMet) {
             this.lastTriggered = currentTime;
             this.trigger();
@@ -53,7 +47,6 @@ export class Alert {
         try {
             await pb.collection("alerts").update(this.id, {
                 name: this.name,
-                interval: this.interval,
                 condition: JSON.stringify(this.condition.toJSON()),
                 enabled: this.enabled,
             });
@@ -78,7 +71,6 @@ export class Alert {
         try {
             await pb.collection('alerts').create({
                 name: this.name,
-                interval: this.interval,
                 condition: JSON.stringify(this.condition.toJSON()),
                 enabled: this.enabled,
             });
@@ -91,6 +83,6 @@ export class Alert {
 
     static fromPBRecord(record: any): Alert {
         const condition = AlertCondition.fromJSON(JSON.parse(record.condition));
-        return new Alert(record.name, record.interval, condition, record.callback);
+        return new Alert(record.name, condition, record.callback);
     }
 }
