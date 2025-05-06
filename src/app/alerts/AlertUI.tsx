@@ -7,7 +7,7 @@ import { AlertCondition } from "./AlertCondition";
 import styles from '@/styles/AlertUI.module.css';
 
 const AlertUI = () => {
-    const pb = usePocketBase();
+    const { pb } = usePocketBase();
 
     const [alertName, setAlertName] = useState<string>("");
     const [field, setField] = useState<string>("");

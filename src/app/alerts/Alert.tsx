@@ -45,14 +45,33 @@ export class Alert {
         }
     }
 
-    disable(): void {
-        // TODO: update db
-        this.enabled = false;
+    private async update(pb: PocketBase): Promise<boolean> {
+        if(this.id == null) {
+            console.error("Alert ID is null");
+            return false;
+        }
+        try {
+            await pb.collection("alerts").update(this.id, {
+                name: this.name,
+                interval: this.interval,
+                condition: JSON.stringify(this.condition.toJSON()),
+                enabled: this.enabled,
+            });
+        } catch(err) {
+            console.error("Failed to update alert:", err)
+            return false;
+        }
+        return true;
     }
 
-    enable(): void {
-        // TODO: update db
+    async disable(pb: PocketBase): Promise<boolean> {
+        this.enabled = false;
+        return await this.update(pb);
+    }
+
+    async enable(pb: PocketBase): Promise<boolean> {
         this.enabled = true;
+        return await this.update(pb);
     }
 
     async push(pb: PocketBase): Promise<boolean> {
