@@ -13,7 +13,17 @@ import (
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/tools/mailer"
+	"github.com/pocketbase/pocketbase/tools/types"
 )
+
+type AlertHistory struct {
+	Name      string         `json:"name"`
+	RecordId  string         `json:"recordId"`
+	AlertId   string         `json:"alertId"`
+	Created   types.DateTime `json:"created"`
+	Value     any            `json:"value"`
+	Condition types.JSONRaw  `json:"condition"`
+}
 
 func RunAlerts(app *pocketbase.PocketBase, e *core.RecordEvent, alerts map[string]string) error {
 	for id, alertFilter := range alerts {
@@ -162,6 +172,53 @@ func main() {
 		// serves static files from the provided public dir (if exists)
 		se.Router.GET("/{path...}", apis.Static(os.DirFS("./pb_public"), false))
 
+		se.Router.GET("/api/getalerthistory", func(c *core.RequestEvent) error {
+			collection, err := app.FindCollectionByNameOrId("alertsHistory")
+			if err != nil {
+				log.Println("Error finding collection")
+				return err
+
+			}
+
+			records, err := app.FindAllRecords(collection.Id)
+			if err != nil {
+				log.Println("Error finding records")
+				return err
+			}
+
+			var recordsJson []AlertHistory
+
+			for _, record := range records {
+				alert, err := app.FindRecordById("alerts", record.Get("alert").(string))
+				if err != nil {
+					log.Println("Error finding alert record")
+					return err
+				}
+
+				valueRecord, err := app.FindRecordById(record.Get("collection").(string), record.Get("recordId").(string))
+				if err != nil {
+					log.Println("Error finding value record")
+					return err
+				}
+
+				recordsJson = append(recordsJson, AlertHistory{
+					Name:      alert.Get("name").(string),
+					RecordId:  record.Id,
+					AlertId:   record.Get("alert").(string),
+					Created:   record.Get("created").(types.DateTime),
+					Value:     valueRecord.Get("value"),
+					Condition: alert.Get("condition").(types.JSONRaw),
+				})
+
+				fmt.Println(recordsJson)
+			}
+
+			// return c.JSON(http.StatusOK, records)
+			return c.JSON(http.StatusOK, map[string]interface{}{
+				"message": recordsJson,
+			})
+		})
+
 		se.Router.GET("/api/addalert",
 			func(c *core.RequestEvent) error {
 				// err := app.Cron().Add("hello", "*/2 * * * *", func() {
@@ -219,11 +276,11 @@ func main() {
 				})
 			})
 
-		dbAlerts, _ := se.App.FindAllRecords("alerts")
+		// dbAlerts, _ := se.App.FindAllRecords("alerts")
 
-		for _, dbAlert := range dbAlerts {
-			alerts[dbAlert.Id] = dbAlert.Get("query").(string)
-		}
+		// for _, dbAlert := range dbAlerts {
+		// alerts[dbAlert.Id] = dbAlert.Get("query").
+		// }
 
 		return se.Next()
 	})
