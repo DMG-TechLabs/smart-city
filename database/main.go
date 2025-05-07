@@ -248,7 +248,7 @@ func main() {
 				// authUser, _ := c.App.FindAuthRecordByToken(c.Auth.TokenKey())
 				authUser, _ := c.App.FindRecordById("users", c.Auth.Id)
 				log.Println("Auth user:", authUser)
-				if authUser != nil {
+				if authUser == nil {
 					log.Println("Authenticated user ID:", authUser.Id)
 					log.Println("User email:", authUser.Get("email"))
 					return c.JSON(http.StatusUnauthorized, map[string]string{
