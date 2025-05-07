@@ -33,6 +33,7 @@ export default function WeatherCard({
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-lg font-semibold">{location}</CardTitle>
           <WeatherIcon condition={condition} />
+          <h1>here</h1>
         </CardHeader>
         <CardContent className="space-y-1">
           <div className="text-4xl font-bold">{temperature}°C</div>
