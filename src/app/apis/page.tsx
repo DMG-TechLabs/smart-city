@@ -22,7 +22,7 @@ export default function Apis() {
                 const fields = api.extractFields(Api.extractFirst(json));
                 console.log(fields);
 
-                // This should be selected by the user
+                // NOTE: This should be selected by the user
                 api.map("id", fields[0]);
                 api.map("status", fields[7]);
 
@@ -32,15 +32,7 @@ export default function Apis() {
                 console.log(JSON.stringify(payload));
                 const res = await pb.send("/api/createcollection", {
                     query: {payload},
-                    //     // 'Authorization': 'Bearer xyz' // if needed, usually handled automatically after auth
-                    });
-                // const res = await fetch("/api/collection", {
-                //     method: "POST",
-                //     headers: {
-                //         "Content-Type": "application/json"
-                //     },
-                //     body: JSON.stringify(payload)
-                // });
+                });
 
                 if (!res.ok) {
                     const data = await res.json();

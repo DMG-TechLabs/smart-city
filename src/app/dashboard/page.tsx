@@ -67,20 +67,7 @@ export default function Dashboard() {
         }
 
         fetchTime().then(data => {
-            if (data && typeof data === "object" && "date" in data && "time" in data) {
-                const dateParts = data.date.split('/');
-                const formattedDate = new Date(`${dateParts[1]}/${dateParts[0]}/${dateParts[2]}`);
-
-                const formatted = formattedDate.toLocaleDateString("en-GB", {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                });
-
-
-                setDateTime(formatted);
-            }
+            setDateTime(data.formatted.split(' ')[0]);
         });
     }, []);
 

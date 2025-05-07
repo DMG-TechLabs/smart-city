@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 
 export async function GET(req: Request) {
+    const key = process.env.TIME_API_KEY;
     try {
-        const response = await fetch("https://www.timeapi.io/api/time/current/zone?timeZone=Europe%2FAthens");
+        const response = await fetch("https://api.timezonedb.com/v2.1/get-time-zone?by=zone&zone=Europe%2FAthens&format=json&key=" + key);
 
         if (!response.ok) {
             throw new Error("Failed to fetch time data");
