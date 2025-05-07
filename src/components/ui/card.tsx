@@ -2,6 +2,8 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { DeleteButton } from "../local/delete-button"
+import { AlertComponent } from "../local/delete-dialog"
+import { ConfirmationDialog } from "../local/confirmation-dialog"
 
 
 const notifications = [
@@ -117,7 +119,11 @@ export function CardComponent({ className, ...props }: CardProps) {
         <CardTitle>
           <div className="delete-container">
             Notifications
-            <DeleteButton />
+            <ConfirmationDialog
+                title={"Are you sure"} 
+                desc={"You can restore it from the the list with the available widget"} 
+                children={undefined}                
+            />
           </div>
         </CardTitle>
         <CardDescription>You have 3 unread messages.</CardDescription>

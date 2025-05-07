@@ -1,5 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DeleteButton } from "./delete-button"
+import { AlertComponent } from "./delete-dialog"
+import { ConfirmationDialog } from "./confirmation-dialog"
 
 interface WeatherCardProps {
     date: string,
@@ -20,7 +22,11 @@ export default function WeatherCard({
         <Card className="w-72 shadow-lg rounded-2xl p-4 bg-white dark:bg-gray-900">
             <div className="date-container">
                 {date}
-                <DeleteButton />
+                <ConfirmationDialog
+                    title={"Are you sure"} 
+                    desc={"You can restore it from the the list with the available widget"} 
+                    children={undefined}                
+                />
             </div>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-lg font-semibold">{location}</CardTitle>

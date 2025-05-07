@@ -2,9 +2,11 @@ import React from 'react'
 import type { Metadata } from "next";
 // import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "./dashboard/style.css";
 import { UserProvider } from "@/context/UserContext";
 import { PocketBaseProvider } from "@/context/DatabaseContext";
 import { NavigationMenuComponent } from '@/components/ui/navigation-menu';
+import { TopBarComponent } from '@/components/local/topbar';
 
 
 // const geistSans = Geist({
@@ -31,24 +33,8 @@ export default function RootLayout({
     <PocketBaseProvider>
     <UserProvider>
       <html lang="en">
-        <body
-          // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          <div className="topbar">
-            <div className="top">
-              <div className="title">
-                <h1>Smart City</h1>
-              </div>
-              <div className="right-corner">
-                <h1>Welcome visitor!!!!!!</h1>
-              </div>
-            </div>
-            <div className="bottom">
-              <div className="navbar-menu">
-                <NavigationMenuComponent />
-              </div>
-            </div>
-          </div>
+        <body>
+          <TopBarComponent />
           {children}
         </body>
       </html>
