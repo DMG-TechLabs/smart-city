@@ -1,8 +1,11 @@
 package alerts
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/mail"
+	"strconv"
 
 	"github.com/pocketbase/dbx"
 	"github.com/pocketbase/pocketbase"
@@ -37,8 +40,8 @@ func RunAlerts(app *pocketbase.PocketBase, e *core.RecordEvent, alerts map[strin
 					Name:    e.App.Settings().Meta.SenderName,
 				},
 				To:      []mail.Address{{Address: dbAlert.GetString("user_email")}},
-				Subject: "YOUR_SUBJECT...",
-				HTML:    "YOUR_HTML_BODY...",
+				Subject: "Alert Triggered",
+				HTML:    dbAlert.GetString("name") + " triggered",
 				// bcc, cc, attachments and custom headers are also supported...
 			}
 
@@ -67,5 +70,100 @@ func RunAlerts(app *pocketbase.PocketBase, e *core.RecordEvent, alerts map[strin
 			}
 		}
 	}
+	return nil
+}
+
+type Condition struct {
+	Field      string      `json:"field,omitempty"`
+	Operator   string      `json:"operator"`
+	Value      interface{} `json:"value,omitempty"`
+	Conditions []Condition `json:"conditions,omitempty"`
+}
+
+func buildConditionString(cond Condition) string {
+	// If it's a group condition (AND / OR)
+	if len(cond.Conditions) > 0 {
+		var parts []string
+		for _, c := range cond.Conditions {
+			parts = append(parts, buildConditionString(c))
+		}
+		return "(" + joinWithOperator(parts, cond.Operator) + ")"
+	}
+
+	// Leaf condition
+	val := formatValue(cond.Value)
+	return fmt.Sprintf("%s %s %s", cond.Field, cond.Operator, val)
+}
+
+func joinWithOperator(parts []string, op string) string {
+	result := ""
+	for i, p := range parts {
+		if i > 0 {
+			result += " " + op + " "
+		}
+		result += p
+	}
+	return result
+}
+
+func formatValue(v interface{}) string {
+	switch val := v.(type) {
+	case string:
+		return strconv.Quote(val) // adds double quotes
+	default:
+		return fmt.Sprintf("%v", val)
+	}
+}
+
+func AlertConditionToString(jsonIn string) (string, error) {
+	var err error
+	jsonInput := []byte(jsonIn)
+	var cond Condition
+	err = json.Unmarshal(jsonInput, &cond)
+	if err != nil {
+		return "", err
+	}
+	return buildConditionString(cond), nil
+}
+
+func GetAlerts(app *pocketbase.PocketBase) map[string]string {
+	alertsList := make(map[string]string)
+	records, err := app.FindAllRecords("alerts")
+	if err != nil {
+		return alertsList
+	}
+
+	var alertString string
+	// var err error
+	for _, record := range records {
+		alertString, err = AlertConditionToString(record.GetString("condition"))
+		if err != nil {
+			log.Println("Error parsing condition:", err)
+			continue
+		}
+		alertsList[record.Id] = alertString
+	}
+
+	return alertsList
+}
+
+func PrintAlerts(app *pocketbase.PocketBase) error {
+	records, err := app.FindAllRecords("alerts")
+	if err != nil {
+		return err
+	}
+
+	var jsonInput []byte
+	for _, record := range records {
+		jsonInput = []byte(record.GetString("condition"))
+		var cond Condition
+		if err := json.Unmarshal(jsonInput, &cond); err != nil {
+			panic(err)
+		}
+
+		result := buildConditionString(cond)
+		fmt.Println(result)
+	}
+
 	return nil
 }
