@@ -89,15 +89,15 @@ func main() {
 			fmt.Println("Body:", c.Request.Body)
 
 			var err error
-			reqBody := c.Request.Body
+			reqBody := c.Request.URL.Query().Get("payload")
 			var bodyBytes []byte
-			_, err = reqBody.Read(bodyBytes)
+
 			if err != nil {
 				fmt.Println("Error reading body:", err)
 				return err
 			}
 			var reqJSON map[string]any
-			err = json.Unmarshal(bodyBytes, &reqJSON)
+			err = json.Unmarshal([]byte(reqBody), &reqJSON)
 			if err != nil {
 				fmt.Println("ReqBody:", reqBody)
 				fmt.Println("reqJson:", reqJSON)
@@ -108,7 +108,99 @@ func main() {
 				return err
 			}
 
-			fmt.Println("ReqJson:", reqJSON)
+			// fmt.Println("ReqJson:", reqJSON)
+			// fmt.Println("-----------------------------")
+			// for key, value := range reqJSON {
+			// 	fmt.Println("key - value: ", key, " - ", value)
+			// 	if key == "collection" {
+			// 		for key2, value2 := range value.(map[string]any) {
+			// 			fmt.Println("key - value: ", key2, " - ", value2)
+			// 		}
+			// 	}
+			// }
+			//
+			// fmt.Println("-----------------------------")
+
+			newCollection := core.NewBaseCollection(reqJSON["provider"].(string))
+
+			// newCollection.ViewRule = types.Pointer("@request.auth.id != ''")
+			// newCollection.CreateRule = types.Pointer("@request.auth.id != '' && @request.body.user = @request.auth.id")
+			// newCollection.UpdateRule = types.Pointer(`
+			//  		@request.auth.id != '' &&
+			//  		user = @request.auth.id &&
+			//  		(@request.body.user:isset = false || @request.body.user = @request.auth.id)
+			// `)
+
+			// newCollection.Fields.Add(&core.TextField{
+			// 	Id:                  "id",
+			// 	Name:                "id",
+			// 	PrimaryKey:          true,
+			// 	Required:            true,
+			// 	AutogeneratePattern: "[a-z0-9]{15}",
+			// 	Pattern:             "^[a-z0-9]+$",
+			// 	Min:                 15,
+			// 	Max:                 15,
+			// })
+
+			var name string
+			a := reqJSON["collection"].(map[string]any)["schema"].([]any)
+			for _, value := range a {
+				fmt.Println("------------")
+				name = value.(map[string]any)["name"].(string)
+				if name == "id" {
+					log.Println("id field detected and overrided by the database")
+					name = reqJSON["provider"].(string) + "_pb_id"
+				}
+				switch typeOfField := value.(map[string]any)["type"]; typeOfField {
+				case "text":
+					newCollection.Fields.Add(&core.TextField{
+						Name:     name,
+						Required: value.(map[string]any)["required"].(bool),
+					})
+				case "number":
+					newCollection.Fields.Add(&core.NumberField{
+						Name:     name,
+						Required: value.(map[string]any)["required"].(bool),
+					})
+				case "bool":
+					newCollection.Fields.Add(&core.BoolField{
+						Name:     name,
+						Required: value.(map[string]any)["required"].(bool),
+					})
+				case "json":
+					newCollection.Fields.Add(&core.JSONField{
+						Name:     name,
+						Required: value.(map[string]any)["required"].(bool),
+					})
+				}
+
+				// if value.(map[string]any)["unique"] == true {
+				// newCollection.AddIndex(value.(map[string]any)["name"].(string), true, "user", "")
+				// }
+
+				// newCollection.a
+				// for key, data := range value.(map[string]any) {
+				// 	fmt.Println("key - value: ", key, " - ", data)
+				// }
+			}
+
+			newCollection.Fields.Add(&core.AutodateField{
+				Name:     "created",
+				OnCreate: true,
+			})
+			newCollection.Fields.Add(&core.AutodateField{
+				Name:     "updated",
+				OnCreate: true,
+				OnUpdate: true,
+			})
+
+			err = app.Save(newCollection)
+			if err != nil {
+				return err
+			}
+
+			// newCollection.AddIndex("id", true, "user", "")
+
 			// core.NewBaseCollection(reqJson[""])
 			return c.JSON(http.StatusOK, map[string]any{
 				"message": "Hello from custom API!",
@@ -135,6 +227,10 @@ func main() {
 				if authUser != nil {
 					log.Println("Authenticated user ID:", authUser.Id)
 					log.Println("User email:", authUser.Get("email"))
+					return c.JSON(http.StatusOK, map[string]string{
+						"message": "Hello from custom API!",
+					})
+
 				}
 
 				record.Set("name", c.Request.URL.Query().Get("name"))
