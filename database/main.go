@@ -245,9 +245,7 @@ func main() {
 				}
 
 				alertsList[record.Id] = c.Request.URL.Query().Get("query")
-				// field type specific modifiers can also be used
-				// record.Set("slug:autogenerate", "post-")
-				// return err
+
 				return c.JSON(http.StatusOK, map[string]string{
 					"message": "Hello from custom API!",
 				})
@@ -259,6 +257,7 @@ func main() {
 		// alerts[dbAlert.Id] = dbAlert.Get("query").
 		// }
 
+		// metadata.RestorePollingJobs(app)
 		return se.Next()
 	})
 

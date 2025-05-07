@@ -6,7 +6,6 @@ interface WeatherCardProps {
     location: string
     temperature: number
     description: string
-    condition: "sunny" | "rainy" | "snowy",
     icon: string
 }
 

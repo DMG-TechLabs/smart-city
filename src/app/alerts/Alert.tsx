@@ -73,11 +73,24 @@ export class Alert {
     }
 
     static fromPBRecord(record: any): Alert {
-        const condition = AlertCondition.fromJSON(JSON.parse(record.condition));
+        console.log(record.condition);
+        const condition = AlertCondition.fromJSON(record.condition);
         const alert = new Alert(record.name, condition);
         alert.id = record.id;
         alert.enabled = record.enabled;
         alert.lastTriggered = record.lastTriggered ?? null;
         return alert;
     }
+
+    static async loadAlerts(pb: PocketBase): Promise<Alert[]> {
+        try {
+            const records = await pb.collection("alerts").getFullList({ sort: "-created" });
+            return records.map(record => Alert.fromPBRecord(record));
+        } catch (err) {
+            console.error("Failed to load alerts:", err);
+            return [];
+        }
+    }
+
+
 }

@@ -11,9 +11,16 @@ import WeatherCard from "@/components/local/weather-card";
 import { ChartComponent } from "@/components/local/chart";
 
 export default function Dashboard() {
-  const { user, logout } = useUser();
-  const router = useRouter();
-  const swapyRef = useRef<Swapy | null>(null);
+    const { user, logout } = useUser();
+    const router = useRouter();
+
+
+    // if (user == null || user.email === "") {
+    //     router.push("/login");
+    // }
+
+
+    const swapyRef = useRef<Swapy | null>(null);
 
   const [dateTime, setDateTime] = useState<string | null>(null);
   const [weatherLocation, setWeatherLocation] = useState<string | null>(null);
@@ -26,11 +33,17 @@ export default function Dashboard() {
   const [weatherIcon, setWeatherIcon] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchTime(): Promise<object | null> {
-      const response = await fetch("/api/time");
-      if (!response.ok) return null;
-      return await response.json();
-    }
+        // console.log(user);
+    //   if (user == null || user.email === "") {
+    //     router.push("/login");
+    // }
+
+
+      async function fetchTime(): Promise<object | null> {
+          const response = await fetch("/api/time");
+          if (!response.ok) return null;
+          return await response.json();
+      }
 
     async function fetchWeather(): Promise<object | null> {
       const response = await fetch("/api/weather");
@@ -76,36 +89,50 @@ export default function Dashboard() {
 
   return (
     <div className="container">
-      <div className="widget-container">
-        <div className="items">
-          <div id="slot" data-swapy-slot="a">
-            <div id="item" data-swapy-item="a">
-              <ChartComponent />
+      <div className="topbar">
+          <div className="top">
+            <div className="title">
+              <h1>Smart City</h1>
+            </div>
+            <div className="right-corner">
+                <h1>Welcome, {user?.name}</h1>
             </div>
           </div>
-          <div id="slot" data-swapy-slot="b">
-            <div id="item" data-swapy-item="b">
-              <CardComponent />
+          <div className="bottom">
+            <div className="navbar-menu">
+                <NavigationMenuComponent />
             </div>
           </div>
-          <div id="slot" data-swapy-slot="c">
-            <div id="item" data-swapy-item="c">
-              <CardComponent />
-            </div>
-          </div>
-          <div id="slot" data-swapy-slot="d">
-            <div id="item" data-swapy-item="d">
-              <WeatherCard
-                date={dateTime}
-                location={weatherLocation}
-                temperature={weatherTemperature}
-                description={weatherDescription}
-                icon={weatherIcon}
-              />
-            </div>
-          </div>
-        </div>
       </div>
+          <div className="widget-container">
+              <div className="items">
+                  <div id="slot" data-swapy-slot="a">
+                      <div id="item" data-swapy-item="a">
+                          <ChartComponent />
+                      </div>
+                  </div>
+                  <div id="slot" data-swapy-slot="b">
+                      <div id="item" data-swapy-item="b">
+                          <CardComponent />
+                      </div>
+                  </div>
+                  <div id="slot" data-swapy-slot="c">
+                      <div id="item" data-swapy-item="c">
+                          <CardComponent />
+                      </div>
+                  </div>
+                  <div id="slot" data-swapy-slot="d">
+                      <div id="item" data-swapy-item="d">
+                          <WeatherCard
+                              location={weatherLocation}
+                              temperature={weatherTemperature}
+                              description={weatherDescription}
+                              icon={weatherIcon}
+                          />
+                      </div>
+                  </div>
+              </div>
+          </div>
     </div>
   );
 }
