@@ -1,84 +1,35 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
-	"net/mail"
 	"os"
 
-	"github.com/pocketbase/dbx"
+	"pocketbase/alerts"
+	"pocketbase/metadata"
+
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
-	"github.com/pocketbase/pocketbase/tools/mailer"
+	"github.com/pocketbase/pocketbase/tools/types"
 )
 
 func main() {
-	alerts := make(map[string]string)
+	alertsList := make(map[string]string)
 	app := pocketbase.New()
-	// app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
-	// 	e.Router.AddRoute(echo.Route{
-	// 		Method: http.MethodPost,
-	// 		Path:   "/api/myRoute",
-	// 		Handler: func(c echo.Context) error {
-	// 			// custom logic here: compute custom_value using parameters
-	// 	custom_value := "cool_value"
-	// 			return c.String(200, custom_value)
-	// 		},
-	// 	})
-	// 	return nil
-	// })
-	// Add your custom route here
-	// app.OnBeforeServe().Add(func(e *echo.Echo) error {
-	// 	e.GET("/api/hello", func(c echo.Context) error {
-	// 		return c.JSON(http.StatusOK, map[string]string{
-	// 			"message": "Hello from custom API!",
-	// 		})
-	// 	})
-	//
-	// 	// Example: secured route
-	// 	e.GET("/api/secret", func(c echo.Context) error {
-	// 		// Only allow if a query param matches
-	// 		if c.QueryParam("key") != "12345" {
-	// 			return c.JSON(http.StatusUnauthorized, map[string]string{"error": "unauthorized"})
-	// 		}
-	// 		return c.JSON(http.StatusOK, map[string]string{"secret": "42"})
-	// 	})
-	//
-	// 	return nil
-	// })
 
 	app.OnRecordAfterCreateSuccess().BindFunc(func(e *core.RecordEvent) error {
-		for id, alertFilter := range alerts {
-			log.Println("alertFilter:", alertFilter)
-			log.Println("id:", id)
-			result, _ := e.App.FindFirstRecordByFilter(e.Record.Collection(), alertFilter, dbx.Params{"id": e.Record.Id})
-			// .AndWhere(dbx.HashExp{"id": e.Record.Id})
-			log.Println("result:", result)
-
-			if result != nil {
-				log.Println("result is not nil")
-				dbAlert, _ := e.App.FindRecordById("alerts", id)
-				message := &mailer.Message{
-					From: mail.Address{
-						Address: e.App.Settings().Meta.SenderAddress,
-						Name:    e.App.Settings().Meta.SenderName,
-					},
-					To:      []mail.Address{{Address: dbAlert.GetString("user_email")}},
-					Subject: "YOUR_SUBJECT...",
-					HTML:    "YOUR_HTML_BODY...",
-					// bcc, cc, attachments and custom headers are also supported...
-				}
-
-				if e.App.NewMailClient().Send(message) != nil {
-					log.Println("Error sending email")
-				} else {
-					log.Println("Email sent successfully")
-				}
-
-			}
+		var err error = nil
+		err = alerts.RunAlerts(app, e, alertsList)
+		switch name := e.Record.Collection().Name; name {
+		case "metadata":
+			err = metadata.IfMetadata(app, e)
 		}
-
+		if err != nil {
+			return err
+		}
 		return e.Next()
 	})
 
@@ -86,19 +37,86 @@ func main() {
 		// serves static files from the provided public dir (if exists)
 		se.Router.GET("/{path...}", apis.Static(os.DirFS("./pb_public"), false))
 
-		se.Router.GET("/api/hello",
+		se.Router.GET("/api/getalerthistory", func(c *core.RequestEvent) error {
+			collection, err := app.FindCollectionByNameOrId("alertsHistory")
+			if err != nil {
+				log.Println("Error finding collection")
+				return err
+
+			}
+
+			records, err := app.FindAllRecords(collection.Id)
+			if err != nil {
+				log.Println("Error finding records")
+				return err
+			}
+
+			var recordsJson []alerts.AlertHistory
+
+			for _, record := range records {
+				alert, err := app.FindRecordById("alerts", record.Get("alert").(string))
+				if err != nil {
+					log.Println("Error finding alert record")
+					return err
+				}
+
+				valueRecord, err := app.FindRecordById(record.Get("collection").(string), record.Get("recordId").(string))
+				if err != nil {
+					log.Println("Error finding value record")
+					return err
+				}
+
+				recordsJson = append(recordsJson, alerts.AlertHistory{
+					Name:      alert.Get("name").(string),
+					RecordId:  record.Id,
+					AlertId:   record.Get("alert").(string),
+					Created:   record.Get("created").(types.DateTime),
+					Value:     valueRecord.Get("value"),
+					Condition: alert.Get("condition").(types.JSONRaw),
+				})
+
+				fmt.Println(recordsJson)
+			}
+
+			// return c.JSON(http.StatusOK, records)
+			return c.JSON(http.StatusOK, map[string]interface{}{
+				"message": recordsJson,
+			})
+		})
+
+		se.Router.GET("/api/createcollection", func(c *core.RequestEvent) error {
+			fmt.Println("user:", c.Auth.Id)
+			fmt.Println("Body:", c.Request.Body)
+
+			var err error
+			reqBody := c.Request.Body
+			var bodyBytes []byte
+			_, err = reqBody.Read(bodyBytes)
+			if err != nil {
+				fmt.Println("Error reading body:", err)
+				return err
+			}
+			var reqJSON map[string]any
+			err = json.Unmarshal(bodyBytes, &reqJSON)
+			if err != nil {
+				fmt.Println("ReqBody:", reqBody)
+				fmt.Println("reqJson:", reqJSON)
+				fmt.Println("ReqBytes:", bodyBytes)
+				fmt.Println("len(bodyBytes):", len(bodyBytes))
+
+				fmt.Println("Error unmarshalling body:", err)
+				return err
+			}
+
+			fmt.Println("ReqJson:", reqJSON)
+			// core.NewBaseCollection(reqJson[""])
+			return c.JSON(http.StatusOK, map[string]any{
+				"message": "Hello from custom API!",
+			})
+		})
+
+		se.Router.GET("/api/addalert",
 			func(c *core.RequestEvent) error {
-				// err := app.Cron().Add("hello", "*/2 * * * *", func() {
-				// 	log.Println("Hello!")
-				// })
-				// log.Println("Request")
-				// log.Println(c.Request.URL.Query().Get("query"))
-				// c.JSON(http.StatusOK, map[string]string{
-				// 	"message": "Hello from custom API!",
-				// })
-
-				// alerts = append(alerts, c.Request.URL.Query().Get("query"))
-
 				collection, err := app.FindCollectionByNameOrId("alerts")
 				if err != nil {
 					log.Println("Error finding collection")
@@ -119,22 +137,18 @@ func main() {
 					log.Println("User email:", authUser.Get("email"))
 				}
 
-				// record.Set("title", c.Request.URL.Query().Get("title"))
-				// record.Set("active", c.Request.URL.Query().Get("active"))
+				record.Set("name", c.Request.URL.Query().Get("name"))
+				// record.Set("enabled", c.Request.URL.Query().Get("active"))
+				record.Set("enabled", true)
 				record.Set("user_email", authUser.Get("email"))
-				// record.Set("frequency", c.Request.URL.Query().Get("query"))
-				// record.Set("level", c.Request.URL.Query().Get("query"))
-				// record.Set("description", c.Request.URL.Query().Get("query"))
-				// record.Set("created_at", c.Request.URL.Query().Get("query"))
-				// record.Set("updated_at", c.Request.URL.Query().Get("query"))
-				record.Set("query", c.Request.URL.Query().Get("query"))
+				record.Set("condition", c.Request.URL.Query().Get("condition"))
 				err = app.Save(record)
 				// record.Id
 				if err != nil {
 					return err
 				}
 
-				alerts[record.Id] = c.Request.URL.Query().Get("query")
+				alertsList[record.Id] = c.Request.URL.Query().Get("query")
 				// field type specific modifiers can also be used
 				// record.Set("slug:autogenerate", "post-")
 				// return err
@@ -143,18 +157,13 @@ func main() {
 				})
 			})
 
-		dbAlerts, _ := se.App.FindAllRecords("alerts")
+		// dbAlerts, _ := se.App.FindAllRecords("alerts")
 
-		for _, dbAlert := range dbAlerts {
-			alerts[dbAlert.Id] = dbAlert.Get("query").(string)
-		}
+		// for _, dbAlert := range dbAlerts {
+		// alerts[dbAlert.Id] = dbAlert.Get("query").
+		// }
 
 		return se.Next()
-	})
-
-	// prints "Hello!" every 2 minutes
-	app.Cron().MustAdd("hello", "*/2 * * * *", func() {
-		log.Println("Hello!")
 	})
 
 	if err := app.Start(); err != nil {
