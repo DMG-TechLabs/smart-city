@@ -58,7 +58,7 @@ nav {
 .widget-container {
   width: fit-content;
   position: absolute;
-  top: 40%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
   gap: 10px;
@@ -110,3 +110,18 @@ nav {
   left: 10px;
 }
 
+.delete-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.date-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+button {
+  cursor: pointer;
+}

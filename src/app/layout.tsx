@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { UserProvider } from "@/context/UserContext";
 import { PocketBaseProvider } from "@/context/DatabaseContext";
+import { NavigationMenuComponent } from '@/components/ui/navigation-menu';
 
 
 // const geistSans = Geist({
@@ -33,6 +34,21 @@ export default function RootLayout({
         <body
           // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
+          <div className="topbar">
+            <div className="top">
+              <div className="title">
+                <h1>Smart City</h1>
+              </div>
+              <div className="right-corner">
+                <h1>Welcome visitor!!!!!!</h1>
+              </div>
+            </div>
+            <div className="bottom">
+              <div className="navbar-menu">
+                <NavigationMenuComponent />
+              </div>
+            </div>
+          </div>
           {children}
         </body>
       </html>
