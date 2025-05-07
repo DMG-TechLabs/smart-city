@@ -1,17 +1,6 @@
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from "@/components/ui/alert-dialog";
 
+import { ConfirmationDialog } from "@/components/local/confirmation-dialog.tsx";
 import { Alert } from "../Alert.tsx";
-import { ReactNode } from "react";
 
 type AlertUIProps = {
   alert: Alert;
@@ -19,37 +8,6 @@ type AlertUIProps = {
   onEdit?: () => void;
 };
 
-type AlertDialogProps = {
-  title: string;
-  desc: string;
-  onCancel?: () => void;
-  onContinue?: () => void;
-  children: ReactNode;
-};
-
-export function AlertConfirmation({
-  title,
-  desc,
-  onCancel,
-  onContinue,
-  children,
-}: AlertDialogProps) {
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{desc}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={onCancel}>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onContinue}>Continue</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-}
 
 export function AlertUI({ alert, onDelete, onEdit }: AlertUIProps) {
   return (
@@ -82,7 +40,7 @@ export function AlertUI({ alert, onDelete, onEdit }: AlertUIProps) {
           Edit
         </button>
 
-        <AlertConfirmation
+        <ConfirmationDialog
           title="Are you sure?"
           desc="This action cannot be reversed"
           onContinue={onDelete}
@@ -90,7 +48,7 @@ export function AlertUI({ alert, onDelete, onEdit }: AlertUIProps) {
           <button className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
             Delete
           </button>
-        </AlertConfirmation>
+        </ConfirmationDialog>
       </div>
     </div>
   );
