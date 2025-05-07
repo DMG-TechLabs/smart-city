@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { DeleteButton } from "../local/delete-button"
 
 
 const notifications = [
@@ -113,7 +114,12 @@ export function CardComponent({ className, ...props }: CardProps) {
   return (
     <Card className={cn("w-[380px]", className)} {...props}>
       <CardHeader>
-        <CardTitle>Notifications</CardTitle>
+        <CardTitle>
+          <div className="delete-container">
+            Notifications
+            <DeleteButton />
+          </div>
+        </CardTitle>
         <CardDescription>You have 3 unread messages.</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
