@@ -1,44 +1,33 @@
 "use client";
 
 import { usePocketBase } from "../../context/DatabaseContext.tsx";
-import { Alert } from "./Alert";
-import { AlertCondition } from "./AlertCondition";
-import { useEffect } from "react";
-
+import { Alert } from "./Alert.tsx";
+import { useEffect, useState } from "react";
 
 export default function Alerts() {
     const pb = usePocketBase();
+    const [alerts, setAlerts] = useState<Alert[]>([]);
+
     useEffect(() => {
-        async function registerAlert() {
-            // NOTE: Building the Alert should be the responsibility of the user
-            const ac = new AlertCondition("AND")
-                .add({ field: "temperature", operator: ">", value: 25 })
-                .add(new AlertCondition("OR")
-                    .add({ field: "humidity", operator: "<", value: 30 })
-                    .add({ field: "status", operator: "==", value: "warning" }));
-
-            const alert = new Alert("Test Alert", ac);
-
-            try {
-                await pb.send("/api/addalert", {
-                    query: {
-                        name: alert.name,
-                        condition: JSON.stringify(ac.toJSON()),
-                    }
-                });
-
-                console.log("Alert registered successfully");
-            } catch (err) {
-                console.error("Error registering alert:", err);
-            }
+        async function fetchAlerts(): Promise<void> {
+            const loadedAlerts = await Alert.loadAlerts(pb);
+            setAlerts(loadedAlerts);
         }
 
-        registerAlert();
-    }, [pb]); // run once on mount
+        fetchAlerts();
+    }, [pb]);
 
     return (
-        <>
+        <div>
             <h1>Alerts</h1>
-        </>
+            <div>
+                {alerts.map((alert, index) => (
+                    <div key={alert.id ?? index}>
+                        {alert.ui()}
+                    </div>
+                ))}
+            </div>
+        </div>
     );
 }
+

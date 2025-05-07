@@ -122,7 +122,7 @@ export class Api {
 
         return {
             provider: this.provider,
-            endpoint: this.provider,
+            endpoint: this.endpoint,
             collection: collection,
             paths: paths
         }
