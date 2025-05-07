@@ -123,7 +123,8 @@ func AlertConditionToString(jsonIn string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return buildConditionString(cond), nil
+	alertString := buildConditionString(cond)
+	return alertString[1 : len(alertString)-1], nil
 }
 
 func GetAlerts(app *pocketbase.PocketBase) map[string]string {
@@ -162,7 +163,7 @@ func PrintAlerts(app *pocketbase.PocketBase) error {
 		}
 
 		result := buildConditionString(cond)
-		fmt.Println(result)
+		fmt.Println(result[1 : len(result)-1])
 	}
 
 	return nil
