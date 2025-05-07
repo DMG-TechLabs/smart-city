@@ -36,6 +36,13 @@ export default function Apis() {
                     },
                     //     // 'Authorization': 'Bearer xyz' // if needed, usually handled automatically after auth
                     });
+
+                const metadata = await pb.collection("metadata").create({
+                    provider: payload.provider, 
+                    endpoint: payload.endpoint,
+                    paths: JSON.stringify(payload.paths),
+                });
+
                 // const res = await fetch("/api/collection", {
                 //     method: "POST",
                 //     headers: {
@@ -47,7 +54,17 @@ export default function Apis() {
                 if (!res.ok) {
                     const data = await res.json();
                     throw new Error(data.error || "Failed to register");
+                }else{
+                    console.log("Collection registered successfully");
                 }
+
+                if (!metadata.ok) {
+                    const metadataData = await metadata.json();
+                    throw new Error(metadataData.error || "Failed to register");
+                }else{
+                    console.log("Metadata registered successfully");
+                }
+
 
             } catch (err: any) {
                 console.error("Failed to fetch/register:", err);
