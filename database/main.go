@@ -33,6 +33,24 @@ func main() {
 		return e.Next()
 	})
 
+	app.OnRecordAfterUpdateSuccess().BindFunc(func(e *core.RecordEvent) error {
+		switch name := e.Record.Collection().Name; name {
+		case "alerts":
+			if e.Record.Get("enabled").(bool) == false {
+				delete(alertsList, e.Record.Id)
+			} else {
+				alertString, err := alerts.AlertConditionToString(e.Record.GetString("condition"))
+				if err != nil {
+					log.Println("Error parsing condition:", err)
+					return err
+				}
+				alertsList[e.Record.Id] = alertString
+			}
+		}
+
+		return e.Next()
+	})
+
 	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
 		// serves static files from the provided public dir (if exists)
 		se.Router.GET("/{path...}", apis.Static(os.DirFS("./pb_public"), false))
