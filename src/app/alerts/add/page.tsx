@@ -34,7 +34,7 @@ export default function AlertsAdd() {
         }
 
         registerAlert();
-    }, [pb]); // run once on mount
+    }, [pb]);
 
     return (
         <>

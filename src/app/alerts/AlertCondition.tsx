@@ -65,11 +65,14 @@ export class AlertCondition {
         };
     }
 
-    static fromJSON(obj: any): AlertCondition {
+    static fromJSON(obj: any): AlertCondition | null {
+        if(obj == null) return null;
         const ac = new AlertCondition(obj.operator);
         for (const c of obj.conditions) {
             if (c.operator && Array.isArray(c.conditions)) {
-                ac.add(AlertCondition.fromJSON(c));
+                const condition = AlertCondition.fromJSON(c);
+                if(condition != null)
+                    ac.add(condition);
             } else if (isCondition(c)) {
                 ac.add(c);
             } else {

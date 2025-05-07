@@ -91,6 +91,18 @@ export class Alert {
             return [];
         }
     }
+    async delete(pb: PocketBase): Promise<boolean> {
+        if (!this.id) {
+            console.error("No alert ID provided for deletion.");
+            return false;
+        }
 
-
+        try {
+            await pb.collection("alerts").delete(this.id);
+            return true;
+        } catch (err) {
+            console.error("Failed to delete alert:", err);
+            return false;
+        }
+    }
 }
