@@ -11,6 +11,9 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { ReactNode } from "react";
+import { Button } from "../ui/button";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type AlertDialogProps = {
   title: string;
@@ -30,7 +33,11 @@ export function ConfirmationDialog({
 }: AlertDialogProps) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+      <AlertDialogTrigger asChild>
+        <Button variant="ghost">
+          <FontAwesomeIcon icon={faTrash} />
+        </Button>
+        </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
