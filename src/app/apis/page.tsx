@@ -28,7 +28,11 @@ export default function Apis() {
                 const payload = api.generateRegistrationPayload();
                 if (!payload) throw new Error("No payload to send");
 
-                pb.send("/api/cretatecollection", payload);
+                console.log(JSON.stringify(payload));
+                const res = await pb.send("/api/createcollection", {
+                    query: {payload},
+                    //     // 'Authorization': 'Bearer xyz' // if needed, usually handled automatically after auth
+                    });
                 // const res = await fetch("/api/collection", {
                 //     method: "POST",
                 //     headers: {
@@ -37,10 +41,10 @@ export default function Apis() {
                 //     body: JSON.stringify(payload)
                 // });
 
-                // if (!res.ok) {
-                //     const data = await res.json();
-                //     throw new Error(data.error || "Failed to register");
-                // }
+                if (!res.ok) {
+                    const data = await res.json();
+                    throw new Error(data.error || "Failed to register");
+                }
 
             } catch (err: any) {
                 console.error("Failed to fetch/register:", err);

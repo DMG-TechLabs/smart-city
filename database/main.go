@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -83,10 +84,33 @@ func main() {
 			})
 		})
 
-		se.Router.GET("/api/cretatecollection", func(c *core.RequestEvent) error {
-			fmt.Println("Request:", c.Request.URL.Query().Get("query"))
+		se.Router.GET("/api/createcollection", func(c *core.RequestEvent) error {
+			fmt.Println("user:", c.Auth.Id)
 			fmt.Println("Body:", c.Request.Body)
-			return c.JSON(http.StatusOK, map[string]interface{}{
+
+			var err error
+			reqBody := c.Request.Body
+			var bodyBytes []byte
+			_, err = reqBody.Read(bodyBytes)
+			if err != nil {
+				fmt.Println("Error reading body:", err)
+				return err
+			}
+			var reqJSON map[string]any
+			err = json.Unmarshal(bodyBytes, &reqJSON)
+			if err != nil {
+				fmt.Println("ReqBody:", reqBody)
+				fmt.Println("reqJson:", reqJSON)
+				fmt.Println("ReqBytes:", bodyBytes)
+				fmt.Println("len(bodyBytes):", len(bodyBytes))
+
+				fmt.Println("Error unmarshalling body:", err)
+				return err
+			}
+
+			fmt.Println("ReqJson:", reqJSON)
+			// core.NewBaseCollection(reqJson[""])
+			return c.JSON(http.StatusOK, map[string]any{
 				"message": "Hello from custom API!",
 			})
 		})
@@ -114,7 +138,8 @@ func main() {
 				}
 
 				record.Set("name", c.Request.URL.Query().Get("title"))
-				record.Set("enabled", c.Request.URL.Query().Get("active"))
+				// record.Set("enabled", c.Request.URL.Query().Get("active"))
+				record.Set("enabled", true)
 				record.Set("user_email", authUser.Get("email"))
 				record.Set("condition", c.Request.URL.Query().Get("query"))
 				err = app.Save(record)

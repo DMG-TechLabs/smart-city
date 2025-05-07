@@ -8,7 +8,7 @@ export default function Dashboard() {
   const router = useRouter();
 
   if (user == null || user.email === "") {
-    router.push("/pocketbase_example");
+    router.push("/login");
   }
 
   return (
