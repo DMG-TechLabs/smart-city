@@ -1,10 +1,26 @@
 import { Condition, LogicalOperator } from './Condition';
 
+function isCondition(obj: any): obj is Condition {
+    return (
+        obj &&
+        typeof obj.field === "string" &&
+        typeof obj.operator === "string" &&
+        "value" in obj
+    );
+}
+
+function getNestedValue(obj: any, path: string): any {
+    return path.split('.').reduce((acc, key) => acc?.[key], obj);
+}
+
 export class AlertCondition {
     private conditions: (Condition | AlertCondition)[] = [];
     private operator: LogicalOperator;
 
     constructor(operator: LogicalOperator = "AND") {
+        if (operator !== "AND" && operator !== "OR") {
+            throw new Error(`Invalid logical operator: ${operator}`);
+        }
         this.operator = operator;
     }
 
@@ -20,8 +36,8 @@ export class AlertCondition {
         const results = this.conditions.map((c) => {
             if (c instanceof AlertCondition) {
                 return c.evaluate(data);
-            } else {
-                const fieldValue = data[c.field];
+            } else if (isCondition(c)) {
+                const fieldValue = getNestedValue(data, c.field);
                 if (fieldValue === undefined) return false;
 
                 switch (c.operator) {
@@ -31,16 +47,13 @@ export class AlertCondition {
                     case ">=": return fieldValue >= c.value;
                     case "<=": return fieldValue <= c.value;
                     case "!=": return fieldValue !== c.value;
-                    default: return false;
+                    default: throw new Error(`Unsupported operator: ${c.operator}`);
                 }
             }
+            return false;
         });
 
-        if (this.operator === "AND") {
-            return results.every(Boolean);
-        } else {
-            return results.some(Boolean);
-        }
+        return this.operator === "AND" ? results.every(Boolean) : results.some(Boolean);
     }
 
     toJSON(): { operator: LogicalOperator; conditions: any[] } {
@@ -55,12 +68,24 @@ export class AlertCondition {
     static fromJSON(obj: any): AlertCondition {
         const ac = new AlertCondition(obj.operator);
         for (const c of obj.conditions) {
-            if (c.operator && c.conditions) {
+            if (c.operator && Array.isArray(c.conditions)) {
                 ac.add(AlertCondition.fromJSON(c));
+            } else if (isCondition(c)) {
+                ac.add(c);
             } else {
-                ac.add(c as Condition);
+                throw new Error("Invalid condition structure in JSON");
             }
         }
         return ac;
+    }
+
+    toString(): string {
+        return this.conditions
+            .map((c) =>
+                c instanceof AlertCondition
+                    ? `(${c.toString()})`
+                    : `${c.field} ${c.operator} ${JSON.stringify(c.value)}`
+            )
+            .join(` ${this.operator} `);
     }
 }
