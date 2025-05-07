@@ -109,41 +109,7 @@ func main() {
 				return err
 			}
 
-			// fmt.Println("ReqJson:", reqJSON)
-			// fmt.Println("-----------------------------")
-			// for key, value := range reqJSON {
-			// 	fmt.Println("key - value: ", key, " - ", value)
-			// 	if key == "collection" {
-			// 		for key2, value2 := range value.(map[string]any) {
-			// 			fmt.Println("key - value: ", key2, " - ", value2)
-			// 		}
-			// 	}
-			// }
-			//
-			// fmt.Println("-----------------------------")
-
 			newCollection := core.NewBaseCollection(reqJSON["provider"].(string))
-
-			// newCollection.ViewRule = types.Pointer("@request.auth.id != ''")
-			// newCollection.CreateRule = types.Pointer("@request.auth.id != '' && @request.body.user = @request.auth.id")
-			// newCollection.UpdateRule = types.Pointer(`
-			//  		@request.auth.id != '' &&
-			//  		user = @request.auth.id &&
-			//  		(@request.body.user:isset = false || @request.body.user = @request.auth.id)
-			// `)
-
-			// newCollection.Fields.Add(&core.TextField{
-			// 	Id:                  "id",
-			// 	Name:                "id",
-			// 	PrimaryKey:          true,
-			// 	Required:            true,
-			// 	AutogeneratePattern: "[a-z0-9]{15}",
-			// 	Pattern:             "^[a-z0-9]+$",
-			// 	Min:                 15,
-			// 	Max:                 15,
-			// })
-
-			// newCollection.RemoveIndex(name)
 
 			var idx strings.Builder
 
@@ -257,30 +223,33 @@ func main() {
 
 				}
 
+				condition := c.Request.URL.Query().Get("condition")
+
 				record.Set("name", c.Request.URL.Query().Get("name"))
-				// record.Set("enabled", c.Request.URL.Query().Get("active"))
 				record.Set("enabled", true)
 				record.Set("user_email", authUser.Get("email"))
-				record.Set("condition", c.Request.URL.Query().Get("condition"))
+				record.Set("condition", condition)
 				err = app.Save(record)
-				// record.Id
 				if err != nil {
 					return err
 				}
 
-				alertsList[record.Id] = c.Request.URL.Query().Get("query")
+				alertString, err := alerts.AlertConditionToString(condition)
+				if err != nil {
+					return c.JSON(http.StatusBadRequest, map[string]string{
+						"message": "Error parsing condition",
+					})
+				}
+
+				alertsList[record.Id] = alertString
 
 				return c.JSON(http.StatusOK, map[string]string{
 					"message": "Hello from custom API!",
 				})
 			})
 
-		// dbAlerts, _ := se.App.FindAllRecords("alerts")
-
-		// for _, dbAlert := range dbAlerts {
-		// alerts[dbAlert.Id] = dbAlert.Get("query").
-		// }
-
+		alertsList = alerts.GetAlerts(app)
+		alerts.PrintAlerts(app)
 		metadata.RestorePollingJobs(app)
 		return se.Next()
 	})
