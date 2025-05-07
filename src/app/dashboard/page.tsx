@@ -35,7 +35,15 @@ export default function Dashboard() {
         }
 
         fetchTime().then(data => {
-            setDateTime(data.formatted.split(' ')[0]);
+            const unixSeconds = data.timestamp;
+            const date = new Date(unixSeconds * 1000);
+            const weekday = date.toLocaleDateString('en-US', { weekday: 'long' });
+            const day = date.getDate();
+            const month = date.toLocaleDateString('en-US', { month: 'long' });
+            const year = date.getFullYear();
+
+            const formatted = `${weekday} ${day} ${month} ${year}`;
+            setDateTime(formatted);
         });
     }, []);
 
