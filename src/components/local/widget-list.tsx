@@ -1,6 +1,4 @@
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
   Sheet,
   SheetClose,
@@ -11,6 +9,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { CardComponent } from "../ui/card"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 export function SheetDemo() {
   return (
@@ -18,17 +18,22 @@ export function SheetDemo() {
       <SheetTrigger asChild>
         <Button variant="outline" id="widget-button">Widgets</Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent side="right" className="w-[100%] max-w-none">
         <SheetHeader>
           <SheetTitle>Available widgets</SheetTitle>
           <SheetDescription>
             Here are all the available widgets to show in the dashboard.
           </SheetDescription>
         </SheetHeader>
-        
+            <div className="available-widgets">
+              <ScrollArea className="h-[600px] w-[fit-content] rounded-md border p-4">
+                  <CardComponent />
+                  <CardComponent />
+              </ScrollArea>
+            </div>
         <SheetFooter>
           <SheetClose asChild>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit">Add to dashboard</Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>

@@ -34,7 +34,9 @@ export default function RootLayout({
     <UserProvider>
       <html lang="en">
         <body>
-          <TopBarComponent />
+          <header>
+            <TopBarComponent />
+          </header>
           {children}
         </body>
       </html>

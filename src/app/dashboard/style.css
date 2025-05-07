@@ -134,3 +134,15 @@ nav {
 button {
   cursor: pointer;
 }
+
+.available-widgets {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#radix-«R4ul7» {
+  width: fit-content !important;
+  max-width: none !important;
+}
