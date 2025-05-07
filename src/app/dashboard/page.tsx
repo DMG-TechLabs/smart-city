@@ -10,48 +10,16 @@ import { CardComponent } from "@/components/ui/card";
 import { Navigation } from "lucide-react";
 import { NavigationMenuComponent } from "@/components/ui/navigation-menu";
 import WeatherCard from "@/components/local/weather-card";
-
-type Item = {
-  id: string
-  title: string
-  render: () => React.ReactNode
-}
-
-const initialItems: Item[] = [
-  { id: '1', 
-    title: '1',
-    render: () => (
-      <WeatherCard
-        location="New York"
-        temperature={18}
-        description="Cloudy"
-        condition="rainy"
-      />
-    )
-  },
-  { id: '2', 
-    title: '2',
-    render: () => (
-      <CardComponent />
-    )
-  }
-]
+import { ChartComponent } from "@/components/local/chart";
 
 export default function Dashboard() {
   const { user, logout } = useUser();
   const router = useRouter();
-  const [items, setItems] = useState<Item[]>(initialItems)
-  const [slotItemMap, setSlotItemMap] = useState<SlotItemMapArray>(utils.initSlotItemMap(items, 'id'))
-  const slottedItems = useMemo(() => utils.toSlottedItems(items, 'id', slotItemMap), [items, slotItemMap])
   const swapyRef = useRef<Swapy | null>(null)
-
-  //const containerRef = document.querySelector('.widget-container') as HTMLElement
 
   /*if (user == null || user.email === "") {
     router.push("/pocketbase_example");
   }*/
-
-  useEffect(() => utils.dynamicSwapy(swapyRef.current, items, 'id', slotItemMap, setSlotItemMap), [items])
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -62,10 +30,6 @@ export default function Dashboard() {
         swapMode: 'drop',
         autoScrollOnDrag: true,
         enabled: true,
-      })
-  
-      swapyRef.current.onSwap((event) => {
-        setSlotItemMap(event.newSlotItemMap.asArray)
       })
     }
   }, [])
@@ -78,35 +42,38 @@ export default function Dashboard() {
         <div className="navbar-menu">
           <NavigationMenuComponent />
         </div>
-        <div className="date-time">
+        <div className="date-time" id="topbar-item">
           <h1>Wednesday May 7 2025</h1>
         </div>
-        <div className="right-corner">
+        <div className="right-corner" id="topbar-item">
           <h1>Welcome visitor!!!!!!</h1>
         </div>
       </div>
-      <div className="widget-container">
+      <div className="widget-container" id="topbar-item">
         <div className="items">
           <div id="slot" data-swapy-slot="a">
               <div id="item" data-swapy-item="a">
-                <CardComponent />
+                <ChartComponent />
                 
               </div>
           </div>
           <div id="slot" data-swapy-slot="b">
               <div id="item" data-swapy-item="b">
                 <CardComponent />
-                
               </div>
           </div>
           <div id="slot" data-swapy-slot="c">
               <div id="item" data-swapy-item="c">
                 <CardComponent />
-                
               </div>
           </div>
           <div id="slot" data-swapy-slot="d">
               <div id="item" data-swapy-item="d">
+                <CardComponent />
+              </div>
+          </div>
+          <div id="slot" data-swapy-slot="e">
+              <div id="item" data-swapy-item="e">
                 <WeatherCard
                     location="New York"
                     temperature={18}
@@ -119,13 +86,3 @@ export default function Dashboard() {
       </div>
     </div>
   )}
-  
-  /*{slottedItems.map(({ slotId, itemId, item }) => (
-    <div className="slot" key={slotId} data-swapy-slot={slotId}>
-      {item &&
-        <div className="item" data-swapy-item={itemId} key={itemId}>
-          {item.render()}
-        </div>
-      }
-    </div>
-  ))}*/
