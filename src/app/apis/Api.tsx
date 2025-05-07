@@ -71,7 +71,7 @@ export class Api {
         const fields: Field[] = [];
 
         for (const key in obj) {
-            const value = obj[key];
+            const value = (obj[key] == "id") ? this.provider + "_pb_" + obj[key] : obj[key];
             const path = `${basePath}/${key}`;
 
             if (value !== null && typeof value === "object" && !Array.isArray(value) && !(value instanceof Date)) {
@@ -122,7 +122,7 @@ export class Api {
 
         return {
             provider: this.provider,
-            endpoint: "test",
+            endpoint: this.provider,
             collection: collection,
             paths: paths
         }

@@ -31,7 +31,9 @@ export default function Apis() {
 
                 console.log(JSON.stringify(payload));
                 const res = await pb.send("/api/createcollection", {
-                    query: {payload},
+                    query: {
+                        payload: payload
+                    },
                     //     // 'Authorization': 'Bearer xyz' // if needed, usually handled automatically after auth
                     });
                 // const res = await fetch("/api/collection", {
