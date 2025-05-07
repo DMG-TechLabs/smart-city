@@ -2,8 +2,8 @@
 
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import './style.css';
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import "./style.css";
 import { createSwapy, SlotItemMapArray, Swapy, utils } from "swapy";
 import { CardComponent } from "@/components/ui/card";
 import { NavigationMenuComponent } from "@/components/ui/navigation-menu";
@@ -22,11 +22,15 @@ export default function Dashboard() {
 
     const swapyRef = useRef<Swapy | null>(null);
 
-    const [dateTime, setDateTime] = useState<string | null>(null);
-    const [weatherLocation, setWeatherLocation] = useState<string | null>(null);
-    const [weatherDescription, setWeatherDescription] = useState<string | null>(null);
-    const [weatherTemperature, setWeatherTemperature] = useState<string | null>(null);
-    const [weatherIcon, setWeatherIcon] = useState<string | null>(null);
+  const [dateTime, setDateTime] = useState<string | null>(null);
+  const [weatherLocation, setWeatherLocation] = useState<string | null>(null);
+  const [weatherDescription, setWeatherDescription] = useState<string | null>(
+    null
+  );
+  const [weatherTemperature, setWeatherTemperature] = useState<string | null>(
+    null
+  );
+  const [weatherIcon, setWeatherIcon] = useState<string | null>(null);
 
   useEffect(() => {
         // console.log(user);
@@ -41,45 +45,47 @@ export default function Dashboard() {
           return await response.json();
       }
 
-        async function fetchWeather(): Promise<object | null> {
-            const response = await fetch("/api/weather");
-            if(!response.ok) return null;
-            return await response.json();
-        }
+    async function fetchWeather(): Promise<object | null> {
+      const response = await fetch("/api/weather");
+      if (!response.ok) return null;
+      return await response.json();
+    }
 
-        if (typeof window !== "undefined") {
-            const containerRef = document.querySelector('.widget-container') as HTMLElement;
-            swapyRef.current = createSwapy(containerRef!, {
-                animation: 'spring',
-                swapMode: 'drop',
-                autoScrollOnDrag: true,
-                enabled: true,
-            });
-        }
+    if (typeof window !== "undefined") {
+      const containerRef = document.querySelector(
+        ".widget-container"
+      ) as HTMLElement;
+      swapyRef.current = createSwapy(containerRef!, {
+        animation: "spring",
+        swapMode: "drop",
+        autoScrollOnDrag: true,
+        enabled: true,
+      });
+    }
 
-        fetchTime().then(data => {
-            if(data && "timestamp" in data){
-                const unixSeconds = data.timestamp;
-                const date = new Date(unixSeconds * 1000);
-                const weekday = date.toLocaleDateString('en-US', { weekday: 'long' });
-                const day = date.getDate();
-                const month = date.toLocaleDateString('en-US', { month: 'long' });
-                const year = date.getFullYear();
+    fetchTime().then((data) => {
+      if (data && "timestamp" in data) {
+        const unixSeconds = data.timestamp;
+        const date = new Date(unixSeconds * 1000);
+        const weekday = date.toLocaleDateString("en-US", { weekday: "long" });
+        const day = date.getDate();
+        const month = date.toLocaleDateString("en-US", { month: "long" });
+        const year = date.getFullYear();
 
-                const formatted = `${weekday} ${day} ${month} ${year}`;
-                setDateTime(formatted);
-            }
-        });
+        const formatted = `${weekday} ${day} ${month} ${year}`;
+        setDateTime(formatted);
+      }
+    });
 
-        fetchWeather().then(data => {
-            if(!data) return;
+    fetchWeather().then((data) => {
+      if (!data) return;
 
-            setWeatherTemperature(data.current.temp_c);
-            setWeatherLocation(data.location.name);
-            setWeatherDescription(data.current.condition.text);
-            setWeatherIcon(data.current.condition.icon);
-        });
-    }, []);
+      setWeatherTemperature(data.current.temp_c);
+      setWeatherLocation(data.location.name);
+      setWeatherDescription(data.current.condition.text);
+      setWeatherIcon(data.current.condition.icon);
+    });
+  }, []);
 
   return (
     <div className="container">
@@ -118,6 +124,7 @@ export default function Dashboard() {
                   <div id="slot" data-swapy-slot="d">
                       <div id="item" data-swapy-item="d">
                           <WeatherCard
+                              date={dateTime}
                               location={weatherLocation}
                               temperature={weatherTemperature}
                               description={weatherDescription}
