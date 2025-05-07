@@ -2,87 +2,101 @@
 
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
-import React from "react";
-import { useEffect, useMemo, useRef, useState } from 'react'
-import './style.css'
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import './style.css';
 import { createSwapy, SlotItemMapArray, Swapy, utils } from "swapy";
 import { CardComponent } from "@/components/ui/card";
-import { Navigation } from "lucide-react";
 import { NavigationMenuComponent } from "@/components/ui/navigation-menu";
 import WeatherCard from "@/components/local/weather-card";
 import { ChartComponent } from "@/components/local/chart";
 
 export default function Dashboard() {
-  const { user, logout } = useUser();
-  const router = useRouter();
-  const swapyRef = useRef<Swapy | null>(null)
+    const { user, logout } = useUser();
+    const router = useRouter();
+    const swapyRef = useRef<Swapy | null>(null);
 
-  /*if (user == null || user.email === "") {
-    router.push("/pocketbase_example");
-  }*/
+    const [dateTime, setDateTime] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const containerRef = document.querySelector('.widget-container') as HTMLElement
+    useEffect(() => {
+        async function fetchTime(): Promise<object | null> {
+            const response = await fetch("/api/time");
+            if (!response.ok) return null;
+            return await response.json();
+        }
 
-      swapyRef.current = createSwapy(containerRef!, {
-        animation: 'spring',
-        swapMode: 'drop',
-        autoScrollOnDrag: true,
-        enabled: true,
-      })
-    }
-  }, [])
-      /*<div className="greeting-text">
-        <h1>Welcome, {user?.username || "Guest"}!</h1>
-      </div>*/
-  return (
-    <div className="container">
-      <div className="topbar">
-        <div className="navbar-menu">
-          <NavigationMenuComponent />
+        if (typeof window !== "undefined") {
+            const containerRef = document.querySelector('.widget-container') as HTMLElement;
+            swapyRef.current = createSwapy(containerRef!, {
+                animation: 'spring',
+                swapMode: 'drop',
+                autoScrollOnDrag: true,
+                enabled: true,
+            });
+        }
+
+        fetchTime().then(data => {
+            if (data && typeof data === "object" && "date" in data && "time" in data) {
+                const dateParts = data.date.split('/');
+                const formattedDate = new Date(`${dateParts[1]}/${dateParts[0]}/${dateParts[2]}`);
+
+                const formatted = formattedDate.toLocaleDateString("en-GB", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                });
+
+
+                setDateTime(formatted);
+            }
+        });
+    }, []);
+
+    return (
+        <div className="container">
+            <div className="topbar">
+                <div className="navbar-menu">
+                    <NavigationMenuComponent />
+                </div>
+
+                <div className="date-time">
+                    <h1>{dateTime}</h1>
+                </div>
+
+                <div className="right-corner">
+                    <h1>Welcome visitor!!!!!!</h1>
+                </div>
+            </div>
+
+            <div className="widget-container">
+                <div className="items">
+                    <div id="slot" data-swapy-slot="a">
+                        <div id="item" data-swapy-item="a">
+                            <ChartComponent />
+                        </div>
+                    </div>
+                    <div id="slot" data-swapy-slot="b">
+                        <div id="item" data-swapy-item="b">
+                            <CardComponent />
+                        </div>
+                    </div>
+                    <div id="slot" data-swapy-slot="c">
+                        <div id="item" data-swapy-item="c">
+                            <CardComponent />
+                        </div>
+                    </div>
+                    <div id="slot" data-swapy-slot="d">
+                        <div id="item" data-swapy-item="d">
+                            <WeatherCard
+                                location="New York"
+                                temperature={18}
+                                description="Cloudy"
+                                condition="rainy"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div className="date-time" id="topbar-item">
-          <h1>Wednesday May 7 2025</h1>
-        </div>
-        <div className="right-corner" id="topbar-item">
-          <h1>Welcome visitor!!!!!!</h1>
-        </div>
-      </div>
-      <div className="widget-container" id="topbar-item">
-        <div className="items">
-          <div id="slot" data-swapy-slot="a">
-              <div id="item" data-swapy-item="a">
-                <ChartComponent />
-                
-              </div>
-          </div>
-          <div id="slot" data-swapy-slot="b">
-              <div id="item" data-swapy-item="b">
-                <CardComponent />
-              </div>
-          </div>
-          <div id="slot" data-swapy-slot="c">
-              <div id="item" data-swapy-item="c">
-                <CardComponent />
-              </div>
-          </div>
-          <div id="slot" data-swapy-slot="d">
-              <div id="item" data-swapy-item="d">
-                <CardComponent />
-              </div>
-          </div>
-          <div id="slot" data-swapy-slot="e">
-              <div id="item" data-swapy-item="e">
-                <WeatherCard
-                    location="New York"
-                    temperature={18}
-                    description="Cloudy"
-                    condition="rainy"
-                />
-              </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )}
+    );
+}
