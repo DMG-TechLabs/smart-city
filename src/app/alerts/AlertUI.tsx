@@ -2,7 +2,7 @@ import { ConfirmationDialog } from "@/components/local/confirmation-dialog.tsx";
 import { Alert } from "../Alert.tsx";
 import { CustomDialog } from "../../components/local/custom-dialog.tsx";
 import { ReactNode, useState } from "react";
-import { Switch } from "@/components/ui/switch.tsx"; // adjust path if needed
+import { Switch } from "@/components/ui/switch.tsx";
 
 type AlertUIProps = {
   alert: Alert;
@@ -81,12 +81,6 @@ export function AlertUI({ alert, onDelete, onEdit }: AlertUIProps) {
           </span>
         </p>
         <p>
-          Last Triggered:{" "}
-          {alert.lastTriggered
-            ? new Date(alert.lastTriggered).toLocaleString()
-            : "Never"}
-        </p>
-        <p>
           Condition:{" "}
           <span className="text-gray-700">{alert.condition?.toString()}</span>
         </p>
@@ -96,7 +90,6 @@ export function AlertUI({ alert, onDelete, onEdit }: AlertUIProps) {
         <CustomDialog
           title="Edit Alert"
           desc="Update the alert fields below"
-          onClose={onEdit}
           trigger={
             <button className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
               Edit
