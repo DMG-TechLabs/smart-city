@@ -6,7 +6,7 @@ export async function POST(req: Request) {
 
     try {
         await pb.admins.authWithPassword("kdesp2003@gmail.com", "12345678");
-
+        
         const { provider, collection, endpoint, paths } = await req.json();
 
         if (!provider || !collection || !endpoint || !paths) {
