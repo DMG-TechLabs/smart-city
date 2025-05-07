@@ -29,18 +29,19 @@ export default function Apis() {
                 const payload = api.generateRegistrationPayload();
                 if (!payload) throw new Error("No payload to send");
 
-                const res = await fetch("/api/collection", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(payload)
-                });
+                pb.send("/api/cretatecollection", payload);
+                // const res = await fetch("/api/collection", {
+                //     method: "POST",
+                //     headers: {
+                //         "Content-Type": "application/json"
+                //     },
+                //     body: JSON.stringify(payload)
+                // });
 
-                if (!res.ok) {
-                    const data = await res.json();
-                    throw new Error(data.error || "Failed to register");
-                }
+                // if (!res.ok) {
+                //     const data = await res.json();
+                //     throw new Error(data.error || "Failed to register");
+                // }
 
             } catch (err: any) {
                 console.error("Failed to fetch/register:", err);

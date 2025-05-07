@@ -83,6 +83,14 @@ func main() {
 			})
 		})
 
+		se.Router.GET("/api/cretatecollection", func(c *core.RequestEvent) error {
+			fmt.Println("Request:", c.Request.URL.Query().Get("query"))
+			fmt.Println("Body:", c.Request.Body)
+			return c.JSON(http.StatusOK, map[string]interface{}{
+				"message": "Hello from custom API!",
+			})
+		})
+
 		se.Router.GET("/api/addalert",
 			func(c *core.RequestEvent) error {
 				collection, err := app.FindCollectionByNameOrId("alerts")
