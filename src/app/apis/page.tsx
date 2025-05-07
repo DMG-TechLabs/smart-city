@@ -22,7 +22,7 @@ export default function Apis() {
                 const fields = api.extractFields(Api.extractFirst(json));
                 console.log(fields);
 
-                // This should be selected by the user
+                // NOTE: This should be selected by the user
                 api.map("id", fields[0]);
                 api.map("status", fields[7]);
 

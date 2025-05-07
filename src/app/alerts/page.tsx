@@ -17,10 +17,10 @@ export default function Alerts() {
                     .add({ field: "humidity", operator: "<", value: 30 })
                     .add({ field: "status", operator: "==", value: "warning" }));
 
-            const alert = new Alert("High Temp Alert", ac);
+            const alert = new Alert("Test Alert", ac);
 
             try {
-                pb.send("/api/addalert", {
+                await pb.send("/api/addalert", {
                     query: {
                         name: alert.name,
                         condition: JSON.stringify(ac.toJSON()),
