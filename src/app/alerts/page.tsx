@@ -3,6 +3,7 @@
 import { usePocketBase } from "../../context/DatabaseContext.tsx";
 import { Alert } from "./Alert.tsx";
 import { useEffect, useState } from "react";
+import { AlertUI } from "./AlertUI.tsx";
 
 export default function Alerts() {
     const pb = usePocketBase();
@@ -23,7 +24,7 @@ export default function Alerts() {
             <div>
                 {alerts.map((alert, index) => (
                     <div key={alert.id ?? index}>
-                        {alert.ui()}
+                        <AlertUI alert={alert}/>
                     </div>
                 ))}
             </div>
