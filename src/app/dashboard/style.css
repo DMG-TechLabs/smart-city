@@ -14,13 +14,6 @@ nav {
   z-index: 1;
 }
 
-.greeting-text {
-  color: #02040f;
-  position: absolute;
-  top: 3%;
-  left: 2%;
-}
-
 .container {
   width: 100%;
   overflow: auto;
@@ -28,25 +21,44 @@ nav {
 
 .topbar {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
+  flex-direction: column;
   position: fixed;
   top: 0;
-  height: 5%;
+  height: 15%;
   background: #efefef;
   width: 100%;
   z-index: 1;
-  align-content: center;
 }
 
-.topbar-item {
-  width: fit-content;
+.top{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex: 1;
+  padding-left: 10%;
+  padding-right: 10%;
+  border-bottom: 2px solid #cfcfcf;
+}
+
+.title {
+  font-size: 40px;
+}
+
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex: 1;
+  padding-left: 10%;
+  padding-right: 10%;
 }
 
 .widget-container {
   width: fit-content;
   position: absolute;
-  top: 30%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
   gap: 10px;
