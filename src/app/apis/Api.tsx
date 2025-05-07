@@ -72,7 +72,7 @@ export class Api {
 
         for (const key in obj) {
             const value = obj[key];
-            const path = `${basePath}/${key}`;
+            const path = (basePath == "") ? `${key}` : `${basePath}/${key}`;
 
             if (value !== null && typeof value === "object" && !Array.isArray(value) && !(value instanceof Date)) {
                 fields.push(...this.extractFields(value, path));

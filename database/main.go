@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"pocketbase/alerts"
 	"pocketbase/metadata"
@@ -142,9 +143,24 @@ func main() {
 			// 	Max:                 15,
 			// })
 
+			// newCollection.RemoveIndex(name)
+
+			var idx strings.Builder
+
+			idx.WriteString("CREATE ")
+			// if unique {
+			idx.WriteString("UNIQUE ")
+			// }
+			idx.WriteString("INDEX `")
+			idx.WriteString(reqJSON["provider"].(string) + "_unique_index")
+			idx.WriteString("` ")
+			idx.WriteString("ON `")
+			idx.WriteString(newCollection.Name)
+			idx.WriteString("` (")
+			// idx.WriteString(columnsExpr)
 			var name string
 			a := reqJSON["collection"].(map[string]any)["schema"].([]any)
-			for _, value := range a {
+			for k, value := range a {
 				fmt.Println("------------")
 				name = value.(map[string]any)["name"].(string)
 				if name == "id" {
@@ -174,6 +190,11 @@ func main() {
 					})
 				}
 
+				idx.WriteString(name)
+				if k < len(a)-1 {
+					idx.WriteString(",")
+				}
+
 				// if value.(map[string]any)["unique"] == true {
 				// newCollection.AddIndex(value.(map[string]any)["name"].(string), true, "user", "")
 				// }
@@ -183,6 +204,9 @@ func main() {
 				// 	fmt.Println("key - value: ", key, " - ", data)
 				// }
 			}
+
+			idx.WriteString(")")
+			newCollection.Indexes = append(newCollection.Indexes, idx.String())
 
 			newCollection.Fields.Add(&core.AutodateField{
 				Name:     "created",
@@ -227,7 +251,7 @@ func main() {
 				if authUser != nil {
 					log.Println("Authenticated user ID:", authUser.Id)
 					log.Println("User email:", authUser.Get("email"))
-					return c.JSON(http.StatusOK, map[string]string{
+					return c.JSON(http.StatusUnauthorized, map[string]string{
 						"message": "Hello from custom API!",
 					})
 
@@ -257,7 +281,7 @@ func main() {
 		// alerts[dbAlert.Id] = dbAlert.Get("query").
 		// }
 
-		// metadata.RestorePollingJobs(app)
+		metadata.RestorePollingJobs(app)
 		return se.Next()
 	})
 

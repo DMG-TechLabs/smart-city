@@ -3,6 +3,7 @@ package metadata
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/pocketbase/pocketbase"
@@ -33,6 +34,7 @@ func GeneratePollingFunction(app *pocketbase.PocketBase, record *core.Record) fu
 		if err != nil {
 			fmt.Println(err)
 		}
+		defer res.Body.Close()
 
 		fmt.Println("url: ", record.GetString("endpoint"))
 		fmt.Println("ok: ", res.StatusCode)
@@ -40,9 +42,10 @@ func GeneratePollingFunction(app *pocketbase.PocketBase, record *core.Record) fu
 		fmt.Println("Header: ", res.Header)
 
 		var bytesRead int
-		resBody := res.Body
+		// resBody := res.Body
 		var bodyBytes []byte
-		bytesRead, err = resBody.Read(bodyBytes)
+		// bytesRead, err = resBody.Read(bodyBytes)
+		bodyBytes, err = ioutil.ReadAll(res.Body)
 		if err != nil {
 			fmt.Println("http:", err)
 			err = nil
@@ -65,18 +68,33 @@ func GeneratePollingFunction(app *pocketbase.PocketBase, record *core.Record) fu
 			fmt.Println(err)
 		}
 
-		// provider := record.GetString("provider")
-		// collection, err := app.FindCollectionByNameOrId("api_" + provider)
-		// record := core.NewRecord(collection)
+		provider := record.GetString("provider")
+		collection, err := app.FindCollectionByNameOrId(provider)
 
-		for path, value := range pathsJSON {
-			fmt.Println("path - value:", path, " - ", value, " - ")
-			// record.Set(path, resJson[value.(string)])
+		for k, value := range resJSON {
+			newRecord := core.NewRecord(collection)
+
+			fmt.Println("key: ", k)
+			for _, pathData := range pathsJSON {
+				newRecord.Set(pathData["name"].(string), value[pathData["path"].(string)])
+			}
+
+			err = app.Save(newRecord)
+			if err != nil {
+				fmt.Println(err)
+			}
+
 		}
 
-		// err = app.Save(record)
-		if err != nil {
-			fmt.Println(err)
-		}
+		// fmt.Println("resJson: ", resJSON)
+		// for _, value := range pathsJSON {
+		// 	fmt.Println("path - value:", " - ", value, " - ")
+		// 	fmt.Println("----------------------------")
+		// 	for _, v := range resJSON {
+		// 		newRecord.Set(value["name"].(string), v[value["path"].(string)])
+		// 	}
+		// }
+
+		fmt.Println("Run DONE")
 	}
 }
