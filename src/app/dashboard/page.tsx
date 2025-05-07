@@ -76,7 +76,7 @@ export default function Dashboard() {
               <h1>Smart City</h1>
             </div>
             <div className="right-corner">
-                <h1>Welcome visitor!!!!!!</h1>
+                <h1>Welcome, {user?.username || "Guest"}</h1>
             </div>
           </div>
           <div className="bottom">
