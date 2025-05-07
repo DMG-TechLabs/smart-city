@@ -16,11 +16,21 @@ export default function Dashboard() {
     const swapyRef = useRef<Swapy | null>(null);
 
     const [dateTime, setDateTime] = useState<string | null>(null);
+    const [weatherLocation, setWeatherLocation] = useState<string | null>(null);
+    const [weatherDescription, setWeatherDescription] = useState<string | null>(null);
+    const [weatherTemperature, setWeatherTemperature] = useState<string | null>(null);
+    const [weatherIcon, setWeatherIcon] = useState<string | null>(null);
 
     useEffect(() => {
         async function fetchTime(): Promise<object | null> {
             const response = await fetch("/api/time");
             if (!response.ok) return null;
+            return await response.json();
+        }
+
+        async function fetchWeather(): Promise<object | null> {
+            const response = await fetch("/api/weather");
+            if(!response.ok) return null;
             return await response.json();
         }
 
@@ -35,15 +45,26 @@ export default function Dashboard() {
         }
 
         fetchTime().then(data => {
-            const unixSeconds = data.timestamp;
-            const date = new Date(unixSeconds * 1000);
-            const weekday = date.toLocaleDateString('en-US', { weekday: 'long' });
-            const day = date.getDate();
-            const month = date.toLocaleDateString('en-US', { month: 'long' });
-            const year = date.getFullYear();
+            if(data && "timestamp" in data){
+                const unixSeconds = data.timestamp;
+                const date = new Date(unixSeconds * 1000);
+                const weekday = date.toLocaleDateString('en-US', { weekday: 'long' });
+                const day = date.getDate();
+                const month = date.toLocaleDateString('en-US', { month: 'long' });
+                const year = date.getFullYear();
 
-            const formatted = `${weekday} ${day} ${month} ${year}`;
-            setDateTime(formatted);
+                const formatted = `${weekday} ${day} ${month} ${year}`;
+                setDateTime(formatted);
+            }
+        });
+
+        fetchWeather().then(data => {
+            if(!data) return;
+
+            setWeatherTemperature(data.current.temp_c);
+            setWeatherLocation(data.location.name);
+            setWeatherDescription(data.current.condition.text);
+            setWeatherIcon(data.current.condition.icon);
         });
     }, []);
 
@@ -83,10 +104,10 @@ export default function Dashboard() {
                     <div id="slot" data-swapy-slot="d">
                         <div id="item" data-swapy-item="d">
                             <WeatherCard
-                                location="New York"
-                                temperature={18}
-                                description="Cloudy"
-                                condition="rainy"
+                                location={weatherLocation}
+                                temperature={weatherTemperature}
+                                description={weatherDescription}
+                                icon={weatherIcon}
                             />
                         </div>
                     </div>
