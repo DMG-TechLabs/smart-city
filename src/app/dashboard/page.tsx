@@ -124,6 +124,7 @@ export default function Dashboard() {
                   <div id="slot" data-swapy-slot="d">
                       <div id="item" data-swapy-item="d">
                           <WeatherCard
+                              date={dateTime}
                               location={weatherLocation}
                               temperature={weatherTemperature}
                               description={weatherDescription}
