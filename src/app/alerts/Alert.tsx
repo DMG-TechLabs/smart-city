@@ -80,4 +80,33 @@ export class Alert {
         alert.lastTriggered = record.lastTriggered ?? null;
         return alert;
     }
+
+    static async loadAlerts(pb: PocketBase): Promise<Alert[]> {
+        try {
+            const records = await pb.collection("alerts").getFullList({ sort: "-created" });
+            return records.map(record => Alert.fromPBRecord(record));
+        } catch (err) {
+            console.error("Failed to load alerts:", err);
+            return [];
+        }
+    }
+
+
+    ui(): React.ReactNode {
+        return (
+            <div className="alert-ui p-4 border rounded shadow bg-white mb-4">
+            <h2 className="text-lg font-semibold">{this.name}</h2>
+            <p>Status: <span className={this.enabled ? "text-green-600" : "text-red-600"}>
+            {this.enabled ? "Enabled" : "Disabled"}
+            </span></p>
+            <p>
+            Last Triggered:{" "}
+            {this.lastTriggered
+                ? new Date(this.lastTriggered).toLocaleString()
+                : "Never"}
+                </p>
+                </div>
+        );
+    }
+
 }
