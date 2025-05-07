@@ -5,7 +5,6 @@ export class Alert {
     id: string | undefined; // Auto assigned
     name: string;
     condition: AlertCondition;
-    lastTriggered: number | null = null;
     enabled: boolean = true;
 
     constructor(name: string, condition: AlertCondition | object) {
@@ -13,17 +12,6 @@ export class Alert {
         this.condition = condition instanceof AlertCondition
             ? condition
             : AlertCondition.fromJSON(condition);
-    }
-
-    check(data: Record<string, any>): void {
-        if (!this.enabled) return;
-
-        const currentTime = Date.now();
-        const conditionMet = this.condition.evaluate(data);
-
-        if (conditionMet) {
-            this.lastTriggered = currentTime;
-        }
     }
 
     async update(pb: PocketBase): Promise<boolean> {
@@ -78,7 +66,6 @@ export class Alert {
         const alert = new Alert(record.name, condition);
         alert.id = record.id;
         alert.enabled = record.enabled;
-        alert.lastTriggered = record.lastTriggered ?? null;
         return alert;
     }
 
