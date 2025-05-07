@@ -39,7 +39,7 @@ func main() {
 			delete(alertsList, e.Record.Id)
 		}
 		return e.Next()
-	}
+	})
 
 	app.OnRecordAfterUpdateSuccess().BindFunc(func(e *core.RecordEvent) error {
 		switch name := e.Record.Collection().Name; name {
@@ -196,4 +196,3 @@ func main() {
 		log.Fatal(err)
 	}
 }
-
