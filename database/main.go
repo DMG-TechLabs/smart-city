@@ -137,11 +137,11 @@ func main() {
 					log.Println("User email:", authUser.Get("email"))
 				}
 
-				record.Set("name", c.Request.URL.Query().Get("title"))
+				record.Set("name", c.Request.URL.Query().Get("name"))
 				// record.Set("enabled", c.Request.URL.Query().Get("active"))
 				record.Set("enabled", true)
 				record.Set("user_email", authUser.Get("email"))
-				record.Set("condition", c.Request.URL.Query().Get("query"))
+				record.Set("condition", c.Request.URL.Query().Get("condition"))
 				err = app.Save(record)
 				// record.Id
 				if err != nil {
