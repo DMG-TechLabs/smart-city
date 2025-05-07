@@ -21,6 +21,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { DeleteButton } from "./delete-button"
+import { AlertComponent } from "./delete-dialog"
+import { ConfirmationDialog } from "./confirmation-dialog"
 
 const chartData = [
   { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
@@ -65,7 +67,14 @@ export function ChartComponent() {
         <CardTitle>
           <div className="delete-container">
             Municipal technical works
-            <DeleteButton />
+            <ConfirmationDialog
+                title={"Are you sure"} 
+                desc={"You can restore it from the the list with the available widget"} 
+                onContinue={()=>
+                  console.log("continue clicked")
+                }
+                children={undefined}                
+            />
           </div>
         </CardTitle>
         <CardDescription>January - June 2024</CardDescription>

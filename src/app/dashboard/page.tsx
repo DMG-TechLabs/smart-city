@@ -2,25 +2,25 @@
 
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./style.css";
-import { createSwapy, SlotItemMapArray, Swapy, utils } from "swapy";
+import { createSwapy, Swapy } from "swapy";
 import { CardComponent } from "@/components/ui/card";
 import { NavigationMenuComponent } from "@/components/ui/navigation-menu";
 import WeatherCard from "@/components/local/weather-card";
 import { ChartComponent } from "@/components/local/chart";
+import { Sheet } from "lucide-react";
+import { SheetDemo } from "@/components/local/widget-list";
 
 export default function Dashboard() {
-    const { user, logout } = useUser();
-    const router = useRouter();
+  const { user, logout } = useUser();
+  const router = useRouter();
 
+  // if (user == null || user.email === "") {
+  //     router.push("/login");
+  // }
 
-    // if (user == null || user.email === "") {
-    //     router.push("/login");
-    // }
-
-
-    const swapyRef = useRef<Swapy | null>(null);
+  const swapyRef = useRef<Swapy | null>(null);
 
   const [dateTime, setDateTime] = useState<string | null>(null);
   const [weatherLocation, setWeatherLocation] = useState<string | null>(null);
@@ -33,17 +33,11 @@ export default function Dashboard() {
   const [weatherIcon, setWeatherIcon] = useState<string | null>(null);
 
   useEffect(() => {
-        // console.log(user);
-    //   if (user == null || user.email === "") {
-    //     router.push("/login");
-    // }
-
-
-      async function fetchTime(): Promise<object | null> {
-          const response = await fetch("/api/time");
-          if (!response.ok) return null;
-          return await response.json();
-      }
+    async function fetchTime(): Promise<object | null> {
+        const response = await fetch("/api/time");
+        if (!response.ok) return null;
+        return await response.json();
+    }
 
     async function fetchWeather(): Promise<object | null> {
       const response = await fetch("/api/weather");
@@ -89,51 +83,37 @@ export default function Dashboard() {
 
   return (
     <div className="container">
-      <div className="topbar">
-          <div className="top">
-            <div className="title">
-              <h1>Smart City</h1>
-            </div>
-            <div className="right-corner">
-                <h1>Welcome, {user?.name}</h1>
-            </div>
-          </div>
-          <div className="bottom">
-            <div className="navbar-menu">
-                <NavigationMenuComponent />
-            </div>
-          </div>
-      </div>
-          <div className="widget-container">
-              <div className="items">
-                  <div id="slot" data-swapy-slot="a">
-                      <div id="item" data-swapy-item="a">
-                          <ChartComponent />
-                      </div>
+      <div className="widget-container">
+        <SheetDemo />
+          <div className="items">
+              <div id="slot" data-swapy-slot="a">
+                  <div id="item" data-swapy-item="a">
+                      <ChartComponent />
                   </div>
-                  <div id="slot" data-swapy-slot="b">
-                      <div id="item" data-swapy-item="b">
-                          <CardComponent />
-                      </div>
+              </div>
+              <div id="slot" data-swapy-slot="b">
+                  <div id="item" data-swapy-item="b">
+                      <CardComponent />
                   </div>
-                  <div id="slot" data-swapy-slot="c">
-                      <div id="item" data-swapy-item="c">
-                          <CardComponent />
-                      </div>
+              </div>
+              <div id="slot" data-swapy-slot="c">
+                  <div id="item" data-swapy-item="c">
+                      <CardComponent />
                   </div>
-                  <div id="slot" data-swapy-slot="d">
-                      <div id="item" data-swapy-item="d">
-                          <WeatherCard
-                              date={dateTime}
-                              location={weatherLocation}
-                              temperature={weatherTemperature}
-                              description={weatherDescription}
-                              icon={weatherIcon}
-                          />
-                      </div>
+              </div>
+              <div id="slot" data-swapy-slot="d">
+                  <div id="item" data-swapy-item="d">
+                      <WeatherCard
+                          date={dateTime}
+                          location={weatherLocation}
+                          temperature={weatherTemperature}
+                          description={weatherDescription}
+                          icon={weatherIcon}
+                      />
                   </div>
               </div>
           </div>
+      </div>
     </div>
   );
 }
