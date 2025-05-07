@@ -11,9 +11,16 @@ import WeatherCard from "@/components/local/weather-card";
 import { ChartComponent } from "@/components/local/chart";
 
 export default function Dashboard() {
-  const { user, logout } = useUser();
-  const router = useRouter();
-  const swapyRef = useRef<Swapy | null>(null);
+    const { user, logout } = useUser();
+    const router = useRouter();
+
+
+    // if (user == null || user.email === "") {
+    //     router.push("/login");
+    // }
+
+
+    const swapyRef = useRef<Swapy | null>(null);
 
     const [dateTime, setDateTime] = useState<string | null>(null);
     const [weatherLocation, setWeatherLocation] = useState<string | null>(null);
@@ -22,6 +29,12 @@ export default function Dashboard() {
     const [weatherIcon, setWeatherIcon] = useState<string | null>(null);
 
   useEffect(() => {
+        // console.log(user);
+    //   if (user == null || user.email === "") {
+    //     router.push("/login");
+    // }
+
+
       async function fetchTime(): Promise<object | null> {
           const response = await fetch("/api/time");
           if (!response.ok) return null;
@@ -76,7 +89,7 @@ export default function Dashboard() {
               <h1>Smart City</h1>
             </div>
             <div className="right-corner">
-                <h1>Welcome, {user?.username || "Guest"}</h1>
+                <h1>Welcome, {user?.name}</h1>
             </div>
           </div>
           <div className="bottom">
