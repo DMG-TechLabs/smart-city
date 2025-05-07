@@ -26,7 +26,7 @@ export class Alert {
         }
     }
 
-    private async update(pb: PocketBase): Promise<boolean> {
+    async update(pb: PocketBase): Promise<boolean> {
         if(this.id == null) {
             console.error("Alert ID is null");
             return false;

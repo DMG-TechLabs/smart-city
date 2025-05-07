@@ -5,7 +5,6 @@ import { Alert } from "../Alert";
 import { AlertCondition } from "../AlertCondition";
 import { useEffect } from "react";
 
-
 export default function AlertsAdd() {
     const pb = usePocketBase();
     useEffect(() => {

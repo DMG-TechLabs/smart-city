@@ -26,6 +26,15 @@ export default function Alerts() {
         }
     }
 
+    async function editAlert(alert: Alert) {
+        const success = await alert.update(pb);
+        if (success) {
+            setAlerts(prev =>
+                prev.map(a => (a.id === alert.id ? alert : a))
+            );
+        }
+    }
+
     return (
         <div className="flex justify-center w-full">
             <div className="text-center mt-8">
@@ -33,7 +42,7 @@ export default function Alerts() {
                 <ScrollArea className="h-full w-[50vw] max-h-[80vh] rounded-md border p-4">
                     {alerts.map((alert, index) => (
                         <div key={alert.id ?? index}>
-                            <AlertUI alert={alert} onDelete={() => deleteAlert(alert)} />
+                            <AlertUI alert={alert} onDelete={() => deleteAlert(alert)} onEdit={() => editAlert(alert)}/>
                         </div>
                     ))}
                 </ScrollArea>
