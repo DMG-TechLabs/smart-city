@@ -1,8 +1,5 @@
 .DEFAULT_GOAL := help
 
-.PHONY: all
-all: db npm ## Serve all
-
 .PHONY: db
 db: ## Build and serve the backend
 	cd ./database; go run . serve
