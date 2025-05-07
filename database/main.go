@@ -33,6 +33,14 @@ func main() {
 		return e.Next()
 	})
 
+	app.OnRecordAfterDeleteSuccess().BindFunc(func(e *core.RecordEvent) error {
+		switch name := e.Record.Collection().Name; name {
+		case "alerts":
+			delete(alertsList, e.Record.Id)
+		}
+		return e.Next()
+	})
+
 	app.OnRecordAfterUpdateSuccess().BindFunc(func(e *core.RecordEvent) error {
 		switch name := e.Record.Collection().Name; name {
 		case "alerts":
@@ -188,4 +196,3 @@ func main() {
 		log.Fatal(err)
 	}
 }
-
