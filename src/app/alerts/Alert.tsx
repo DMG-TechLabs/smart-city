@@ -73,7 +73,8 @@ export class Alert {
     }
 
     static fromPBRecord(record: any): Alert {
-        const condition = AlertCondition.fromJSON(JSON.parse(record.condition));
+        console.log(record.condition);
+        const condition = AlertCondition.fromJSON(record.condition);
         const alert = new Alert(record.name, condition);
         alert.id = record.id;
         alert.enabled = record.enabled;
@@ -104,6 +105,12 @@ export class Alert {
             {this.lastTriggered
                 ? new Date(this.lastTriggered).toLocaleString()
                 : "Never"}
+                </p>
+                <p>
+                Condition:{" "}
+                <span className="text-gray-700">
+                {this.condition.toString()} {/* Assuming toString method exists in AlertCondition */}
+                </span>
                 </p>
                 </div>
         );
