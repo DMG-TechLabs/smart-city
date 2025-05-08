@@ -5,17 +5,17 @@ export function TopBarComponent() {
         <div className="topbar">
             <div className="top">
                 <div className="title">
-                <h1>Smart City</h1>
+                    <h1>Smart City</h1>
                 </div>
                 <div className="right-corner">
-                <h1>Welcome visitor!!!!!!</h1>
+                    <h1>Welcome visitor!!!!!!</h1>
                 </div>
             </div>
             <div className="bottom">
                 <div className="navbar-menu">
-                <NavigationMenuComponent />
+                    <NavigationMenuComponent />
                 </div>
             </div>
-            </div>
+        </div>
     )
 }
