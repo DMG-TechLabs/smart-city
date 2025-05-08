@@ -15,10 +15,12 @@ export default function ProvidersAdd() {
     try {
       const response = await fetch(endpoint);
       const data = await response.json();
-      setJsonData(JSON.stringify(data, null, 2));
+
+      const normalized = Array.isArray(data) ? data[0] : data;
+      setJsonData(JSON.stringify(normalized, null, 2));
     } catch (err) {
       console.error("Error fetching data:", err);
-      setJsonData("{\"error\": \"Failed to fetch data\"}");
+      setJsonData('{ "error": "Failed to fetch data" }');
     }
   };
 
@@ -31,51 +33,76 @@ export default function ProvidersAdd() {
     );
   };
 
+  const collectAllPaths = (obj: any, basePath: string[] = []): string[] => {
+    if (typeof obj !== "object" || obj === null) {
+      return [`/${basePath.join("/")}`];
+    }
+
+    let paths: string[] = [];
+
+    for (const key of Object.keys(obj)) {
+      const val = obj[key];
+      const newPath = [...basePath, key];
+
+      if (typeof val === "object" && val !== null) {
+        paths = paths.concat(collectAllPaths(val, newPath));
+      } else {
+        paths.push(`/${newPath.join("/")}`);
+      }
+    }
+
+    return paths;
+  };
+
+  const handleSelectAllFields = () => {
+    try {
+      const parsed = JSON.parse(jsonData);
+      const allPaths = collectAllPaths(parsed);
+      setSelectedFields(allPaths);
+    } catch (err) {
+      console.error("Invalid JSON:", err);
+    }
+  };
+
   const handleAdd = async () => {
-      if (!provider.trim() || !endpoint.trim()) {
-          setStatusMessage("Error: Provider and endpoint are required.");
-          return;
+    if (!provider.trim() || !endpoint.trim()) {
+      setStatusMessage("Error: Provider and endpoint are required.");
+      return;
+    }
+
+    if (selectedFields.length === 0) {
+      setStatusMessage("Error: At least one field must be selected.");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/providers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          provider,
+          endpoint,
+          paths: selectedFields,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to register provider");
       }
 
-      if (selectedFields.length === 0) {
-          setStatusMessage("Error: At least one field must be selected.");
-          return;
-      }
-      console.log("Provider:", provider);
-      console.log("Endpoint:", endpoint);
-      console.log("Selected Fields:", selectedFields);
-
-      try {
-          const res = await fetch("/api/providers", {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                  provider,
-                  endpoint,
-                  paths: selectedFields,
-              }),
-          });
-
-          const data = await res.json();
-
-          if (!res.ok) {
-              throw new Error(data.message || "Failed to register provider");
-          }
-
-          console.log("Success:", data);
-          setStatusMessage("Provider registered successfully!");
-
-          // Reset form
-          setProvider("");
-          setEndpoint("");
-          setSelectedFields([]);
-          setJsonData("{}");
-      } catch (err: any) {
-          console.error("Error:", err.message);
-          setStatusMessage(`Error: ${err.message}`);
-      }
+      setStatusMessage("Provider registered successfully!");
+      setProvider("");
+      setEndpoint("");
+      setSelectedFields([]);
+      setJsonData("{}");
+    } catch (err: any) {
+      console.error("Error:", err.message);
+      setStatusMessage(`Error: ${err.message}`);
+    }
   };
 
   return (
@@ -107,6 +134,20 @@ export default function ProvidersAdd() {
             </button>
           </div>
         </div>
+        <div className="flex gap-2">
+          <button
+            onClick={handleSelectAllFields}
+            className="flex-1 bg-yellow-500 text-white px-3 py-2 rounded hover:bg-yellow-600"
+          >
+            Select All Fields
+          </button>
+          <button
+            onClick={() => setSelectedFields([])}
+            className="flex-1 bg-gray-500 text-white px-3 py-2 rounded hover:bg-gray-600"
+          >
+            Deselect All
+          </button>
+        </div>
         <div className="pt-2">
           <button
             onClick={handleAdd}
@@ -116,15 +157,17 @@ export default function ProvidersAdd() {
           </button>
         </div>
         {statusMessage && (
-            <div
+          <div
             className={`p-2 rounded text-sm ${
-                statusMessage.startsWith("Error") ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
+              statusMessage.startsWith("Error")
+                ? "bg-red-100 text-red-700"
+                : "bg-green-100 text-green-700"
             }`}
-            >
+          >
             {statusMessage}
-            </div>
+          </div>
         )}
-        </div>
+      </div>
 
       <ScrollArea className="h-full w-[50vw] max-h-[80vh] rounded-md border p-4">
         <JsonSelector
