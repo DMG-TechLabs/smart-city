@@ -97,6 +97,7 @@ export class Api {
                 await pb.collection("metadata").delete(records[0].id);
             }
 
+            // FIXME: collection deletion is failing (probably superuser privillages needed)
             await pb.collections.delete(this.provider);
 
             return true;
