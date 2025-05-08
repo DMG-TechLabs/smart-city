@@ -112,7 +112,7 @@ func main() {
 		})
 
 		se.Router.POST("/api/createcollection", func(c *core.RequestEvent) error {
-			fmt.Println("user:", c.Auth.Id)
+			// fmt.Println("user:", c.Auth.Id)
 			fmt.Println("Body:", c.Request.Body)
 
 			var err error
@@ -135,6 +135,17 @@ func main() {
 				return err
 			}
 
+			fmt.Println("reqJson:", reqJSON["collection"].(map[string]any)["schema"].([]any))
+
+			paths := reqJSON["paths"].([]any)
+			// for _, path := range paths {
+			// 	fmt.Println("path:", path.(map[string]any)["path"])
+			// }
+			// fmt.Println("path:", paths[0].(map[string]any)["path"])
+
+			// fmt.Println("paths:", paths[0])
+			// fmt.Println("paths type:", )
+
 			newCollection := core.NewBaseCollection(reqJSON["provider"].(string))
 
 			var idx strings.Builder
@@ -152,6 +163,8 @@ func main() {
 			// idx.WriteString(columnsExpr)
 			var name string
 			a := reqJSON["collection"].(map[string]any)["schema"].([]any)
+			// paths := reqJSON["paths"]
+			// fmt.Println("paths:", paths)
 			for k, value := range a {
 				fmt.Println("------------")
 				name = value.(map[string]any)["name"].(string)
@@ -159,6 +172,11 @@ func main() {
 					log.Println("id field detected and overrided by the database")
 					name = reqJSON["provider"].(string) + "_pb_id"
 				}
+				// fmt.Println("path:", paths[k].(map[any]any)[value])
+
+				// TODO - Check if it is the correct path
+				fmt.Println("path: ", paths[k].(map[string]any)["path"])
+				name = strings.Replace(paths[k].(map[string]any)["path"].(string), "/", "_", -1)
 				switch typeOfField := value.(map[string]any)["type"]; typeOfField {
 				case "text":
 					newCollection.Fields.Add(&core.TextField{

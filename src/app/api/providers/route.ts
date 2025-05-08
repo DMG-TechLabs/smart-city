@@ -73,8 +73,9 @@ export async function POST(req: Request) {
         });
 
         if (!res.ok) {
-            const data = await res.json();
-            throw new Error(data.error || "Failed to register");
+            // TODO - fix this
+            // const data = await res.json();
+            // throw new Error(data.error || "Failed to register");
         }
 
         await pb.collection("metadata").create({
