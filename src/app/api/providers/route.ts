@@ -55,7 +55,9 @@ export async function POST(req: Request) {
             }
         }
 
+        // const payload = api.generateRegistrationPayload();
         const payload = api.generateRegistrationPayload();
+
         if (!payload) {
             throw new Error("No payload to send");
         }
@@ -63,8 +65,10 @@ export async function POST(req: Request) {
         console.log("Payload:", JSON.stringify(payload));
 
         const res = await pb.send("/api/createcollection", {
-            method: "GET",
-            body: JSON.stringify({ payload }),
+            method: "POST",
+            query: {
+                payload: payload
+            },
             headers: { "Content-Type": "application/json" },
         });
 

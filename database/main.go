@@ -111,7 +111,7 @@ func main() {
 			})
 		})
 
-		se.Router.GET("/api/createcollection", func(c *core.RequestEvent) error {
+		se.Router.POST("/api/createcollection", func(c *core.RequestEvent) error {
 			fmt.Println("user:", c.Auth.Id)
 			fmt.Println("Body:", c.Request.Body)
 
