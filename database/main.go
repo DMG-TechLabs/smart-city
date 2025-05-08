@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"pocketbase/alerts"
 	"pocketbase/metadata"
@@ -44,7 +45,7 @@ func main() {
 	app.OnRecordAfterUpdateSuccess().BindFunc(func(e *core.RecordEvent) error {
 		switch name := e.Record.Collection().Name; name {
 		case "alerts":
-			if e.Record.Get("enabled").(bool) == false {
+			if !e.Record.Get("enabled").(bool) {
 				delete(alertsList, e.Record.Id)
 			} else {
 				alertString, err := alerts.AlertConditionToString(e.Record.GetString("condition"))
@@ -115,15 +116,15 @@ func main() {
 			fmt.Println("Body:", c.Request.Body)
 
 			var err error
-			reqBody := c.Request.Body
+			reqBody := c.Request.URL.Query().Get("payload")
 			var bodyBytes []byte
-			_, err = reqBody.Read(bodyBytes)
+
 			if err != nil {
 				fmt.Println("Error reading body:", err)
 				return err
 			}
 			var reqJSON map[string]any
-			err = json.Unmarshal(bodyBytes, &reqJSON)
+			err = json.Unmarshal([]byte(reqBody), &reqJSON)
 			if err != nil {
 				fmt.Println("ReqBody:", reqBody)
 				fmt.Println("reqJson:", reqJSON)
@@ -134,7 +135,88 @@ func main() {
 				return err
 			}
 
-			fmt.Println("ReqJson:", reqJSON)
+			newCollection := core.NewBaseCollection(reqJSON["provider"].(string))
+
+			var idx strings.Builder
+
+			idx.WriteString("CREATE ")
+			// if unique {
+			idx.WriteString("UNIQUE ")
+			// }
+			idx.WriteString("INDEX `")
+			idx.WriteString(reqJSON["provider"].(string) + "_unique_index")
+			idx.WriteString("` ")
+			idx.WriteString("ON `")
+			idx.WriteString(newCollection.Name)
+			idx.WriteString("` (")
+			// idx.WriteString(columnsExpr)
+			var name string
+			a := reqJSON["collection"].(map[string]any)["schema"].([]any)
+			for k, value := range a {
+				fmt.Println("------------")
+				name = value.(map[string]any)["name"].(string)
+				if name == "id" {
+					log.Println("id field detected and overrided by the database")
+					name = reqJSON["provider"].(string) + "_pb_id"
+				}
+				switch typeOfField := value.(map[string]any)["type"]; typeOfField {
+				case "text":
+					newCollection.Fields.Add(&core.TextField{
+						Name:     name,
+						Required: value.(map[string]any)["required"].(bool),
+					})
+				case "number":
+					newCollection.Fields.Add(&core.NumberField{
+						Name:     name,
+						Required: value.(map[string]any)["required"].(bool),
+					})
+				case "bool":
+					newCollection.Fields.Add(&core.BoolField{
+						Name:     name,
+						Required: value.(map[string]any)["required"].(bool),
+					})
+				case "json":
+					newCollection.Fields.Add(&core.JSONField{
+						Name:     name,
+						Required: value.(map[string]any)["required"].(bool),
+					})
+				}
+
+				idx.WriteString(name)
+				if k < len(a)-1 {
+					idx.WriteString(",")
+				}
+
+				// if value.(map[string]any)["unique"] == true {
+				// newCollection.AddIndex(value.(map[string]any)["name"].(string), true, "user", "")
+				// }
+
+				// newCollection.a
+				// for key, data := range value.(map[string]any) {
+				// 	fmt.Println("key - value: ", key, " - ", data)
+				// }
+			}
+
+			idx.WriteString(")")
+			newCollection.Indexes = append(newCollection.Indexes, idx.String())
+
+			newCollection.Fields.Add(&core.AutodateField{
+				Name:     "created",
+				OnCreate: true,
+			})
+			newCollection.Fields.Add(&core.AutodateField{
+				Name:     "updated",
+				OnCreate: true,
+				OnUpdate: true,
+			})
+
+			err = app.Save(newCollection)
+			if err != nil {
+				return err
+			}
+
+			// newCollection.AddIndex("id", true, "user", "")
+
 			// core.NewBaseCollection(reqJson[""])
 			return c.JSON(http.StatusOK, map[string]any{
 				"message": "Hello from custom API!",
@@ -158,37 +240,43 @@ func main() {
 				// authUser, _ := c.App.FindAuthRecordByToken(c.Auth.TokenKey())
 				authUser, _ := c.App.FindRecordById("users", c.Auth.Id)
 				log.Println("Auth user:", authUser)
-				if authUser != nil {
+				if authUser == nil {
 					log.Println("Authenticated user ID:", authUser.Id)
 					log.Println("User email:", authUser.Get("email"))
+					return c.JSON(http.StatusUnauthorized, map[string]string{
+						"message": "Hello from custom API!",
+					})
+
 				}
 
+				condition := c.Request.URL.Query().Get("condition")
+
 				record.Set("name", c.Request.URL.Query().Get("name"))
-				// record.Set("enabled", c.Request.URL.Query().Get("active"))
 				record.Set("enabled", true)
 				record.Set("user_email", authUser.Get("email"))
-				record.Set("condition", c.Request.URL.Query().Get("condition"))
+				record.Set("condition", condition)
 				err = app.Save(record)
-				// record.Id
 				if err != nil {
 					return err
 				}
 
-				alertsList[record.Id] = c.Request.URL.Query().Get("query")
-				// field type specific modifiers can also be used
-				// record.Set("slug:autogenerate", "post-")
-				// return err
+				alertString, err := alerts.AlertConditionToString(condition)
+				if err != nil {
+					return c.JSON(http.StatusBadRequest, map[string]string{
+						"message": "Error parsing condition",
+					})
+				}
+
+				alertsList[record.Id] = alertString
+
 				return c.JSON(http.StatusOK, map[string]string{
 					"message": "Hello from custom API!",
 				})
 			})
 
-		// dbAlerts, _ := se.App.FindAllRecords("alerts")
-
-		// for _, dbAlert := range dbAlerts {
-		// alerts[dbAlert.Id] = dbAlert.Get("query").
-		// }
-
+		alertsList = alerts.GetAlerts(app)
+		alerts.PrintAlerts(app)
+		metadata.RestorePollingJobs(app)
 		return se.Next()
 	})
 
