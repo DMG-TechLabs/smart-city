@@ -1,5 +1,3 @@
-import type PocketBase from 'pocketbase';
-
 type Field = {
     path: string,
     type: string
@@ -128,5 +126,15 @@ export class Api {
             collection: collection,
             paths: paths
         }
+    }
+
+    async delete(pb: PocketBase): Promise<boolean> {
+        // TODO: 
+        return true;
+    }
+
+    static async loadApis(pb: PocketBase): Promise<Api[]> {
+        // TODO: 
+        return [];
     }
 }
