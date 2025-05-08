@@ -106,8 +106,8 @@ export default function ProvidersAdd() {
   };
 
   return (
-    <div className="flex gap-4">
-      <div className="w-[25vw] space-y-4">
+    <div className="flex justify-center gap-8">
+      <div className="w-[30vw] space-y-4 p-8 bg-white rounded-lg shadow-lg">
         <div>
           <label className="block text-sm font-medium">Provider</label>
           <input
@@ -169,7 +169,7 @@ export default function ProvidersAdd() {
         )}
       </div>
 
-      <ScrollArea className="h-full w-[50vw] max-h-[80vh] rounded-md border p-4">
+      <ScrollArea className="h-full w-[40vw] max-h-[80vh] rounded-md border p-4">
         <JsonSelector
           json={jsonData}
           selectedPaths={selectedFields}

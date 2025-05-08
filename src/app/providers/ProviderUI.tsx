@@ -10,7 +10,7 @@ export function ProviderUI({ provider, onDelete }: ProviderUIProps) {
   return (
     <div className="provider-ui p-4 border rounded shadow bg-white mb-4 flex items-center justify-between text-left">
       <div>
-        <h2 className="text-lg font-semibold">{provider.name}</h2>
+        <h2 className="text-lg font-semibold">{provider.provider}</h2>
         <p>
           Endpoint: {provider.endpoint}
         </p>

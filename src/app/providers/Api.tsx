@@ -87,6 +87,25 @@ export class Api {
         return fields;
     }
 
+    async delete(pb: PocketBase): Promise<boolean> {
+        try {
+            const records = await pb.collection("metadata").getFullList({
+                filter: `provider="${this.provider}"`,
+            });
+
+            if (records.length > 0) {
+                await pb.collection("metadata").delete(records[0].id);
+            }
+
+            await pb.collections.delete(this.provider);
+
+            return true;
+        } catch (error) {
+            console.error("Failed to delete provider data:", error);
+            return false;
+        }
+    }
+
     generateRegistrationPayload(): object | null {
         if(this.mappings.size == 0) return null;
 
@@ -128,13 +147,13 @@ export class Api {
         }
     }
 
-    async delete(pb: PocketBase): Promise<boolean> {
-        // TODO: 
-        return true;
-    }
-
     static async loadApis(pb: PocketBase): Promise<Api[]> {
-        // TODO: 
-        return [];
+        try {
+            const records = await pb.collection("metadata").getFullList({ sort: "-created" });
+            return records.map((record: any) => new Api(record.provider, record.endpoint));
+        } catch (err) {
+            console.error("Failed to load APIs:", err);
+            return [];
+        }
     }
 }
