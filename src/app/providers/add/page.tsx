@@ -9,6 +9,7 @@ export default function ProvidersAdd() {
   const [endpoint, setEndpoint] = useState("");
   const [jsonData, setJsonData] = useState("{}");
   const [selectedFields, setSelectedFields] = useState<string[]>([]);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   const fetchData = async () => {
     try {
@@ -30,12 +31,51 @@ export default function ProvidersAdd() {
     );
   };
 
-  const handleAdd = () => {
-    console.log("Provider:", provider);
-    console.log("Endpoint:", endpoint);
-    console.log("Selected Fields:", selectedFields);
+  const handleAdd = async () => {
+      if (!provider.trim() || !endpoint.trim()) {
+          setStatusMessage("Error: Provider and endpoint are required.");
+          return;
+      }
 
-    // TODO: Replace with backend call
+      if (selectedFields.length === 0) {
+          setStatusMessage("Error: At least one field must be selected.");
+          return;
+      }
+      console.log("Provider:", provider);
+      console.log("Endpoint:", endpoint);
+      console.log("Selected Fields:", selectedFields);
+
+      try {
+          const res = await fetch("/api/providers", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                  provider,
+                  endpoint,
+                  paths: selectedFields,
+              }),
+          });
+
+          const data = await res.json();
+
+          if (!res.ok) {
+              throw new Error(data.message || "Failed to register provider");
+          }
+
+          console.log("Success:", data);
+          setStatusMessage("Provider registered successfully!");
+
+          // Reset form
+          setProvider("");
+          setEndpoint("");
+          setSelectedFields([]);
+          setJsonData("{}");
+      } catch (err: any) {
+          console.error("Error:", err.message);
+          setStatusMessage(`Error: ${err.message}`);
+      }
   };
 
   return (
@@ -75,7 +115,16 @@ export default function ProvidersAdd() {
             Add
           </button>
         </div>
-      </div>
+        {statusMessage && (
+            <div
+            className={`p-2 rounded text-sm ${
+                statusMessage.startsWith("Error") ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
+            }`}
+            >
+            {statusMessage}
+            </div>
+        )}
+        </div>
 
       <ScrollArea className="h-full w-[50vw] max-h-[80vh] rounded-md border p-4">
         <JsonSelector

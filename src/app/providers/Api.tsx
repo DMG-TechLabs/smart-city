@@ -39,8 +39,10 @@ export class Api {
         return JSON.stringify(this.extractFirst(json), null, 2);
     }
 
-    map(name: string, field: Field): void {
-        this.mappings.set(name, field);
+    map(field: Field): void {
+        const segments = field.path.split('/').filter(Boolean);
+        const lastSegment = segments[segments.length - 1];
+        this.mappings.set(lastSegment, field);
     }
 
     private tableName(): string {
@@ -72,7 +74,7 @@ export class Api {
 
         for (const key in obj) {
             const value = obj[key];
-            const path = (basePath == "") ? `${key}` : `${basePath}/${key}`;
+            const path = `${basePath}/${key}`.replace(/^\/+/, "/");
 
             if (value !== null && typeof value === "object" && !Array.isArray(value) && !(value instanceof Date)) {
                 fields.push(...this.extractFields(value, path));
