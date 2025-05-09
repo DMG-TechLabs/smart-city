@@ -82,7 +82,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="container">
+    <div className="main-content">
       <div className="widget-container">
         <SheetDemo />
           <div className="items">

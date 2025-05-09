@@ -36,16 +36,18 @@ export default function Alerts() {
     }
 
     return (
-        <div className="flex justify-center w-full">
-            <div className="text-center mt-8">
-                <h1 className="text-2xl font-bold mb-4">Alerts</h1>
-                <ScrollArea className="h-full w-[50vw] max-h-[80vh] rounded-md border p-4">
-                    {alerts.map((alert, index) => (
-                        <div key={alert.id ?? index}>
-                            <AlertUI alert={alert} onDelete={() => deleteAlert(alert)} onEdit={() => editAlert(alert)}/>
-                        </div>
-                    ))}
-                </ScrollArea>
+        <div className="main-content">
+            <div className="flex justify-center w-full">
+                <div className="text-center mt-8">
+                    <h1 className="text-2xl font-bold mb-4">Alerts</h1>
+                    <ScrollArea className="h-full w-[50vw] max-h-[80vh] rounded-md border p-4">
+                        {alerts.map((alert, index) => (
+                            <div key={alert.id ?? index}>
+                                <AlertUI alert={alert} onDelete={() => deleteAlert(alert)} onEdit={() => editAlert(alert)}/>
+                            </div>
+                        ))}
+                    </ScrollArea>
+                </div>
             </div>
         </div>
     );

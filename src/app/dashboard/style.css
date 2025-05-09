@@ -13,14 +13,6 @@ body {
     Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-nav {
-  z-index: 1;
-}
-
-.container {
-  width: 100%;
-  overflow-y: auto;
-}
 
 .topbar {
   display: flex;
@@ -58,16 +50,22 @@ nav {
   padding-right: 10%;
 }
 
+.main-content {
+  width: 100%;
+  overflow-y: auto;
+  padding-top: 9.4%;
+  height: 100%;
+}
+
 .widget-container {
   display: flex;
   flex-direction: column;
   width: fit-content;
   position: absolute;
-  top: 45%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 0);
   gap: 10px;
-  
+  padding-top: 20px;
 }
 
 #widget-button {
