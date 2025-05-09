@@ -55,6 +55,7 @@ export default function Dashboard() {
         autoScrollOnDrag: true,
         enabled: true,
       });
+      
     }
 
     fetchTime().then((data) => {
