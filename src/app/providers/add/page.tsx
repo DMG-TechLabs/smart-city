@@ -106,6 +106,7 @@ export default function ProvidersAdd() {
   };
 
   return (
+    <div className="main-content">
     <div className="flex justify-center gap-8">
       <div className="w-[30vw] space-y-4 p-8 bg-white rounded-lg shadow-lg">
         <div>
@@ -176,6 +177,7 @@ export default function ProvidersAdd() {
           onFieldClick={(path) => handleToggleField(path)}
         />
       </ScrollArea>
+    </div>
     </div>
   );
 }
