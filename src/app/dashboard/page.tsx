@@ -16,9 +16,9 @@ export default function Dashboard() {
   const { user, logout } = useUser();
   const router = useRouter();
 
-  if (user == null || user.email === "") {
-      router.push("/login");
-  }
+  // if (user == null || user.email === "") {
+  //     router.push("/login");
+  // }
 
   const swapyRef = useRef<Swapy | null>(null);
 
