@@ -38,7 +38,9 @@ export default function RootLayout({
           <header>
             <TopBarComponent />
           </header>
-          {children}
+          <div id='main-content'>
+            {children}
+          </div>
         </body>
       </html>
     </UserProvider>

@@ -97,10 +97,6 @@ export class Api {
                 await pb.collection("metadata").delete(records[0].id);
             }
 
-            // TODO: Delete cron job
-            // FIXME: collection deletion is failing (probably superuser privillages needed)
-            await pb.collections.delete(this.provider);
-
             return true;
         } catch (error) {
             console.error("Failed to delete provider data:", error);
