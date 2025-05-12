@@ -7,9 +7,9 @@ export function TopBarComponent() {
                 <div className="title">
                     <h1>Smart City</h1>
                 </div>
-                <div className="navbar-menu">
+                {/* <div className="navbar-menu"> */}
                     <NavigationMenuComponent />
-                </div>
+                {/* </div> */}
                 <div className="right-corner">
                     <h1>Welcome visitor!!!!!!</h1>
                 </div>

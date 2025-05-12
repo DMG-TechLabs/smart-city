@@ -6,7 +6,7 @@ import "./dashboard/style.css"
 // import "./dashboard/style.css";
 import { UserProvider } from "@/context/UserContext";
 import { PocketBaseProvider } from "@/context/DatabaseContext";
-import { NavigationMenuComponent } from '@/components/ui/navigation-menu';
+// import { NavigationMenuDemo } from '@/components/ui/navigation-menu';
 import { TopBarComponent } from '@/components/local/topbar';
 
 
@@ -36,11 +36,13 @@ export default function RootLayout({
       <html lang="en">
         <body>
           <header>
-            <TopBarComponent />
           </header>
-          <div id='main-content'>
+          <nav>
+            <TopBarComponent />
+          </nav>
+          {/* <div id='main-content'> */}
             {children}
-          </div>
+          {/* </div> */}
         </body>
       </html>
     </UserProvider>
