@@ -8,7 +8,7 @@ import { Api } from "./Api.tsx";
 import Link from "next/link";
 
 export default function Providers() {
-    const pb = usePocketBase();
+    const pb = usePocketBase() as unknown as excludeHooks<PocketBase>;
     const [providers, setProviders] = useState<Api[]>([]);
 
     useEffect(() => {

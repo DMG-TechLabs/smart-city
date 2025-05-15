@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"  # Next.js
+      - "8090:8090"  # PocketBase
+    volumes:
+      - ./pb_data:/app/pb_data
+    environment:
+      - NODE_ENV=production
+    restart: always
+

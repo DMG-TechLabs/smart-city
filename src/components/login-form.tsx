@@ -12,6 +12,7 @@ import PocketBase from "pocketbase";
 const pb = new PocketBase("http://127.0.0.1:8090");
 
 import { useRouter } from "next/navigation";
+import { User } from "../context/UserContext.tsx";
 
 export function LoginForm({
   className,
@@ -23,7 +24,7 @@ export function LoginForm({
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = async (e: Event) => {
+  const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       const authData = await pb.collection("users").authWithPassword(email, password);
@@ -31,13 +32,12 @@ export function LoginForm({
       setEmail("");
       setPassword("");
       setError(""); // Clear any previous errors
-      
-      setUser(authData.record); // Store user in context
+  
+      setUser(authData.record as unknown as User); // Store user in context
       router.push("/dashboard");
     } catch (err: any) {
       setError(err.message);
     }
-    
   };
 
   return (

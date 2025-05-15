@@ -60,7 +60,7 @@ export default function Dashboard() {
 
     fetchTime().then((data) => {
       if (data && "timestamp" in data) {
-        const unixSeconds = data.timestamp;
+        const unixSeconds = data.timestamp as any;
         const date = new Date(unixSeconds * 1000);
         const weekday = date.toLocaleDateString("en-US", { weekday: "long" });
         const day = date.getDate();
@@ -74,11 +74,12 @@ export default function Dashboard() {
 
     fetchWeather().then((data) => {
       if (!data) return;
+      const d = data as any;
 
-      setWeatherTemperature(data.current.temp_c);
-      setWeatherLocation(data.location.name);
-      setWeatherDescription(data.current.condition.text);
-      setWeatherIcon(data.current.condition.icon);
+      setWeatherTemperature(d.current.temp_c);
+      setWeatherLocation(d.location.name);
+      setWeatherDescription(d.current.condition.text);
+      setWeatherIcon(d.current.condition.icon);
     });
   }, []);
 
@@ -105,11 +106,11 @@ export default function Dashboard() {
               <div id="slot" data-swapy-slot="d">
                   <div id="item" data-swapy-item="d">
                       <WeatherCard
-                          date={dateTime}
-                          location={weatherLocation}
-                          temperature={weatherTemperature}
-                          description={weatherDescription}
-                          icon={weatherIcon}
+                          date={(dateTime) ? dateTime : ""}
+                          location={(weatherLocation) ? weatherLocation : ""}
+                          temperature={parseInt((weatherTemperature) ? weatherTemperature : "0")}
+                          description={(weatherDescription) ? weatherDescription : ""}
+                          icon={(weatherIcon) ? weatherIcon : " "}
                       />
                   </div>
               </div>

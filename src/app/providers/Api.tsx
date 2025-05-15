@@ -1,3 +1,6 @@
+import PocketBase from "pocketbase";
+
+
 type Field = {
     path: string,
     type: string
