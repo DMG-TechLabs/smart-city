@@ -68,7 +68,7 @@ for ep in endpoints:
 
     def create_endpoint(path=path, interval=interval, structure=structure):
         @app.get(path)
-        def dynamic_endpoint():
+        async def dynamic_endpoint() -> List[Dict[str, Any]]:
             now = time.time()
             entry = cache[path]
             if now - entry["last_updated"] > interval:
@@ -79,4 +79,4 @@ for ep in endpoints:
     create_endpoint()
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8765, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8765, reload=True)

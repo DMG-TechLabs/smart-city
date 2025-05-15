@@ -4,6 +4,7 @@ services:
     ports:
       - "3000:3000"  # Next.js
       - "8090:8090"  # PocketBase
+      - "8765:8765"  # Dummy server
     volumes:
       - ./pb_data:/app/pb_data
     environment:
