@@ -1,5 +1,8 @@
 .DEFAULT_GOAL := help
 
+.PHONY: all
+all: ## Run the start.sh script
+	bash ./start.sh
 
 .PHONY: start
 start: ## Start the Docker containers

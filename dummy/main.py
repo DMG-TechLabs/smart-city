@@ -21,6 +21,7 @@ endpoints = [
     {
         "path": "/api/sensors",
         "interval": 60,
+        "count": 5,
         "structure": {
             "id": "int",
             "name": ["Sensor A", "Sensor B", "Sensor C"],
@@ -32,6 +33,7 @@ endpoints = [
     {
         "path": "/api/devices",
         "interval": 30,
+        "count": 3,
         "structure": {
             "device_id": "int",
             "state": ["on", "off", "standby"],
@@ -61,6 +63,7 @@ for ep in endpoints:
     path = ep["path"]
     interval = ep["interval"]
     structure = ep["structure"]
+    count = ep["count"]
     cache[path] = {
         "last_updated": 0,
         "data": []
@@ -72,7 +75,7 @@ for ep in endpoints:
             now = time.time()
             entry = cache[path]
             if now - entry["last_updated"] > interval:
-                entry["data"] = [generate_object(structure) for _ in range(5)]
+                entry["data"] = [generate_object(structure) for _ in range(count)]
                 entry["last_updated"] = now
             return entry["data"]
 
