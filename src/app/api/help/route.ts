@@ -32,7 +32,7 @@ export async function GET(req: Request) {
             },
             {
                 path: "/time",
-                desc: "Returns the current time (Athens/Greece)",
+                desc: "Returns the current time (Europe/Athens)",
                 auth: false
             },
             {

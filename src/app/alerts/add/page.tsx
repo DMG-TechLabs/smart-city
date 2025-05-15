@@ -38,8 +38,8 @@ export default function AlertsAdd() {
   // }, [pb]);
 
     return (
-        <>
+        <div className="main-content">
             <h1>Alerts Add</h1>
-        </>
+        </div>
     );
 }
