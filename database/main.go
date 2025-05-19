@@ -275,7 +275,7 @@ func main() {
 					log.Println("Authenticated user ID:", authUser.Id)
 					log.Println("User email:", authUser.Get("email"))
 					return c.JSON(http.StatusUnauthorized, map[string]string{
-						"message": "Hello from custom API!",
+						"message": "User is not authenticated to perform this action",
 					})
 
 				}

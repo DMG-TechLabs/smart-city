@@ -8,7 +8,8 @@ import { UserProvider } from "@/context/UserContext";
 import { PocketBaseProvider } from "@/context/DatabaseContext";
 // import { NavigationMenuDemo } from '@/components/ui/navigation-menu';
 import { TopBarComponent } from '@/components/local/topbar';
-
+// import { useUser } from "@/context/UserContext";
+// import { useRouter } from "next/navigation";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -30,6 +31,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+    // const { user } = useUser();
+  // const router = useRouter();
+  //
+  // if (user == null || user.email === "") {
+  //     router.push("/login");
+  // }
+
   return (
     <PocketBaseProvider>
     <UserProvider>

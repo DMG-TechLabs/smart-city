@@ -1,9 +1,13 @@
 "use client";
 import { NavigationMenuComponent } from "../ui/navigation-menu";
 import { useUser } from "@/context/UserContext";
-
+// import { useRouter } from "next/navigation";
+import { usePathname } from 'next/navigation'
 export function TopBarComponent() {
     const { user, logout } = useUser();
+    // const router = useRouter();
+    const noHeaderPages = ['/login', '/register'];
+    const pathname = usePathname()
     
     return(
         <div className="top">
@@ -12,10 +16,12 @@ export function TopBarComponent() {
                     <h1>Smart City</h1>
                 </div>
                 {/* <div className="navbar-menu"> */}
-                    <NavigationMenuComponent />
+                {!noHeaderPages.includes(pathname) && <NavigationMenuComponent />}
+                    {/* <NavigationMenuComponent /> */}
                 {/* </div> */}
                 <div className="right-corner">
-                    <h1>Welcome {user?.email}</h1>
+                    {/* <h1>Welcome {user?.email}</h1> */}
+                    <button onClick={logout}>{user?.email}</button>
                 </div>
             </div>
             {/* <div className="bottom">
