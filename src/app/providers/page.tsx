@@ -43,6 +43,7 @@ export default function Providers() {
 
           <div className="mt-4">
             <Link
+              id="btn"
               href="/providers/add"
               className="inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700"
             >

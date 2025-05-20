@@ -1,0 +1,18 @@
+#btn {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+}
+#btn:hover {
+    background-color: var(--chart-2);
+}
+#btn-2 {
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+}
+#btn-2:hover {
+    opacity: 80%;
+}
+#btn-destructive {
+    background-color: var(--destructive);
+    color: var(--destructive-foreground);
+}
