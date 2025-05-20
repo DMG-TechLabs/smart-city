@@ -145,8 +145,8 @@ export default function Home() {
                 )}
                 {item.type === "pie" && (
                     <LocalPieChart 
-                       collection="Weather"
-                       field="_current_uv" 
+                       collection="Devices"
+                       field="_state"
                        limit={10}
                     />
                 )}
