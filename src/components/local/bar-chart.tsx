@@ -55,11 +55,15 @@ export function LocalBarChart({ collection, x, y, limit = 10 }: LocalBarChartPro
       })
   }, [collection, x, y, limit])
 
+  function capitalize(val) {
+      return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+  }
   return (
     <Card className="w-90">
       <CardHeader>
         <CardTitle>{collection} Bar Chart</CardTitle>
         <CardDescription>
+            {capitalize(y.replaceAll("_", " ").trim())} per {capitalize(x.replaceAll("_", " ").trim())}
         </CardDescription>
       </CardHeader>
       <CardContent>

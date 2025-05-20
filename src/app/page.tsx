@@ -130,7 +130,13 @@ export default function Home() {
                        limit={10}
                     />
                 )}
-                {item.type === "pie" && <LocalPieChart />}
+                {item.type === "pie" && (
+                    <LocalPieChart 
+                       collection="Weather"
+                       field="_current_uv" 
+                       limit={10}
+                    />
+                )}
                 {item.type === "weather" && (
                   <WeatherCard
                     date={dateTime ?? ""}
