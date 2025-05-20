@@ -91,4 +91,7 @@ export class AlertCondition {
             )
             .join(` ${this.operator} `);
     }
+
+    static toString(json): string {
+    }
 }

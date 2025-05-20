@@ -2,7 +2,6 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-  padding: 1rem;
   align-items: start;
 }
 
@@ -14,6 +13,30 @@
 
 .item {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+  border-radius: 10px;
+  width: fit-content;
+  height: 100%;
+}
+
+.item:has(.handle) {
+  position: relative;
+}
+
+.handle {
+  cursor: grab;
+  width: 24px;
+  height: 24px;
+  background-color: black;
+  /* background-image: url(./handle.svg); */
+  opacity: 0.5;
+  position: absolute;
+  top: 14px;
+  left: 10px;
 }
 
 .delete {

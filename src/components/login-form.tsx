@@ -34,7 +34,7 @@ export function LoginForm({
       setError(""); // Clear any previous errors
   
       setUser(authData.record as unknown as User); // Store user in context
-      router.push("/dashboard");
+      router.push("/");
     } catch (err: any) {
       setError(err.message);
     }

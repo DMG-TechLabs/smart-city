@@ -1,74 +1,96 @@
 "use client"
 
+import { useEffect, useState } from "react"
+import PocketBase from "pocketbase"
 import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import {
   Card,
-  CardComponent,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-]
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  value: {
+    label: "Value",
     color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig
 
-export function LocalBarChart() {
+type LocalBarChartProps = {
+  collection: string
+  x: string
+  y: string
+  limit?: number // Optional: defaults to 10
+}
+
+export function LocalBarChart({ collection, x, y, limit = 10 }: LocalBarChartProps) {
+  const [data, setData] = useState<any[]>([])
+
+  useEffect(() => {
+    const pb = new PocketBase("http://127.0.0.1:8090")
+
+    pb.collection(collection)
+      .getList(1, limit, { sort: `-${x}` })
+      .then((result) => {
+        const mapped = result.items.map((r) => ({
+          [x]: r[x],
+          [y]: r[y],
+        }))
+        setData(mapped)
+      })
+      .catch((err) => {
+        console.error("Failed to fetch chart data:", err)
+      })
+  }, [collection, x, y, limit])
+
+  function capitalize(val) {
+      return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+  }
   return (
-    <Card>
+    <Card className="w-90">
       <CardHeader>
-        <CardTitle>Bar Chart</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>{collection} Bar Chart</CardTitle>
+        <CardDescription>
+            {capitalize(y.replaceAll("_", " ").trim())} per {capitalize(x.replaceAll("_", " ").trim())}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={chartData}>
+          <BarChart 
+            accessibilityLayer 
+            data={data}
+            margin={{
+              left: -45,
+            }}
+          >
             <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
+            <XAxis dataKey={x} tickLine={false} tickMargin={10} />
+            <YAxis />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey="desktop" fill="var(--primary)" radius={8} />
+            <Bar dataKey={y} fill="var(--color-desktop)" radius={8} />
           </BarChart>
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          Showing {limit} most recent entries
         </div>
       </CardFooter>
     </Card>
   )
 }
-

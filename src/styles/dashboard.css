@@ -13,52 +13,6 @@ body {
     Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-.right-corner {
-  padding-right: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.topbar {
-  display: flex;
-  /* flex-direction: column; */
-  justify-content: space-between;
-  position: fixed;
-  top: 0;
-  height: auto;
-  background: var(--secondary);
-  width: 100%;
-  z-index: 1;
-}
-
-.top{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  flex: 1;
-  /* padding-left: 10%;
-  padding-right: 10%; */
-  border-bottom: 2px solid #cfcfcf;
-}
-
-.title {
-  padding-left: 20px;
-  padding-bottom: 10px;
-  font-size: 40px;
-}
-
-.bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  flex: 1;
-  padding-left: 10%;
-  padding-right: 10%;
-}
-
 .main-content {
   width: 100%;
   overflow-y: auto;
@@ -69,7 +23,7 @@ body {
 .widget-container {
   display: flex;
   flex-direction: column;
-  width: fit-content;
+  width: 50%;
   position: absolute;
   left: 50%;
   transform: translate(-50%, 0);
@@ -79,51 +33,6 @@ body {
 
 #widget-button {
   width: fit-content;
-}
-
-#slot {
-  border-radius: 10px;
-  height: 90%;
-  width: fit-content;
-}
-
-#slot[data-swapy-highlighted] {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  width: max-content;
-}
-
-.item {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px 0;
-  border-radius: 10px;
-  width: fit-content;
-  height: 100%;
-}
-
-.item:has(.handle) {
-  position: relative;
-}
-
-.handle {
-  cursor: grab;
-  width: 24px;
-  height: 24px;
-  background-color: black;
-  /* background-image: url(./handle.svg); */
-  opacity: 0.5;
-  position: absolute;
-  top: 14px;
-  left: 10px;
 }
 
 .delete-container {
@@ -149,7 +58,17 @@ button {
   transform: translate(-50%, -50%);
 }
 
-/*#radix-«R2fel7» {
+.add-buttons {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  gap: 30px;
+}
+
+/*#radix-«R4v17» {
   width: fit-content !important;
   max-width: none !important;
 }*/

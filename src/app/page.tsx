@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import "@/styles/dashboard.css";
 import { utils, SlotItemMapArray, createSwapy, Swapy } from "swapy";
 import WeatherCard from "@/components/local/weather-card";
-import { SheetDemo } from "@/components/local/widget-list";
+import { SheetDemo, WidgetList } from "@/components/local/widget-list";
 import { LocalBarChart } from "@/components/local/bar-chart";
 import { LocalLineChart } from "@/components/local/line-chart";
 import { LocalPieChart } from "@/components/local/pie-chart";
@@ -45,8 +45,8 @@ export default function Home() {
     swapyRef.current = createSwapy(containerRef.current!, {
         manualSwap: true,
         animation: "dynamic",
-        autoScrollOnDrag: true,
         swapMode: "drop",
+        autoScrollOnDrag: true,
         enabled: true,
         dragAxis: "xy",
         dragOnHold: false
@@ -116,14 +116,12 @@ export default function Home() {
   return (
     <div className="main-content">
       <ScrollArea className="widget-container">
-        <SheetDemo />
-
-        <div className="add-buttons">
-          <Button onClick={() => addWidget("line", "Line Chart")}>Add Line Chart</Button>
-          <Button onClick={() => addWidget("bar", "Bar Chart")}>Add Bar Chart</Button>
-          <Button onClick={() => addWidget("pie", "Pie Chart")}>Add Pie Chart</Button>
-          <Button onClick={() => addWidget("weather", "Weather")}>Add Weather</Button>
-        </div>
+        <WidgetList 
+          addLineWidget={() => addWidget("line", "Line Chart")}
+          addBarWidget={() => addWidget("bar", "Bar Chart")}
+          addPieWidget={() => addWidget("pie", "Pie Chart")}
+          addWeatherWidget={() => addWidget("weather", "Weather")}
+        />
 
       <div className="items" ref={containerRef}>
         {slottedItems.map(({ slotId, itemId, item }) => (
@@ -131,10 +129,21 @@ export default function Home() {
             {item && (
               <div className="item" data-swapy-item={itemId} key={itemId}>
                 {item.type === "line" && <LocalLineChart />}
-                {item.type === "bar" && <LocalBarChart />}
-                {item.type === "pie" && <LocalPieChart
-                    chartData={chd}                 
-                  />}
+                {item.type === "bar" && (
+                    <LocalBarChart
+                       collection="Weather"
+                       x="_location_name"
+                       y="_current_uv" 
+                       limit={10}
+                    />
+                )}
+                {item.type === "pie" && (
+                    <LocalPieChart 
+                       collection="Weather"
+                       field="_current_uv" 
+                       limit={10}
+                    />
+                )}
                 {item.type === "weather" && (
                   <WeatherCard
                     date={dateTime ?? ""}

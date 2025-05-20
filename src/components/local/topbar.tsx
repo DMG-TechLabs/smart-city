@@ -6,7 +6,7 @@ import { NavigationMenuComponent } from "../ui/navigation-menu";
 import { useUser } from "@/context/UserContext";
 import { usePathname } from "next/navigation";
 import { Button } from "../ui/button";
-                                                                               
+
 export function TopBarComponent() {     
     const { user, logout } = useUser();
     // const router = useRouter();
@@ -19,8 +19,8 @@ export function TopBarComponent() {
                     <h1>Smart City</h1>                                         
                 </div>                                                         
                 <div className="right-corner">  
-                    {/* <h1>Welcome {user?.email}</h1> */}
-                    {/* <Button onClick={logout}>{user?.email}/</Button>                                                                                */}
+                    <h1>Welcome {user?.email}</h1>
+                    <Button onClick={logout}>Logout</Button>                                                                               
                 </div>                                                          
             </div>                                                              
             <div className="bottom">    

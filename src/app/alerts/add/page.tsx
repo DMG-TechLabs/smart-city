@@ -110,8 +110,8 @@ export default function AlertForm() {
           field: conditions[0].variableName,
           operator: conditions[0].condition,
           value: conditions[0].value,
+        }
         });
-      }
       try {
         conditions.slice(1).forEach((cond) => {
           if (!isNaN(Number(cond))) {

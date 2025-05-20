@@ -28,25 +28,27 @@ export default function Providers() {
     }
 
     return (
-      <div className="flex flex-col items-center w-full">
-        <div className="text-center mt-8">
-          <h1 className="text-2xl font-bold mb-4">Providers</h1>
-          <ScrollArea className="h-full w-[50vw] max-h-[80vh] rounded-md border p-4">
-            {providers.map((provider, index) => (
-              <div key={provider.provider ?? index}>
-                <ProviderUI provider={provider} onDelete={() => deleteProvider(provider)} />
-              </div>
-            ))}
-          </ScrollArea>
-        </div>
+      <div className="main-content">
+        <div className="flex flex-col items-center w-full">
+          <div className="text-center mt-8">
+            <h1 className="text-2xl font-bold mb-4">Providers</h1>
+            <ScrollArea className="h-full w-[50vw] max-h-[80vh] rounded-md border p-4">
+              {providers.map((provider, index) => (
+                <div key={provider.provider ?? index}>
+                  <ProviderUI provider={provider} onDelete={() => deleteProvider(provider)} />
+                </div>
+              ))}
+            </ScrollArea>
+          </div>
 
-        <div className="mt-4">
-          <Link
-            href="/providers/add"
-            className="inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Add
-          </Link>
+          <div className="mt-4">
+            <Link
+              href="/providers/add"
+              className="inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Add
+            </Link>
+          </div>
         </div>
       </div>
     );
