@@ -121,14 +121,14 @@ export function TabsDemo({
         <TabsTrigger value="weather">Weather</TabsTrigger>
       </TabsList>
       <TabsContent value="line">
-        <Card className="h-[300px] !max-h-[300px] overflow-auto">
-          <CardHeader>
+        <Card className="flex flex-col h-[300px] !max-h-[300px]">
+          <CardHeader className="shrink-0">
             <CardTitle>Line Chart</CardTitle>
             <CardDescription>
               
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="flex-1 overflow-auto space-y-2">
             <CollectionSelector value={selectedCollectionTemp} placeholder="Collection" onValueChange={(value) => setSelectedCollectionTemp(value)}/>
             <FieldsSelector collectionName={selectedCollectionTemp} value={selectedFieldTemp} placeholder="Field" onValueChange={(value) => setSelectedFieldTemp(value)}/>
             <FieldsSelector collectionName={selectedCollectionTemp} value={selectedField2Temp} placeholder="Field" onValueChange={(value) => setSelectedField2Temp(value)}/>
@@ -139,14 +139,14 @@ export function TabsDemo({
         </Card>
       </TabsContent>
       <TabsContent value="bar">
-        <Card className="h-[300px] !max-h-[300px] overflow-auto">
-          <CardHeader>
+        <Card className="flex flex-col h-[300px] !max-h-[300px]">
+          <CardHeader className="shrink-0">
             <CardTitle>Bar Chart</CardTitle>
             <CardDescription>
 
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="flex-1 overflow-auto space-y-2">
             <CollectionSelector value={selectedCollectionTemp} placeholder="Collection" onValueChange={(value) => setSelectedCollectionTemp(value)}/>
             <FieldsSelector collectionName={selectedCollectionTemp} value={selectedFieldTemp} placeholder="Field" onValueChange={(value) => setSelectedFieldTemp(value)}/>
             <FieldsSelector collectionName={selectedCollectionTemp} value={selectedField2Temp} placeholder="Field" onValueChange={(value) => setSelectedField2Temp(value)}/>
@@ -157,14 +157,14 @@ export function TabsDemo({
         </Card>
       </TabsContent>
       <TabsContent value="pie">
-        <Card className="h-[300px] !max-h-[300px] overflow-auto">
-          <CardHeader>
+        <Card className="flex flex-col h-[300px] !max-h-[300px]">
+          <CardHeader className="shrink-0">
             <CardTitle>Pie Chart</CardTitle>
             <CardDescription>
               
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="flex-1 overflow-auto space-y-2">
             <CollectionSelector value={selectedCollectionTemp} placeholder="Collection" onValueChange={(value) => setSelectedCollectionTemp(value)}/>
             <FieldsSelector collectionName={selectedCollectionTemp} value={selectedFieldTemp} placeholder="Field" onValueChange={(value) => setSelectedFieldTemp(value)}/>
           </CardContent>
@@ -174,11 +174,11 @@ export function TabsDemo({
         </Card>
       </TabsContent>
       <TabsContent value="weather">
-        <Card className="h-[300px] !max-h-[300px] overflow-auto">
-          <CardHeader>
+        <Card className="flex flex-col h-[300px] !smax-h-[300px]">
+          <CardHeader className="shrink-0">
             <CardTitle>Weather</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="flex-1 overflow-auto space-y-2">
             <Button onClick={addWeatherWidget}>Add Weather</Button>
           </CardContent>
         </Card>
