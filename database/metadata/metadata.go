@@ -125,7 +125,6 @@ func GeneratePollingFunction(app *pocketbase.PocketBase, record *core.Record) fu
 		if err != nil {
 			fmt.Println(err)
 			resJSON.TypeUsed = 2
-			return
 		}
 
 		paths := record.GetString("paths")
