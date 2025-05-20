@@ -106,6 +106,13 @@ export default function Home() {
     setItems([...items, newItem]);
   };
 
+  const chd = [
+  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
+  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
+  { browser: "firefox", visitors: 187, fill: "var(--primary)" },
+  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
+  ]
+
   return (
     <div className="main-content">
       <ScrollArea className="widget-container">
@@ -130,9 +137,28 @@ export default function Home() {
           <div className="slot" key={slotId} data-swapy-slot={slotId}>
             {item && (
               <div className="item" data-swapy-item={itemId} key={itemId}>
-                {item.type === "line" && <LocalLineChart />}
-                {item.type === "bar" && <LocalBarChart />}
-                {item.type === "pie" && <LocalPieChart />}
+                {item.type === "line" && (
+                    <LocalLineChart
+                        collection="Weather"
+                        x = "_current_feelslike_f"
+                        y = "_current_uv"
+                    />
+                 )}
+                {item.type === "bar" && (
+                    <LocalBarChart
+                       collection="Weather"
+                       x="_location_name"
+                       y="_current_uv" 
+                       limit={10}
+                    />
+                )}
+                {item.type === "pie" && (
+                    <LocalPieChart 
+                       collection="Weather"
+                       field="_current_uv" 
+                       limit={10}
+                    />
+                )}
                 {item.type === "weather" && (
                   <WeatherCard
                     date={dateTime ?? ""}
