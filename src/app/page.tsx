@@ -1,55 +1,66 @@
 "use client";
 
-import { useUser } from "@/context/UserContext";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import "@/styles/dashboard.css";
-import { createSwapy, Swapy } from "swapy";
-import { CardComponent } from "@/components/ui/card";
-import { NavigationMenuComponent } from "@/components/ui/navigation-menu";
+import { utils, SlotItemMapArray, createSwapy, Swapy } from "swapy";
 import WeatherCard from "@/components/local/weather-card";
-import { ChartComponent } from "@/components/local/chart";
-import { Sheet } from "lucide-react";
 import { SheetDemo } from "@/components/local/widget-list";
+import { LocalBarChart } from "@/components/local/bar-chart";
+import { LocalLineChart } from "@/components/local/line-chart";
+import { LocalPieChart } from "@/components/local/pie-chart";
+import { Trash } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+type Item = {
+  id: string;
+  title: string;
+  type: "line" | "bar" | "pie" | "weather";
+};
+
+const initialItems: Item[] = [
+  { id: "1", title: "Line Chart", type: "line" },
+  { id: "2", title: "Bar Chart", type: "bar" },
+  { id: "3", title: "Pie Chart", type: "pie" },
+  { id: "4", title: "Weather", type: "weather" }
+];
 
 export default function Home() {
-  const { user }  = useUser();
-  const router = useRouter();
-
-  const initialItems = [
-    { id: "1", title: "Card 1" },
-    { id: "2", title: "Card 2" },
-    { id: "3", title: "Card 3" },
-    { id: "4", title: "Card 4" },
-    { id: "5", title: "Card 5" }
-  ];
-
-  const [items, setItems] = useState(initialItems);
-  const deleteComp = (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  // if (user == null || user.email === "") {
-  //     router.push("/login");
-  // }
-
+  const [items, setItems] = useState<Item[]>(initialItems);
+  const [slotItemMap, setSlotItemMap] = useState<SlotItemMapArray>(utils.initSlotItemMap(items, "id"));
+  const slottedItems = useMemo(() => utils.toSlottedItems(items, "id", slotItemMap), [items, slotItemMap]);
   const swapyRef = useRef<Swapy | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
+  // Weather Widget values
   const [dateTime, setDateTime] = useState<string | null>(null);
   const [weatherLocation, setWeatherLocation] = useState<string | null>(null);
-  const [weatherDescription, setWeatherDescription] = useState<string | null>(
-    null
-  );
-  const [weatherTemperature, setWeatherTemperature] = useState<string | null>(
-    null
-  );
+  const [weatherDescription, setWeatherDescription] = useState<string | null>(null);
+  const [weatherTemperature, setWeatherTemperature] = useState<string | null>(null);
   const [weatherIcon, setWeatherIcon] = useState<string | null>(null);
+
+  useEffect(() => utils.dynamicSwapy(swapyRef.current, items, "id", slotItemMap, setSlotItemMap), [items]);
+  useEffect(() => {
+    swapyRef.current = createSwapy(containerRef.current!, {
+        animation: "spring",
+        swapMode: "drop",
+        autoScrollOnDrag: true,
+        enabled: true,
+    });
+
+    swapyRef.current.onSwap((event) => {
+      setSlotItemMap(event.newSlotItemMap.asArray);
+    });
+
+    return () => {
+      swapyRef.current?.destroy();
+    };
+  }, []);
 
   useEffect(() => {
     async function fetchTime(): Promise<object | null> {
-        const response = await fetch("/api/time");
-        if (!response.ok) return null;
-        return await response.json();
+      const response = await fetch("/api/time");
+      if (!response.ok) return null;
+      return await response.json();
     }
 
     async function fetchWeather(): Promise<object | null> {
@@ -58,27 +69,14 @@ export default function Home() {
       return await response.json();
     }
 
-    if (typeof window !== "undefined") {
-      const containerRef = document.querySelector(
-        ".widget-container"
-      ) as HTMLElement;
-      swapyRef.current = createSwapy(containerRef!, {
-        animation: "spring",
-        swapMode: "drop",
-        autoScrollOnDrag: true,
-        enabled: true,
-      });      
-    }
-
     fetchTime().then((data) => {
       if (data && "timestamp" in data) {
-        const unixSeconds = data.timestamp as any;
+        const unixSeconds = (data as any).timestamp;
         const date = new Date(unixSeconds * 1000);
         const weekday = date.toLocaleDateString("en-US", { weekday: "long" });
         const day = date.getDate();
         const month = date.toLocaleDateString("en-US", { month: "long" });
         const year = date.getFullYear();
-
         const formatted = `${weekday} ${day} ${month} ${year}`;
         setDateTime(formatted);
       }
@@ -87,7 +85,6 @@ export default function Home() {
     fetchWeather().then((data) => {
       if (!data) return;
       const d = data as any;
-
       setWeatherTemperature(d.current.temp_c);
       setWeatherLocation(d.location.name);
       setWeatherDescription(d.current.condition.text);
@@ -95,40 +92,58 @@ export default function Home() {
     });
   }, []);
 
+  const addWidget = (type: Item["type"], title: string) => {
+    const newItem: Item = {
+      id: `${Date.now()}`,
+      title,
+      type
+    };
+    setItems([...items, newItem]);
+  };
+
   return (
     <div className="main-content">
       <div className="widget-container">
         <SheetDemo />
-          <div className="items">
-              <div id="slot" data-swapy-slot="a">
-                  <div id="item" data-swapy-item="a">
-                      <ChartComponent 
-                        swapyRef={swapyRef}
-                      />
-                  </div>
-              </div>
-              <div id="slot" data-swapy-slot="b">
-                  <div id="item" data-swapy-item="b">
-                      <CardComponent />
-                  </div>
-              </div>
-              <div id="slot" data-swapy-slot="c">
-                  <div id="item" data-swapy-item="c">
-                      <CardComponent />
-                  </div>
-              </div>
-              <div id="slot" data-swapy-slot="d">
-                  <div id="item" data-swapy-item="d">
-                      <WeatherCard
-                          date={(dateTime) ? dateTime : ""}
-                          location={(weatherLocation) ? weatherLocation : ""}
-                          temperature={parseInt((weatherTemperature) ? weatherTemperature : "0")}
-                          description={(weatherDescription) ? weatherDescription : ""}
-                          icon={(weatherIcon) ? weatherIcon : " "}
-                      />
-                  </div>
-              </div>
-          </div>
+
+        <div className="add-buttons">
+          <Button onClick={() => addWidget("line", "Line Chart")}>Add Line Chart</Button>
+          <Button onClick={() => addWidget("bar", "Bar Chart")}>Add Bar Chart</Button>
+          <Button onClick={() => addWidget("pie", "Pie Chart")}>Add Pie Chart</Button>
+          <Button onClick={() => addWidget("weather", "Weather")}>Add Weather</Button>
+        </div>
+
+        <div className="items" ref={containerRef}>
+          {slottedItems.map(({ slotId, itemId, item }) => (
+            <div className="slot" key={slotId} data-swapy-slot={slotId}>
+              {item && (
+                <div className="item" data-swapy-item={itemId} key={itemId}>
+                  {item.type === "line" && <LocalLineChart />}
+                  {item.type === "bar" && <LocalBarChart />}
+                  {item.type === "pie" && <LocalPieChart />}
+                  {item.type === "weather" && (
+                    <WeatherCard
+                      date={dateTime ?? ""}
+                      location={weatherLocation ?? ""}
+                      temperature={parseInt(weatherTemperature ?? "0")}
+                      description={weatherDescription ?? ""}
+                      icon={weatherIcon ?? " "}
+                    />
+                  )}
+                  <span
+                    className="delete"
+                    data-swapy-no-drag
+                    onClick={() => {
+                      setItems(items.filter((i) => i.id !== item.id));
+                    }}
+                  >
+                    <Trash />
+                  </span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

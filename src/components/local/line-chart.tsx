@@ -1,11 +1,10 @@
 "use client"
 
 import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 
 import {
   Card,
-  CardComponent,
   CardContent,
   CardDescription,
   CardFooter,
@@ -34,30 +33,43 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function LocalBarChart() {
+export function LocalLineChart() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Bar Chart</CardTitle>
+        <CardTitle>Line Chart</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={chartData}>
+          <LineChart
+            accessibilityLayer
+            data={chartData}
+            margin={{
+              left: 12,
+              right: 12,
+            }}
+          >
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="month"
               tickLine={false}
-              tickMargin={10}
               axisLine={false}
+              tickMargin={8}
               tickFormatter={(value) => value.slice(0, 3)}
             />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey="desktop" fill="var(--color-desktop)" radius={8} />
-          </BarChart>
+            <Line
+              dataKey="desktop"
+              type="natural"
+              stroke="var(--color-desktop)"
+              strokeWidth={2}
+              dot={false}
+            />
+          </LineChart>
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
