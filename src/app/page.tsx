@@ -148,14 +148,14 @@ export default function Home() {
         <TabsTrigger value="weather">Weather</TabsTrigger>
       </TabsList>
       <TabsContent value="line">
-        <Card>
+        <Card className="flex flex-col h-[300px] !max-h-[300px]">
           <CardHeader>
             <CardTitle>Line Chart</CardTitle>
             <CardDescription>
               
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="flex-1 overflow-auto space-y-2">
             <CollectionSelector value={selectedCollection} placeholder="Collection" onValueChange={(value) => setSelectedCollection(value)}/>
             <FieldsSelector collectionName={selectedCollection} value={selectedField} placeholder="Field" onValueChange={(value) => setSelectedField(value)}/>
             <FieldsSelector collectionName={selectedCollection} value={selectedField2} placeholder="Field" onValueChange={(value) => setSelectedField2(value)}/>
@@ -166,14 +166,14 @@ export default function Home() {
         </Card>
       </TabsContent>
       <TabsContent value="bar">
-        <Card>
+        <Card className="flex flex-col h-[300px] !max-h-[300px]">
           <CardHeader>
             <CardTitle>Bar Chart</CardTitle>
             <CardDescription>
 
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="flex-1 overflow-auto space-y-2">
             <CollectionSelector value={selectedCollection} placeholder="Collection" onValueChange={(value) => setSelectedCollection(value)}/>
             <FieldsSelector collectionName={selectedCollection} value={selectedField} placeholder="Field" onValueChange={(value) => setSelectedField(value)}/>
             <FieldsSelector collectionName={selectedCollection} value={selectedField2} placeholder="Field" onValueChange={(value) => setSelectedField2(value)}/>
@@ -184,14 +184,14 @@ export default function Home() {
         </Card>
       </TabsContent>
       <TabsContent value="pie">
-        <Card>
+        <Card className="flex flex-col h-[300px] !max-h-[300px]">
           <CardHeader>
             <CardTitle>Pie Chart</CardTitle>
             <CardDescription>
               
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="flex-1 overflow-auto space-y-2">
             <CollectionSelector value={selectedCollection} placeholder="Collection" onValueChange={(value) => setSelectedCollection(value)}/>
             <FieldsSelector collectionName={selectedCollection} value={selectedField} placeholder="Field" onValueChange={(value) => setSelectedField(value)}/>
           </CardContent>
@@ -201,11 +201,11 @@ export default function Home() {
         </Card>
       </TabsContent>
       <TabsContent value="weather">
-        <Card>
+        <Card className="flex flex-col h-[300px] !max-h-[300px]">
           <CardHeader>
             <CardTitle>Weather</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="flex-1 overflow-auto space-y-2">
             <Button onClick={() => addWidget("weather", "Weather")}>Add Weather</Button>
           </CardContent>
         </Card>
