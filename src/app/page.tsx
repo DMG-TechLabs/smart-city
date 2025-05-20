@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import "@/styles/dashboard.css";
 import { utils, SlotItemMapArray, createSwapy, Swapy } from "swapy";
 import WeatherCard from "@/components/local/weather-card";
@@ -25,6 +25,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CollectionSelector } from "@/components/local/collection-selector";
 import { FieldsSelector } from "@/components/local/fields-selector";
+import { useUser } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 
 type Item = {
   id: string;
@@ -36,10 +38,10 @@ type Item = {
 };
 
 const initialItems: Item[] = [
-  // { id: "1", title: "Line Chart", type: "line" },
-  // { id: "2", title: "Bar Chart", type: "bar" },
-  // { id: "3", title: "Pie Chart", type: "pie" },
-  // { id: "4", title: "Weather", type: "weather" }
+  // { id: "1", title: "Line Chart", type: "line", collection: "Devices", field: "created", field2: "_temperature"},
+  // { id: "2", title: "Bar Chart", type: "bar", collection: "Weather", field: "_location_name", field2: "_current_uv"},
+  // { id: "3", title: "Pie Chart", type: "pie", collection: "Devices", field: "_state", field2: ""},
+  // { id: "4", title: "Weather", type: "weather", collection:"", field:"", field2:"" }
 ];
 
 export default function Home() {
@@ -57,11 +59,17 @@ export default function Home() {
   const [dateTime, setDateTime] = useState<string | null>(null);
   const [weatherLocation, setWeatherLocation] = useState<string | null>(null);
   const [weatherDescription, setWeatherDescription] = useState<string | null>(null);
-  const [weathererature, setWeathererature] = useState<string | null>(null);
+  const [weathererature, setWeatherTemperature] = useState<string | null>(null);
   const [weatherIcon, setWeatherIcon] = useState<string | null>(null);
 
   useEffect(() => utils.dynamicSwapy(swapyRef.current, items, "id", slotItemMap, setSlotItemMap), [items]);
   useEffect(() => {
+    const items = localStorage.getItem('swapy-items');
+    console.log("items", items);
+    if (items) {
+      setItems(JSON.parse(items));
+    }
+
     swapyRef.current = createSwapy(containerRef.current!, {
       manualSwap: true,
       animation: "dynamic",
@@ -81,7 +89,13 @@ export default function Home() {
     };
   }, []);
 
+  function deleteItem(item: SetStateAction<Item[]>) {
+    setItems(item)
+    localStorage.setItem('swapy-items', JSON.stringify(items));
+  }
+
   useEffect(() => {
+    
     async function fetchTime(): Promise<object | null> {
       const response = await fetch("/api/time");
       if (!response.ok) return null;
@@ -110,7 +124,7 @@ export default function Home() {
     fetchWeather().then((data) => {
       if (!data) return;
       const d = data as any;
-      setWeathererature(d.current._c);
+      setWeatherTemperature(d.current.temp_c);
       setWeatherLocation(d.location.name);
       setWeatherDescription(d.current.condition.text);
       setWeatherIcon(d.current.condition.icon);
@@ -127,6 +141,7 @@ export default function Home() {
       field2
     };
     setItems([...items, newItem]);
+    // localStorage.setItem('swapy-items', JSON.stringify(items));
   };
 
   return (
@@ -266,7 +281,7 @@ export default function Home() {
                       className="delete"
                       data-swapy-no-drag
                       onClick={() => {
-                        setItems(items.filter((i) => i.id !== item.id));
+                        deleteItem(items.filter((i) => i.id !== item.id));
                       }}
                     >
                       <Trash2 />

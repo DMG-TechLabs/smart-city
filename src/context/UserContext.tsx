@@ -1,5 +1,6 @@
 "use client"; // Required for using state & context in Next.js App Router
 
+import { useRouter } from "next/navigation";
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 // Define the user type (optional, but recommended for TypeScript)
