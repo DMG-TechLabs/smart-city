@@ -20,7 +20,7 @@ export function TopBarComponent() {
                 </div>                                                         
                 <div className="right-corner">  
                     <h1>Welcome {user?.email}</h1>
-                    <Button onClick={logout}>{user?.email}/</Button>                                                                               
+                    <Button onClick={logout}>Logout</Button>                                                                               
                 </div>                                                          
             </div>                                                              
             <div className="bottom">    
