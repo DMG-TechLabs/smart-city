@@ -15,6 +15,7 @@ const UserContext = createContext<{
     user: User;
     setUser: (user: User) => void;
     logout: () => void;
+    isLoggedIn: () => boolean;
 } | null>(null);
 
 // Context Provider Component
@@ -41,8 +42,15 @@ export function UserProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem("user");
     };
 
+    const isLoggedIn = () => {
+        if (user === null || typeof user === "undefined" || user.email === "") {
+            return false;
+        }
+        return user !== null;
+    };
+
     return (
-        <UserContext.Provider value={{ user, setUser, logout }}>
+        <UserContext.Provider value={{ user, setUser, logout, isLoggedIn }}>
         {children}
         </UserContext.Provider>
     );

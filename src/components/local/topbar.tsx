@@ -11,7 +11,7 @@ export function TopBarComponent() {
     const { user, logout } = useUser();
     // const router = useRouter();
     const noHeaderPages = ['/login', '/register'];
-    const pathname = usePathname()                                        
+    const pathname = usePathname()          
     return(                                                                     
         <div className="topbar">                                                
             <div className="top">                                               

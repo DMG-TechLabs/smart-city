@@ -18,11 +18,13 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { setUser } = useUser();
+  const { setUser, isLoggedIn } = useUser();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  if (isLoggedIn()) router.push("/");
 
   const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
