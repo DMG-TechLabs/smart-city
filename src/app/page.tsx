@@ -38,10 +38,10 @@ type Item = {
 };
 
 const initialItems: Item[] = [
-  // { id: "1", title: "Line Chart", type: "line" },
-  // { id: "2", title: "Bar Chart", type: "bar" },
-  // { id: "3", title: "Pie Chart", type: "pie" },
-  // { id: "4", title: "Weather", type: "weather" }
+  // { id: "1", title: "Line Chart", type: "line", collection: "Devices", field: "created", field2: "_temperature"},
+  // { id: "2", title: "Bar Chart", type: "bar", collection: "Weather", field: "_location_name", field2: "_current_uv"},
+  // { id: "3", title: "Pie Chart", type: "pie", collection: "Devices", field: "_state", field2: ""},
+  // { id: "4", title: "Weather", type: "weather", collection:"", field:"", field2:"" }
 ];
 
 export default function Home() {
@@ -59,7 +59,7 @@ export default function Home() {
   const [dateTime, setDateTime] = useState<string | null>(null);
   const [weatherLocation, setWeatherLocation] = useState<string | null>(null);
   const [weatherDescription, setWeatherDescription] = useState<string | null>(null);
-  const [weathererature, setWeathererature] = useState<string | null>(null);
+  const [weathererature, setWeatherTemperature] = useState<string | null>(null);
   const [weatherIcon, setWeatherIcon] = useState<string | null>(null);
 
   useEffect(() => utils.dynamicSwapy(swapyRef.current, items, "id", slotItemMap, setSlotItemMap), [items]);
@@ -124,7 +124,7 @@ export default function Home() {
     fetchWeather().then((data) => {
       if (!data) return;
       const d = data as any;
-      setWeathererature(d.current._c);
+      setWeatherTemperature(d.current.temp_c);
       setWeatherLocation(d.location.name);
       setWeatherDescription(d.current.condition.text);
       setWeatherIcon(d.current.condition.icon);
