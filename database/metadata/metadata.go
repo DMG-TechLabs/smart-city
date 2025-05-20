@@ -66,15 +66,23 @@ func setRecordValue(record *core.Record, collection *core.Collection, pathsJSON 
 		}
 		fmt.Println("value: ", value)
 
-		dataType := collection.Fields.GetByName(strings.Replace(pathData["path"].(string), "/", "_", -1)).Type()
-		fmt.Println("dataType: ", dataType)
-		switch dataType {
-		case "text":
-			value = value.(string)
-		case "number":
-			value = float64(value.(float64))
-		case "bool":
-			value = value.(bool)
+		if value != nil {
+			dataType := collection.Fields.GetByName(strings.Replace(pathData["path"].(string), "/", "_", -1)).Type()
+			fmt.Println("dataType: ", dataType)
+			fmt.Println("value type: ", fmt.Sprintf("%T", value))
+			switch dataType {
+			case "text":
+				if fmt.Sprintf("%T", value) == "string" {
+					value = value.(string)
+				} else {
+					value = fmt.Sprintf("%#v", value)
+				}
+				// value = value.(string)
+			case "number":
+				value = float64(value.(float64))
+			case "bool":
+				value = value.(bool)
+			}
 		}
 		record.Set(strings.Replace(pathData["path"].(string), "/", "_", -1), value)
 
