@@ -57,7 +57,6 @@ export default function AlertHistory() {
   const pb = usePocketBase();
   const [alerts, setAlerts] = useState<AlertHistoryRecord[]>([]);
   const [loading, setLoading] = useState(true);
-  const pb = usePocketBase();
 
   useEffect(() => {
     pb.collection("alertsHistory")

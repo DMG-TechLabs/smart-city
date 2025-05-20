@@ -168,7 +168,8 @@
 }
 
   nav {
-    background: var(--muted);
+    /* background-color: var(--background); */
+    background-color: var(--muted);
     height: 15%;
     z-index: 0;
   }

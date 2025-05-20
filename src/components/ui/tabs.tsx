@@ -12,6 +12,7 @@ import { CheckboxDemo } from "./checkbox"
 import { title } from "process"
 import { CollectionSelector } from "../local/collection-selector"
 import { FieldsSelector } from "../local/fields-selector"
+import { useState } from "react"
 
 function Tabs({
   className,
@@ -72,6 +73,9 @@ function TabsContent({
 }
 
 type WidgetListProps = {
+  selectedCollection: string;
+  selectedField: string;
+  selectedField2: string;
   addLineWidget?: () => void;
   addBarWidget?: () => void;
   addPieWidget?: () => void;
@@ -81,11 +85,33 @@ type WidgetListProps = {
 export { Tabs, TabsList, TabsTrigger, TabsContent }
 
 export function TabsDemo({
+  selectedCollection,
+  selectedField,
+  selectedField2,
   addLineWidget,
   addBarWidget,
   addPieWidget,
   addWeatherWidget
 }: WidgetListProps) {
+    const [selectedCollectionTemp, setSelectedCollectionTemp] = useState("");
+    const [selectedFieldTemp, setSelectedFieldTemp] = useState("");
+    const [selectedField2Temp, setSelectedField2Temp] = useState("");
+
+    function updateSelectedCollection(collection: string) {
+        setSelectedCollectionTemp(collection);
+        selectedCollection = collection;
+    }
+
+    function updateSelectedField(field: string) {
+        setSelectedFieldTemp(field);
+        selectedField = field;
+    }
+
+    function updateSelectedField2(field: string) {
+        setSelectedField2Temp(field);
+        selectedField2 = field;
+    }
+  
   return (
     <Tabs defaultValue="line" className="w-[400px]">
       <TabsList className="grid w-full grid-cols-4">
@@ -103,9 +129,9 @@ export function TabsDemo({
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-            <CollectionSelector />
-            <CheckboxDemo title="text1" />
-            <CheckboxDemo title="text1" />
+            <CollectionSelector value={selectedCollectionTemp} placeholder="Collection" onValueChange={(value) => setSelectedCollectionTemp(value)}/>
+            <FieldsSelector collectionName={selectedCollectionTemp} value={selectedFieldTemp} placeholder="Field" onValueChange={(value) => setSelectedFieldTemp(value)}/>
+            <FieldsSelector collectionName={selectedCollectionTemp} value={selectedField2Temp} placeholder="Field" onValueChange={(value) => setSelectedField2Temp(value)}/>
           </CardContent>
           <CardFooter>
             <Button onClick={addLineWidget}>Add Line Chart</Button>
@@ -121,10 +147,9 @@ export function TabsDemo({
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-            <CollectionSelector />
-            <FieldsSelector />
-            <FieldsSelector />
-            <CheckboxDemo title="text1" />
+            <CollectionSelector value={selectedCollectionTemp} placeholder="Collection" onValueChange={(value) => setSelectedCollectionTemp(value)}/>
+            <FieldsSelector collectionName={selectedCollectionTemp} value={selectedFieldTemp} placeholder="Field" onValueChange={(value) => setSelectedFieldTemp(value)}/>
+            <FieldsSelector collectionName={selectedCollectionTemp} value={selectedField2Temp} placeholder="Field" onValueChange={(value) => setSelectedField2Temp(value)}/>
           </CardContent>
           <CardFooter>
             <Button onClick={addBarWidget}>Add Bar Chart</Button>
@@ -140,9 +165,8 @@ export function TabsDemo({
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-            <CollectionSelector />
-            <FieldsSelector />
-            <CheckboxDemo title="text1" />
+            <CollectionSelector value={selectedCollectionTemp} placeholder="Collection" onValueChange={(value) => setSelectedCollectionTemp(value)}/>
+            <FieldsSelector collectionName={selectedCollectionTemp} value={selectedFieldTemp} placeholder="Field" onValueChange={(value) => setSelectedFieldTemp(value)}/>
           </CardContent>
           <CardFooter>
             <Button onClick={addPieWidget}>Add Pie Chart</Button>
