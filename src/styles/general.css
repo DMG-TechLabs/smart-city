@@ -16,3 +16,7 @@
     background-color: var(--destructive);
     color: var(--destructive-foreground);
 }
+#btn-dark {
+    background-color: var(--accent-foreground);
+    color: var(--primary-foreground);
+}

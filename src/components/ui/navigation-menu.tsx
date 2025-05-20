@@ -214,21 +214,21 @@ export function NavigationMenuComponent() {
       <NavigationMenuList>
         <NavigationMenuItem>
         <Link href="/" legacyBehavior passHref>
-            <NavigationMenuLink id="btn-2" className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink id="btn-dark" className={navigationMenuTriggerStyle()}>
               Dashboard
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <Link href="/alerts" legacyBehavior passHref>
-            <NavigationMenuLink id="btn-2" className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink id="btn-dark" className={navigationMenuTriggerStyle()}>
               Alerts
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <Link href="/providers" legacyBehavior passHref>
-            <NavigationMenuLink id="btn-2" className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink id="btn-dark" className={navigationMenuTriggerStyle()}>
               Providers
             </NavigationMenuLink>
           </Link>
