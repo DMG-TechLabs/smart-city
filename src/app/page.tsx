@@ -121,7 +121,13 @@ export default function Home() {
           <div className="slot" key={slotId} data-swapy-slot={slotId}>
             {item && (
               <div className="item" data-swapy-item={itemId} key={itemId}>
-                {item.type === "line" && <LocalLineChart />}
+                {item.type === "line" && (
+                    <LocalLineChart
+                        collection="Weather"
+                        x = "_current_feelslike_f"
+                        y = "_current_uv"
+                    />
+                 )}
                 {item.type === "bar" && (
                     <LocalBarChart
                        collection="Weather"

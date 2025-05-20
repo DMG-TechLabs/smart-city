@@ -26,9 +26,8 @@ type Props = {
   limit?: number
 }
 
-const pb = new PocketBase("http://127.0.0.1:8090") // change to your PocketBase URL
-
 export function LocalPieChart({ collection, field, limit = 5 }: Props) {
+  const pb = new PocketBase("http://127.0.0.1:8090");
   const [data, setData] = useState<any[]>([])
   const [config, setConfig] = useState<ChartConfig>({})
 
@@ -57,15 +56,13 @@ export function LocalPieChart({ collection, field, limit = 5 }: Props) {
           "--chart-2",
           "--chart-3",
           "--chart-4",
-          "--chart-5",
-          "--chart-6",
-          "--chart-7",
+          "--chart-5"
         ]
 
         const chartData = sorted.map(([key, count], i) => ({
           name: key,
           value: count,
-          fill: `hsl(var(${colors[i % colors.length]}))`,
+          fill: `var(${colors[i % colors.length]})`,
         }))
 
         const chartConfig: ChartConfig = {
