@@ -26,6 +26,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CollectionSelector } from "@/components/local/collection-selector";
 import { FieldsSelector } from "@/components/local/fields-selector";
+import { useUser } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 
 type Item = {
   id: string;
@@ -60,6 +62,12 @@ export default function Home() {
   const [weatherDescription, setWeatherDescription] = useState<string | null>(null);
   const [weathererature, setWeathererature] = useState<string | null>(null);
   const [weatherIcon, setWeatherIcon] = useState<string | null>(null);
+  const { user } = useUser();
+  const router = useRouter();
+
+  if (user == null || user.email === "") {
+    router.push("/login");
+  }
 
   useEffect(() => utils.dynamicSwapy(swapyRef.current, items, "id", slotItemMap, setSlotItemMap), [items]);
   useEffect(() => {
