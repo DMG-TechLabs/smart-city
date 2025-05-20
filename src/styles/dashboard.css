@@ -13,13 +13,6 @@ body {
     Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-.main-content {
-  width: 100%;
-  overflow-y: auto;
-  padding-top: 9.4%;
-  height: 100%;
-}
-
 .widget-container {
   display: flex;
   flex-direction: column;
@@ -58,6 +51,28 @@ button {
   transform: translate(-50%, -50%);
 }
 
+.arrow-image {
+  width: 30%;
+}
+
+.empty-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 10%;
+  z-index: -1;
+}
+
+.text-message {
+  color: #4e4e4e;
+  font-size: 40px;
+  font-weight: bold;
+  text-align: center;
+  width: fit-content;
+}
+
 .add-buttons {
   display: flex;
   flex-direction: column;
@@ -67,8 +82,3 @@ button {
   transform: translate(-50%, -50%);
   gap: 30px;
 }
-
-/*#radix-«R4v17» {
-  width: fit-content !important;
-  max-width: none !important;
-}*/
