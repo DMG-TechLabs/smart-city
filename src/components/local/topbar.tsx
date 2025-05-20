@@ -1,35 +1,34 @@
 "use client";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleUser } from '@fortawesome/free-solid-svg-icons'
-import { NavigationMenuComponent } from "../ui/navigation-menu";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";               
+import { faCircleUser } from '@fortawesome/free-solid-svg-icons'                
+import { NavigationMenuComponent } from "../ui/navigation-menu";                
 import { useUser } from "@/context/UserContext";
-// import { useRouter } from "next/navigation";
-import { usePathname } from 'next/navigation'
-export function TopBarComponent() {
+import { usePathname } from "next/navigation";
+import { Button } from "../ui/button";
+                                                                               
+export function TopBarComponent() {     
     const { user, logout } = useUser();
     // const router = useRouter();
     const noHeaderPages = ['/login', '/register'];
-    const pathname = usePathname()
-    
-    return(
-        <div className="top">
-                <div className="topbar">
-                <div className="title">
-                    <h1>Smart City</h1>
-                </div>
+    const pathname = usePathname()                                        
+    return(                                                                     
+        <div className="topbar">                                                
+            <div className="top">                                               
+                <div className="title">                                         
+                    <h1>Smart City</h1>                                         
+                </div>                                                         
+                <div className="right-corner">  
+                    <h1>Welcome {user?.email}</h1>
+                    <Button onClick={logout}>{user?.email}/</Button>                                                                               
+                </div>                                                          
+            </div>                                                              
+            <div className="bottom">    
                 {/* <div className="navbar-menu"> */}
                 {!noHeaderPages.includes(pathname) && <NavigationMenuComponent />}
                     {/* <NavigationMenuComponent /> */}
-                {/* </div> */}
-                <div className="right-corner">
-                    {/* <h1>Welcome {user?.email}</h1> */}
-                    <button onClick={logout}>{user?.email}</button>
-                </div>
-            </div>
-            {/* <div className="bottom">
-                
-            </div> */}
-        </div>
-    )
-}
+                {/* </div> */}                                                                                                 
+            </div>                                                              
+        </div>                                                                  
+    )                                                                           
+}            
