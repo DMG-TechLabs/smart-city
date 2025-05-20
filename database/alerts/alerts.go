@@ -58,11 +58,18 @@ func RunAlerts(app *pocketbase.PocketBase, e *core.RecordEvent, alerts map[strin
 
 			}
 
-			alert, _ := app.FindRecordById("alerts", id)
+			alert, err := app.FindRecordById("alerts", id)
+			if err != nil {
+				log.Println("Error finding alert record")
+				log.Println("id:", id)
+				return err
+			}
+			log.Println("alert", alert)
 
 			record := core.NewRecord(alertsHistorycollection)
-			record.Set("alert", alert)
-			record.Set("record", result)
+			record.Set("alert", alert.Id)
+			record.Set("recordId", e.Record.Id)
+			record.Set("collection", e.Record.Collection().Name)
 			err = app.Save(record)
 			// record.Id
 			if err != nil {
