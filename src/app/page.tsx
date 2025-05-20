@@ -132,9 +132,9 @@ export default function Home() {
               <div className="item" data-swapy-item={itemId} key={itemId}>
                 {item.type === "line" && (
                     <LocalLineChart
-                        collection="Weather"
-                        x = "_current_feelslike_f"
-                        y = "_current_uv"
+                        collection="Devices"
+                        x = "created"
+                        y = "_temperature"
                     />
                  )}
                 {item.type === "bar" && (
