@@ -6,7 +6,7 @@ import { NavigationMenuComponent } from "../ui/navigation-menu";
 import { useUser } from "@/context/UserContext";
 import { usePathname } from "next/navigation";
 import { Button } from "../ui/button";
-                                                                               
+
 export function TopBarComponent() {     
     const { user, logout } = useUser();
     // const router = useRouter();
