@@ -1,9 +1,7 @@
-<<<<<<< HEAD
+"use client";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons'
-=======
-"use client";
->>>>>>> 3aceb15c0191348127ac3f4a2317586ec381f94c
 import { NavigationMenuComponent } from "../ui/navigation-menu";
 import { useUser } from "@/context/UserContext";
 // import { useRouter } from "next/navigation";
@@ -25,19 +23,8 @@ export function TopBarComponent() {
                     {/* <NavigationMenuComponent /> */}
                 {/* </div> */}
                 <div className="right-corner">
-<<<<<<< HEAD
-                    <span>
-                        <h1><FontAwesomeIcon icon={faCircleUser} />Welcome visitor!!!!!!</h1>
-                    </span>
-                </div>
-            </div>
-            <div className="bottom">
-                <div className="navbar-menu">
-                    <NavigationMenuComponent />
-=======
                     {/* <h1>Welcome {user?.email}</h1> */}
                     <button onClick={logout}>{user?.email}</button>
->>>>>>> 3aceb15c0191348127ac3f4a2317586ec381f94c
                 </div>
             </div>
             {/* <div className="bottom">
