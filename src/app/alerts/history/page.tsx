@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import PocketBase from "pocketbase";
+import { usePocketBase } from "@/context/DatabaseContext";
 
 type Alert = {
   id: string;
@@ -57,7 +58,7 @@ export default function AlertHistory() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const pb = new PocketBase("http://127.0.0.1:8090"); // Change if needed
+    const pb = usePocketBase();
     pb.collection("alertsHistory")
       .getFullList<AlertHistoryRecord>({
         sort: "-created",

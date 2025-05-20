@@ -19,6 +19,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { usePocketBase } from "@/context/DatabaseContext"
 
 const chartConfig = {
   value: {
@@ -36,9 +37,9 @@ type LocalBarChartProps = {
 
 export function LocalBarChart({ collection, x, y, limit = 10 }: LocalBarChartProps) {
   const [data, setData] = useState<any[]>([])
+  const pb = usePocketBase();
 
   useEffect(() => {
-    const pb = new PocketBase("http://127.0.0.1:8090")
 
     pb.collection(collection)
       .getList(1, limit, { sort: `-${x}` })
