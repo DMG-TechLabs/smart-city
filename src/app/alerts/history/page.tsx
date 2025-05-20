@@ -54,11 +54,11 @@ function formatCondition(cond: any): string {
 }
 
 export default function AlertHistory() {
+  const pb = usePocketBase();
   const [alerts, setAlerts] = useState<AlertHistoryRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const pb = usePocketBase();
     pb.collection("alertsHistory")
       .getFullList<AlertHistoryRecord>({
         sort: "-created",

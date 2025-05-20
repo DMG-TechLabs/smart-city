@@ -31,7 +31,7 @@ export function TopBarComponent() {
                 </div>                                                         
                 <div className="right-corner">  
                     <h1>Welcome {email}</h1>
-                    <Button onClick={logout}>Logout</Button>                                                                               
+                    <Button id="btn-destructive" onClick={logout}>Logout</Button>                                                                               
                 </div>                                                          
             </div>                                                              
             <div className="bottom">    

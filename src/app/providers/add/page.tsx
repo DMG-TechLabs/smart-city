@@ -3,6 +3,8 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { JsonSelector } from "@/components/local/json-selector";
 import { useState } from "react";
+import { Button } from "../../../components/ui/button.tsx";
+import { SendIcon } from "lucide-react";
 
 export default function ProvidersAdd() {
   const [provider, setProvider] = useState("");
@@ -127,35 +129,39 @@ export default function ProvidersAdd() {
               onChange={(e) => setEndpoint(e.target.value)}
               className="mt-1 flex-1 rounded border border-gray-300 px-2 py-1"
             />
-            <button
+            <Button
+              id="btn"
               onClick={fetchData}
               className="mt-1 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
             >
-              Fetch
-            </button>
+                <SendIcon />
+            </Button>
           </div>
         </div>
         <div className="flex gap-2">
-          <button
+          <Button
+            id="btn-2"
             onClick={handleSelectAllFields}
             className="flex-1 bg-yellow-500 text-white px-3 py-2 rounded hover:bg-yellow-600"
           >
             Select All Fields
-          </button>
-          <button
+          </Button>
+          <Button
+            id="btn-destructive"
             onClick={() => setSelectedFields([])}
             className="flex-1 bg-gray-500 text-white px-3 py-2 rounded hover:bg-gray-600"
           >
             Deselect All
-          </button>
+          </Button>
         </div>
         <div className="pt-2">
-          <button
+          <Button
+            id="btn"
             onClick={handleAdd}
             className="w-full bg-green-600 text-white px-3 py-2 rounded hover:bg-green-700"
           >
             Add
-          </button>
+          </Button>
         </div>
         {statusMessage && (
           <div
