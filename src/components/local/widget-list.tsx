@@ -12,6 +12,7 @@ import {
 import { CardComponent } from "../ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import "@/styles/dashboard.css"
+import { TabsDemo } from "../ui/tabs"
 
 type WidgetListProps = {
   addLineWidget?: () => void;
@@ -31,7 +32,7 @@ export function WidgetList({
       <SheetTrigger asChild>
         <Button id="widget-button">Available Widgets</Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-[50%] max-w-none">
+      <SheetContent side="right" className="w-[450px] !max-w-[500px]">
         <SheetHeader>
           <SheetTitle>Available widgets</SheetTitle>
           <SheetDescription>
@@ -40,10 +41,16 @@ export function WidgetList({
         </SheetHeader>
             {/* <div className="available-widgets"> */}
           <div className="add-buttons">
-            <Button onClick={addLineWidget}>Add Line Chart</Button>
+            <TabsDemo 
+              addLineWidget={addLineWidget}
+              addBarWidget={addBarWidget}
+              addPieWidget={addPieWidget}
+              addWeatherWidget={addWeatherWidget}
+            />
+            {/*
             <Button onClick={addBarWidget}>Add Bar Chart</Button>
             <Button onClick={addPieWidget}>Add Pie Chart</Button>
-            <Button onClick={addWeatherWidget}>Add Weather</Button>
+            <Button onClick={addWeatherWidget}>Add Weather</Button>*/}
         </div>
         {/*<SheetFooter>
           <SheetClose asChild>
