@@ -18,6 +18,7 @@ export function CollectionSelector({
     const [refresh] = useState(false)
     const pb = usePocketBase();
 
+    pb.autoCancellation(false);
     useEffect(() => {
         async function fetchMetadata() {
             try {
@@ -29,6 +30,9 @@ export function CollectionSelector({
                     temp.push(data.provider);
                 }
                 setCollectionOptions(temp);
+                console.log("collectionOptions", CollectionOptions);
+                console.log("temp", temp);
+
             } catch (err) {
                 console.error('Failed to fetch collections:', err);
             }

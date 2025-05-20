@@ -30,7 +30,7 @@ export function FieldsSelector({
                 for (const data of metadata) {
                     if (data.provider == collectionName) {
                         for (const field of data.paths) {
-                            temp.push((field.path).replace("/", "_")) 
+                            temp.push((field.path).replaceAll("/", "_")) 
                         }
                     }
                 }
