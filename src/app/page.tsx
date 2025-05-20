@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import "@/styles/dashboard.css";
 import { utils, SlotItemMapArray, createSwapy, Swapy } from "swapy";
 import WeatherCard from "@/components/local/weather-card";
-import { SheetDemo, WidgetList } from "@/components/local/widget-list";
+import { WidgetList } from "@/components/local/widget-list";
 import { LocalBarChart } from "@/components/local/bar-chart";
 import { LocalLineChart } from "@/components/local/line-chart";
 import { LocalPieChart } from "@/components/local/pie-chart";
@@ -27,6 +27,10 @@ const initialItems: Item[] = [
 ];
 
 export default function Home() {
+  const [selectedCollection, setSelectedCollection] = useState("");
+  const [selectedField, setSelectedField] = useState("");
+  const [selectedField2, setSelectedField2] = useState("");
+
   const [items, setItems] = useState<Item[]>(initialItems);
   const [slotItemMap, setSlotItemMap] = useState<SlotItemMapArray>(utils.initSlotItemMap(items, "id"));
   const slottedItems = useMemo(() => utils.toSlottedItems(items, "id", slotItemMap), [items, slotItemMap]);
@@ -110,6 +114,9 @@ export default function Home() {
     <div className="main-content">
       <ScrollArea className="widget-container">
         <WidgetList 
+          selectedCollection={selectedCollection}
+          selectedField={selectedField}
+          selectedField2={selectedField2}
           addLineWidget={() => addWidget("line", "Line Chart")}
           addBarWidget={() => addWidget("bar", "Bar Chart")}
           addPieWidget={() => addWidget("pie", "Pie Chart")}
@@ -132,24 +139,24 @@ export default function Home() {
               <div className="item" data-swapy-item={itemId} key={itemId}>
                 {item.type === "line" && (
                     <LocalLineChart
-                        collection="Weather"
-                        x = "_current_feelslike_f"
-                        y = "_current_uv"
+                        collection={selectedCollection}
+                        x = {selectedField}
+                        y = {selectedField2}
                     />
-                 )}
+                )}
                 {item.type === "bar" && (
                     <LocalBarChart
-                      collection="Weather"
-                      x="_location_name"
-                      y="_current_uv" 
+                      collection = {selectedCollection}
+                      x= {selectedField}
+                      y= {selectedField2}
                       limit={10}
                     />
                 )}
                 {item.type === "pie" && (
                     <LocalPieChart 
-                       collection="Devices"
-                       field="_state"
-                       limit={10}
+                      collection= {selectedCollection}
+                      field= {selectedField}
+                      limit={10}
                     />
                 )}
                 {item.type === "weather" && (
