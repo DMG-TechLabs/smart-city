@@ -95,7 +95,7 @@ export function TabsDemo({
         <TabsTrigger value="weather">Weather</TabsTrigger>
       </TabsList>
       <TabsContent value="line">
-        <Card>
+        <Card className="h-[300px] !max-h-[300px] overflow-auto">
           <CardHeader>
             <CardTitle>Line Chart</CardTitle>
             <CardDescription>
@@ -113,7 +113,7 @@ export function TabsDemo({
         </Card>
       </TabsContent>
       <TabsContent value="bar">
-        <Card>
+        <Card className="h-[300px] !max-h-[300px] overflow-auto">
           <CardHeader>
             <CardTitle>Bar Chart</CardTitle>
             <CardDescription>
@@ -132,7 +132,7 @@ export function TabsDemo({
         </Card>
       </TabsContent>
       <TabsContent value="pie">
-        <Card>
+        <Card className="h-[300px] !max-h-[300px] overflow-auto">
           <CardHeader>
             <CardTitle>Pie Chart</CardTitle>
             <CardDescription>
@@ -150,7 +150,7 @@ export function TabsDemo({
         </Card>
       </TabsContent>
       <TabsContent value="weather">
-        <Card>
+        <Card className="h-[300px] !max-h-[300px] overflow-auto">
           <CardHeader>
             <CardTitle>Weather</CardTitle>
           </CardHeader>
