@@ -161,6 +161,11 @@ func main() {
 
 			newCollection := core.NewBaseCollection(reqJSON["provider"].(string))
 
+			newCollection.ViewRule = types.Pointer("")
+			newCollection.CreateRule = types.Pointer("")
+			newCollection.UpdateRule = types.Pointer("")
+			newCollection.DeleteRule = types.Pointer("")
+
 			var idx strings.Builder
 
 			idx.WriteString("CREATE ")
