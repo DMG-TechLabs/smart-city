@@ -37,9 +37,9 @@ type LocalBarChartProps = {
 
 export function LocalBarChart({ collection, x, y, limit = 10 }: LocalBarChartProps) {
   const [data, setData] = useState<any[]>([])
+  const pb = usePocketBase();
 
   useEffect(() => {
-    const pb = usePocketBase();
 
     pb.collection(collection)
       .getList(1, limit, { sort: `-${x}` })
