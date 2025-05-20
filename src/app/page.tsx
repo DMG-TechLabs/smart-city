@@ -41,10 +41,13 @@ export default function Home() {
   useEffect(() => utils.dynamicSwapy(swapyRef.current, items, "id", slotItemMap, setSlotItemMap), [items]);
   useEffect(() => {
     swapyRef.current = createSwapy(containerRef.current!, {
-        animation: "spring",
-        swapMode: "drop",
+        manualSwap: true,
+        animation: "dynamic",
         autoScrollOnDrag: true,
+        swapMode: "drop",
         enabled: true,
+        dragAxis: "xy",
+        dragOnHold: false
     });
 
     swapyRef.current.onSwap((event) => {
