@@ -123,8 +123,17 @@ export default function Home() {
           addWeatherWidget={() => addWidget("weather", "Weather")}
         />
 
-      <div className="items" ref={containerRef}>
-        {slottedItems.map(({ slotId, itemId, item }) => (
+      <div className={`items ${slottedItems.length === 0 ? "empty" : ""}`} ref={containerRef}>
+        {slottedItems.length === 0 ? (
+          <span className="empty-message">
+            <img src="/arrow.svg" className="arrow-image" />
+            <span className="text-message">
+              They aren't any widgets displayed at the moment.<br></br>
+              Add some from the Available Widgets
+            </span>
+          </span>
+        ) : (
+        slottedItems.map(({ slotId, itemId, item }) => (
           <div className="slot" key={slotId} data-swapy-slot={slotId}>
             {item && (
               <div className="item" data-swapy-item={itemId} key={itemId}>
@@ -171,7 +180,7 @@ export default function Home() {
               </div>
             )}
           </div>
-        ))}
+        )))}
       </div>
       </ScrollArea>
     </div>
