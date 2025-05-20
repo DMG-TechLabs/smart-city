@@ -56,16 +56,8 @@ export function WidgetList({
               addPieWidget={addPieWidget}
               addWeatherWidget={addWeatherWidget}
             />
-            {/*
-            <Button onClick={addBarWidget}>Add Bar Chart</Button>
-            <Button onClick={addPieWidget}>Add Pie Chart</Button>
-            <Button onClick={addWeatherWidget}>Add Weather</Button>*/}
+            
         </div>
-        {/*<SheetFooter>
-          <SheetClose asChild>
-            <Button type="submit">Add to dashboard</Button>
-          </SheetClose>
-        </SheetFooter>*/}
       </SheetContent>
     </Sheet>
   )
