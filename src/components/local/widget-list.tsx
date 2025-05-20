@@ -15,6 +15,9 @@ import "@/styles/dashboard.css"
 import { TabsDemo } from "../ui/tabs"
 
 type WidgetListProps = {
+  selectedCollection: string;
+  selectedField: string;
+  selectedField2: string;
   addLineWidget?: () => void;
   addBarWidget?: () => void;
   addPieWidget?: () => void;
@@ -22,6 +25,9 @@ type WidgetListProps = {
 };
 
 export function WidgetList({
+  selectedCollection,
+  selectedField,
+  selectedField2,
   addLineWidget,
   addBarWidget,
   addPieWidget,
@@ -42,6 +48,9 @@ export function WidgetList({
             {/* <div className="available-widgets"> */}
           <div className="add-buttons">
             <TabsDemo 
+              selectedCollection={selectedCollection}
+              selectedField={selectedField}
+              selectedField2={selectedField2}
               addLineWidget={addLineWidget}
               addBarWidget={addBarWidget}
               addPieWidget={addPieWidget}
