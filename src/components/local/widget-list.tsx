@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/sheet"
 import { CardComponent } from "../ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import "@/styles/dashboard.css"
 
 type WidgetListProps = {
   addLineWidget?: () => void;
@@ -38,21 +39,17 @@ export function WidgetList({
           </SheetDescription>
         </SheetHeader>
             {/* <div className="available-widgets"> */}
-            <div>
-              <ScrollArea className="h-auto w-[fit-content] rounded-md">
-                  <div className="add-buttons">
-                  <Button onClick={addLineWidget}>Add Line Chart</Button>
-                  <Button onClick={addBarWidget}>Add Bar Chart</Button>
-                  <Button onClick={addPieWidget}>Add Pie Chart</Button>
-                  <Button onClick={addWeatherWidget}>Add Weather</Button>
-                </div>
-              </ScrollArea>
-            </div>
-        <SheetFooter>
+          <div className="add-buttons">
+            <Button onClick={addLineWidget}>Add Line Chart</Button>
+            <Button onClick={addBarWidget}>Add Bar Chart</Button>
+            <Button onClick={addPieWidget}>Add Pie Chart</Button>
+            <Button onClick={addWeatherWidget}>Add Weather</Button>
+        </div>
+        {/*<SheetFooter>
           <SheetClose asChild>
             <Button type="submit">Add to dashboard</Button>
           </SheetClose>
-        </SheetFooter>
+        </SheetFooter>*/}
       </SheetContent>
     </Sheet>
   )
