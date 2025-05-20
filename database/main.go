@@ -78,14 +78,14 @@ func main() {
 		se.Router.GET("/{path...}", apis.Static(os.DirFS("./pb_public"), false))
 
 		se.Router.GET("/api/getalerthistory", func(c *core.RequestEvent) error {
-			collection, err := app.FindCollectionByNameOrId("alertsHistory")
-			if err != nil {
-				log.Println("Error finding collection")
-				return err
+			// collection, err := app.FindCollectionByNameOrId("alertsHistory")
+			// if err != nil {
+			// 	log.Println("Error finding collection")
+			// 	return err
 
-			}
+			// }
 
-			records, err := app.FindAllRecords(collection.Id)
+			records, err := app.FindAllRecords("alertsHistory")
 			if err != nil {
 				log.Println("Error finding records")
 				return err
@@ -100,16 +100,16 @@ func main() {
 					return err
 				}
 
-				valueRecord, err := app.FindRecordById(record.Get("collection").(string), record.Get("recordId").(string))
+				valueRecord, err := app.FindRecordById(record.GetString("collection"), record.GetString("recordId"))
 				if err != nil {
 					log.Println("Error finding value record")
 					return err
 				}
 
 				recordsJson = append(recordsJson, alerts.AlertHistory{
-					Name:      alert.Get("name").(string),
+					Name:      alert.GetString("name"),
 					RecordId:  record.Id,
-					AlertId:   record.Get("alert").(string),
+					AlertId:   record.GetString("alert"),
 					Created:   record.Get("created").(types.DateTime),
 					Value:     valueRecord.Get("value"),
 					Condition: alert.Get("condition").(types.JSONRaw),

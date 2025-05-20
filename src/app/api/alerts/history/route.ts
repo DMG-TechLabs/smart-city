@@ -1,21 +1,35 @@
-import { NextResponse } from 'next/server';
+import PocketBase from "pocketbase";
+
 
 export async function GET() {
+    const pb = new PocketBase("http://127.0.0.1:8090");
     try {
-        const response = await fetch("http://127.0.0.1:8090/api/getalerthistory");
+        const result = await pb.collection("alertsHistory").getFullList(200 /* max limit */, {
+            expand: "alert",
+            sort: "-created",
+        });
 
-        if (!response.ok) {
-            throw new Error(`Failed to fetch history: ${response.statusText}`);
-        }
+        const data = result.map((record) => ({
+            id: record.id,
+            collection: record.collection,
+            recordId: record.recordId,
+            created: record.created,
+            updated: record.updated,
+            alert: record.expand?.alert ?? null,
+        }));
 
-        const data = await response.json();
-
-        return NextResponse.json({ success: true, data });
-    } catch (error: any) {
-        console.error("Error in GET /api/alerts/history:", error);
-        return NextResponse.json(
-            { success: false, error: error.message || "Internal Server Error" },
-            { status: 500 }
+        return new Response(JSON.stringify(data), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+        });
+    } catch (error) {
+        console.error("Failed to fetch alertHistory:", error);
+        return new Response(
+            JSON.stringify({ error: "Failed to fetch alert history" }),
+            {
+                status: 500,
+                headers: { "Content-Type": "application/json" },
+            }
         );
     }
 }

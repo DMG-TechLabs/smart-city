@@ -52,12 +52,18 @@ export default function Alerts() {
                 </div>
               ))}
             </ScrollArea>
-            <div className="mt-4 flex justify-center">
+            <div className="mt-4 flex justify-center gap-2">
               <Link
                 href="/alerts/add"
                 className="inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700"
               >
                 Add
+              </Link>
+              <Link
+                href="/alerts/history"
+                className="inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-700"
+              >
+                History
               </Link>
             </div>
           </div>
