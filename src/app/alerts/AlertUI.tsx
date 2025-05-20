@@ -3,6 +3,7 @@ import { Alert } from "./Alert.tsx";
 import { CustomDialog } from "../../components/local/custom-dialog.tsx";
 import { ReactNode, useState } from "react";
 import { Switch } from "@/components/ui/switch.tsx";
+import { Button } from "../../components/ui/button.tsx";
 
 type AlertUIProps = {
   alert: Alert;
@@ -91,9 +92,9 @@ export function AlertUI({ alert, onDelete, onEdit }: AlertUIProps) {
           title="Edit Alert"
           desc="Update the alert fields below"
           trigger={
-            <button className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+            <Button id="btn-2" className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
               Edit
-            </button>
+            </Button>
           }
         >
           {AlertEdit(alert, onEdit)}
