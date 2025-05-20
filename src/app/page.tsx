@@ -20,10 +20,10 @@ type Item = {
 };
 
 const initialItems: Item[] = [
-  { id: "1", title: "Line Chart", type: "line" },
-  { id: "2", title: "Bar Chart", type: "bar" },
-  { id: "3", title: "Pie Chart", type: "pie" },
-  { id: "4", title: "Weather", type: "weather" }
+  // { id: "1", title: "Line Chart", type: "line" },
+  // { id: "2", title: "Bar Chart", type: "bar" },
+  // { id: "3", title: "Pie Chart", type: "pie" },
+  // { id: "4", title: "Weather", type: "weather" }
 ];
 
 export default function Home() {
