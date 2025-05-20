@@ -77,11 +77,13 @@ export async function POST(req: Request) {
             // const data = await res.json();
             // throw new Error(data.error || "Failed to register");
         }
+        
+        const p = payload as any;
 
         await pb.collection("metadata").create({
             provider,
             endpoint,
-            paths: payload.paths,
+            paths: p.paths,
         });
 
         console.log("Collection and metadata registered successfully");

@@ -38,6 +38,19 @@ func main() {
 		switch name := e.Record.Collection().Name; name {
 		case "alerts":
 			delete(alertsList, e.Record.Id)
+		case "metadata":
+			provider := e.Record.GetString("provider")
+			collection, err := app.FindCollectionByNameOrId(provider)
+			if err != nil {
+				log.Println("Error finding collection")
+			}
+
+			err = app.Delete(collection)
+			if err != nil {
+				log.Println("Error deleting collection")
+			}
+
+			app.Cron().Remove(provider)
 		}
 		return e.Next()
 	})
@@ -262,7 +275,7 @@ func main() {
 					log.Println("Authenticated user ID:", authUser.Id)
 					log.Println("User email:", authUser.Get("email"))
 					return c.JSON(http.StatusUnauthorized, map[string]string{
-						"message": "Hello from custom API!",
+						"message": "User is not authenticated to perform this action",
 					})
 
 				}

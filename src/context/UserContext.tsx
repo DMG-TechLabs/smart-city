@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 // Define the user type (optional, but recommended for TypeScript)
-type User = {
+export type User = {
     id: string;
     username: string;
     email: string;

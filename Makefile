@@ -1,8 +1,24 @@
 .DEFAULT_GOAL := help
 
+.PHONY: all
+all: ## Run the start.sh script
+	bash ./start.sh
+
+.PHONY: start
+start: ## Start the Docker containers
+	docker-compose up -d
+
+.PHONY: stop
+stop: ## Stop the Docker containers
+	docker-compose down
+
 .PHONY: db
 db: ## Build and serve the backend
-	cd ./database; go run . serve
+	@cd ./database && \
+	go build && \
+	mv pocketbase .. && \
+	cd .. && \
+	./pocketbase serve
 
 .PHONY: npm
 npm: ## Serve the frontend

@@ -1,3 +1,4 @@
+"use client"
 import * as React from "react"
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu"
 import { cva } from "class-variance-authority"
@@ -212,16 +213,23 @@ export function NavigationMenuComponent() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-        <Link href="../../dashboard" legacyBehavior passHref>
+        <Link href="/" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               Dashboard
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="../../alerts/" legacyBehavior passHref>
+          <Link href="/alerts" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               Alerts
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <Link href="/providers" legacyBehavior passHref>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              Providers
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>

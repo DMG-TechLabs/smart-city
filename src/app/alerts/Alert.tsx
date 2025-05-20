@@ -1,10 +1,11 @@
 import type PocketBase from 'pocketbase';
 import { AlertCondition } from "./AlertCondition";
+import { RecordModel } from 'pocketbase';
 
 export class Alert {
     id: string | undefined; // Auto assigned
     name: string;
-    condition: AlertCondition;
+    condition: AlertCondition | null;
     enabled: boolean = true;
 
     constructor(name: string, condition: AlertCondition | object) {
@@ -22,7 +23,7 @@ export class Alert {
         try {
             await pb.collection("alerts").update(this.id, {
                 name: this.name,
-                condition: JSON.stringify(this.condition.toJSON()),
+                condition: JSON.stringify(this.condition?.toJSON()),
                 enabled: this.enabled,
             });
         } catch(err) {
@@ -43,6 +44,7 @@ export class Alert {
     }
 
     async push(pb: PocketBase): Promise<boolean> {
+        if(this.condition == null) return false;
         return await Alert.push(pb, this.name, JSON.stringify(this.condition.toJSON()));
     }
 
@@ -60,9 +62,10 @@ export class Alert {
         }
     }
 
-    static fromPBRecord(record: any): Alert {
+    static fromPBRecord(record: RecordModel): Alert {
         console.log(record.condition);
         const condition = AlertCondition.fromJSON(record.condition);
+        if(condition == null) throw new Error("Condition is null");
         const alert = new Alert(record.name, condition);
         alert.id = record.id;
         alert.enabled = record.enabled;

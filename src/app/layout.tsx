@@ -6,9 +6,10 @@ import "./dashboard/style.css"
 // import "./dashboard/style.css";
 import { UserProvider } from "@/context/UserContext";
 import { PocketBaseProvider } from "@/context/DatabaseContext";
-import { NavigationMenuComponent } from '@/components/ui/navigation-menu';
+// import { NavigationMenuDemo } from '@/components/ui/navigation-menu';
 import { TopBarComponent } from '@/components/local/topbar';
-
+// import { useUser } from "@/context/UserContext";
+// import { useRouter } from "next/navigation";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -30,15 +31,26 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+    // const { user } = useUser();
+  // const router = useRouter();
+  //
+  // if (user == null || user.email === "") {
+  //     router.push("/login");
+  // }
+
   return (
     <PocketBaseProvider>
     <UserProvider>
       <html lang="en">
         <body>
           <header>
-            <TopBarComponent />
           </header>
-          {children}
+          <nav>
+            <TopBarComponent />
+          </nav>
+          {/* <div id='main-content'> */}
+            {children}
+          {/* </div> */}
         </body>
       </html>
     </UserProvider>

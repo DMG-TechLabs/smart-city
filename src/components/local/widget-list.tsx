@@ -25,8 +25,9 @@ export function SheetDemo() {
             Here are all the available widgets to show in the dashboard.
           </SheetDescription>
         </SheetHeader>
-            <div className="available-widgets">
-              <ScrollArea className="h-[600px] w-[fit-content] rounded-md border p-4">
+            {/* <div className="available-widgets"> */}
+            <div>
+              <ScrollArea className="h-auto w-[fit-content] rounded-md">
                   <CardComponent />
                   <CardComponent />
               </ScrollArea>

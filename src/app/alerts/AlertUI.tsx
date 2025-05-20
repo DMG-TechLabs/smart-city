@@ -1,5 +1,5 @@
 import { ConfirmationDialog } from "@/components/local/confirmation-dialog.tsx";
-import { Alert } from "../Alert.tsx";
+import { Alert } from "./Alert.tsx";
 import { CustomDialog } from "../../components/local/custom-dialog.tsx";
 import { ReactNode, useState } from "react";
 import { Switch } from "@/components/ui/switch.tsx";

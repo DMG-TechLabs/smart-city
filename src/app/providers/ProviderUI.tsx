@@ -1,5 +1,5 @@
 import { ConfirmationDialog } from "@/components/local/confirmation-dialog.tsx";
-import { Api } from "../Api.tsx";
+import { Api } from "./Api.tsx";
 
 type ProviderUIProps = {
   provider: Api;
@@ -12,7 +12,7 @@ export function ProviderUI({ provider, onDelete }: ProviderUIProps) {
       <div>
         <h2 className="text-lg font-semibold">{provider.provider}</h2>
         <p>
-          Endpoint: {provider.endpoint}
+          <a href={provider.endpoint} target="_blank">{provider.endpoint}</a>
         </p>
       </div>
 
