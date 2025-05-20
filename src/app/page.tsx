@@ -61,13 +61,13 @@ export default function Home() {
   useEffect(() => utils.dynamicSwapy(swapyRef.current, items, "id", slotItemMap, setSlotItemMap), [items]);
   useEffect(() => {
     swapyRef.current = createSwapy(containerRef.current!, {
-        manualSwap: true,
-        animation: "dynamic",
-        swapMode: "drop",
-        autoScrollOnDrag: true,
-        enabled: true,
-        dragAxis: "xy",
-        dragOnHold: false
+      manualSwap: true,
+      animation: "dynamic",
+      swapMode: "drop",
+      autoScrollOnDrag: true,
+      enabled: true,
+      dragAxis: "xy",
+      dragOnHold: false
     });
 
     swapyRef.current.onSwap((event) => {
@@ -127,17 +127,17 @@ export default function Home() {
   return (
     <div className="main-content">
       <ScrollArea className="widget-container">
-      <Sheet>
-      <SheetTrigger asChild>
-        <Button id="widget-button">Available Widgets</Button>
-      </SheetTrigger>
-      <SheetContent side="right" className="w-[450px] !max-w-[500px]">
-        <SheetHeader>
-          <SheetTitle>Available widgets</SheetTitle>
-          <SheetDescription>
-            Here are all the available widgets to show in the dashboard.
-          </SheetDescription>
-        </SheetHeader>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button id="widget-button">Available Widgets</Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[450px] !max-w-[500px]">
+            <SheetHeader>
+              <SheetTitle>Available widgets</SheetTitle>
+              <SheetDescription>
+                Here are all the available widgets to show in the dashboard.
+              </SheetDescription>
+            </SheetHeader>
             {/* <div className="available-widgets"> */}
           <div className="add-buttons">
           <Tabs defaultValue="line" className="w-[400px]">
@@ -216,65 +216,65 @@ export default function Home() {
       </SheetContent>
     </Sheet>
 
-      <div className={`items ${slottedItems.length === 0 ? "empty" : ""}`} ref={containerRef}>
-        {slottedItems.length === 0 ? (
-          <span className="empty-message">
-            <img src="/arrow.svg" className="arrow-image" />
-            <span className="text-message">
-              They aren't any widgets displayed at the moment.<br></br>
-              Add some from the Available Widgets
+        <div className={`items ${slottedItems.length === 0 ? "empty" : ""}`} ref={containerRef}>
+          {slottedItems.length === 0 ? (
+            <span className="empty-message">
+              <img src="/arrow.svg" className="arrow-image" />
+              <span className="text-message">
+                They aren't any widgets displayed at the moment.<br></br>
+                Add some from the Available Widgets
+              </span>
             </span>
-          </span>
-        ) : (
-        slottedItems.map(({ slotId, itemId, item }) => (
-          <div className="slot" key={slotId} data-swapy-slot={slotId}>
-            {item && (
-              <div className="item" data-swapy-item={itemId} key={itemId}>
-                {item.type === "line" && (
-                    <LocalLineChart
+          ) : (
+            slottedItems.map(({ slotId, itemId, item }) => (
+              <div className="slot" key={slotId} data-swapy-slot={slotId}>
+                {item && (
+                  <div className="item" data-swapy-item={itemId} key={itemId}>
+                    {item.type === "line" && (
+                      <LocalLineChart
                         collection={selectedCollection}
-                        x = {selectedField}
-                        y = {selectedField2}
-                    />
+                        x={selectedField}
+                        y={selectedField2}
+                      />
+                    )}
+                    {item.type === "bar" && (
+                      <LocalBarChart
+                        collection={selectedCollection}
+                        x={selectedField}
+                        y={selectedField2}
+                        limit={10}
+                      />
+                    )}
+                    {item.type === "pie" && (
+                      <LocalPieChart
+                        collection={selectedCollection}
+                        field={selectedField}
+                        limit={10}
+                      />
+                    )}
+                    {item.type === "weather" && (
+                      <WeatherCard
+                        date={dateTime ?? ""}
+                        location={weatherLocation ?? ""}
+                        temperature={parseInt(weathererature ?? "0")}
+                        description={weatherDescription ?? ""}
+                        icon={weatherIcon ?? " "}
+                      />
+                    )}
+                    <span
+                      className="delete"
+                      data-swapy-no-drag
+                      onClick={() => {
+                        setItems(items.filter((i) => i.id !== item.id));
+                      }}
+                    >
+                      <Trash2 />
+                    </span>
+                  </div>
                 )}
-                {item.type === "bar" && (
-                    <LocalBarChart
-                      collection = {selectedCollection}
-                      x= {selectedField}
-                      y= {selectedField2}
-                      limit={10}
-                    />
-                )}
-                {item.type === "pie" && (
-                    <LocalPieChart 
-                      collection= {selectedCollection}
-                      field= {selectedField}
-                      limit={10}
-                    />
-                )}
-                {item.type === "weather" && (
-                  <WeatherCard
-                    date={dateTime ?? ""}
-                    location={weatherLocation ?? ""}
-                    temperature={parseInt(weathererature ?? "0")}
-                    description={weatherDescription ?? ""}
-                    icon={weatherIcon ?? " "}
-                  />
-                )}
-                <span
-                  className="delete"
-                  data-swapy-no-drag
-                  onClick={() => {
-                    setItems(items.filter((i) => i.id !== item.id));
-                  }}
-                >
-                  <Trash2 />
-                </span>
               </div>
-            )}
-          </div>
-        )))}
-      </div>
+            )))}
+        </div>
       </ScrollArea>
     </div>
   );
