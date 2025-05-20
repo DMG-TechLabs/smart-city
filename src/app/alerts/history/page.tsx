@@ -87,11 +87,9 @@ export default function AlertHistory() {
             <table className="min-w-full text-sm text-left">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="p-3 border-b">History ID</th>
                   <th className="p-3 border-b">Alert Name</th>
-                  <th className="p-3 border-b">Enabled</th>
                   <th className="p-3 border-b">Condition</th>
-                  <th className="p-3 border-b">Created</th>
+                  <th className="p-3 border-b">Triggered</th>
                 </tr>
               </thead>
               <tbody>
@@ -99,11 +97,7 @@ export default function AlertHistory() {
                   const alert = record.expand?.alert;
                   return (
                     <tr key={record.id} className="hover:bg-gray-50">
-                      <td className="p-3 border-b text-gray-700">{record.id}</td>
                       <td className="p-3 border-b">{alert?.name ?? "—"}</td>
-                      <td className="p-3 border-b">
-                        {alert?.enabled === true ? "Yes" : alert?.enabled === false ? "No" : "—"}
-                      </td>
                       <td className="p-3 border-b whitespace-pre-wrap max-w-sm">
                         {alert?.condition
                           ? formatCondition(alert.condition)
