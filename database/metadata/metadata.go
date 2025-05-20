@@ -93,7 +93,8 @@ func GeneratePollingFunction(app *pocketbase.PocketBase, record *core.Record) fu
 	return func() {
 		res, err := http.DefaultClient.Get(record.GetString("endpoint"))
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
+			return
 		}
 		defer res.Body.Close()
 
@@ -110,6 +111,7 @@ func GeneratePollingFunction(app *pocketbase.PocketBase, record *core.Record) fu
 		if err != nil {
 			fmt.Println("http:", err)
 			err = nil
+			return
 		}
 
 		fmt.Println("len Bytes: ", len(bodyBytes))
@@ -122,11 +124,8 @@ func GeneratePollingFunction(app *pocketbase.PocketBase, record *core.Record) fu
 		resJSON.TypeUsed = 1
 		if err != nil {
 			fmt.Println(err)
-			// err = json.Unmarshal(bodyBytes, &resJSON.DataType2)
 			resJSON.TypeUsed = 2
-			// if err != nil {
-			// 	fmt.Println(err)
-			// }
+			return
 		}
 
 		paths := record.GetString("paths")
@@ -177,6 +176,7 @@ func GeneratePollingFunction(app *pocketbase.PocketBase, record *core.Record) fu
 				err = app.Save(newRecord)
 				if err != nil {
 					log.Println(err)
+					return
 				}
 			}
 		}
