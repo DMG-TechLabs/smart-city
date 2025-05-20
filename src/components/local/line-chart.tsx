@@ -60,7 +60,7 @@ export function LocalLineChart({ collection, x, y, limit = 100 }: Props) {
     loadData()
   }, [collection, x, y, limit])
 
-  function capitalize(val) {
+  function capitalize(val: string) {
       return String(val).charAt(0).toUpperCase() + String(val).slice(1);
   }
 
