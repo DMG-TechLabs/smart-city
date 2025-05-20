@@ -131,17 +131,17 @@ export default function Home() {
                 {item.type === "line" && <LocalLineChart />}
                 {item.type === "bar" && (
                     <LocalBarChart
-                       collection="Weather"
-                       x="_location_name"
-                       y="_current_uv" 
-                       limit={10}
+                      collection="Weather"
+                      x="_location_name"
+                      y="_current_uv" 
+                      limit={10}
                     />
                 )}
                 {item.type === "pie" && (
                     <LocalPieChart 
-                       collection="Weather"
-                       field="_current_uv" 
-                       limit={10}
+                      collection="Weather"
+                      field="_current_uv" 
+                      limit={10}
                     />
                 )}
                 {item.type === "weather" && (

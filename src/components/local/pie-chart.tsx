@@ -89,7 +89,7 @@ export function LocalPieChart({ collection, field, limit = 5 }: Props) {
     loadData()
   }, [collection, field, limit])
 
-  function capitalize(val) {
+  function capitalize(val: string) {
       return String(val).charAt(0).toUpperCase() + String(val).slice(1);
   }
 

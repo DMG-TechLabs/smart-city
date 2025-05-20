@@ -55,7 +55,7 @@ export function LocalBarChart({ collection, x, y, limit = 10 }: LocalBarChartPro
       })
   }, [collection, x, y, limit])
 
-  function capitalize(val) {
+  function capitalize(val: string) {
       return String(val).charAt(0).toUpperCase() + String(val).slice(1);
   }
   return (

@@ -11,6 +11,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Alert } from "../Alert";
 import { usePocketBase } from "@/context/DatabaseContext.tsx";
 import { RecordModel } from "pocketbase";
+import { CollectionSelector } from "@/components/local/collection-selector";
+import { FieldsSelector } from "@/components/local/fields-selector";
 
 
 interface Condition {
@@ -25,9 +27,9 @@ interface Condition {
 export default function AlertForm() {
   const pb = usePocketBase();
   const [name, setName] = useState("")
-  const [fields, setFields] = useState<string[]>([])
+  // const [fields, setFields] = useState<string[]>([])
   // const [metadata, setMetadata] = useState<RecordModel[]>([])
-  const [collectionOptions, setCollectionOptions] = useState<string[]>([])
+  // const [collectionOptions, setCollectionOptions] = useState<string[]>([])
   const [collectionName, setCollectionName] = useState("")
   const [conditions, setConditions] = useState<Condition[]>([{ variableName: "", condition: "==", value: "", operator: "AND" }])
 
@@ -48,7 +50,6 @@ export default function AlertForm() {
     { value: "OR", label: "OR" },
   ]
 
-  const collectionOptionsTemp = [{ value: "", label: "" },]
 
   const addCondition = () => {
     setConditions([...conditions, { variableName: "", condition: "==", value: "", operator: "AND" }])
@@ -66,25 +67,25 @@ export default function AlertForm() {
     setConditions(newConditions)
   }
 
-  useEffect(() => {
-    async function fetchMetadata() {
-      try {
-        collectionOptions.pop()
-        const metadata = await pb.collection("metadata").getFullList();
-        console.log("metadata", metadata);
-        for (const data of metadata) { 
-          collectionOptions.push(data.provider);
-          for (const field of data.paths) {
-            fields.push((field.path).replace("/", "_")) 
-          }
-        }
-        setCollectionOptions(collectionOptions);
-      } catch (err) {
-        console.error('Failed to fetch collections:', err);
-      }
-    }
-    fetchMetadata();
-  }, [pb]);
+  // useEffect(() => {
+  //   async function fetchMetadata() {
+  //     try {
+  //       collectionOptions.pop()
+  //       const metadata = await pb.collection("metadata").getFullList();
+  //       console.log("metadata", metadata);
+  //       for (const data of metadata) { 
+  //         collectionOptions.push(data.provider);
+  //         for (const field of data.paths) {
+  //           fields.push((field.path).replace("/", "_")) 
+  //         }
+  //       }
+  //       setCollectionOptions(collectionOptions);
+  //     } catch (err) {
+  //       console.error('Failed to fetch collections:', err);
+  //     }
+  //   }
+  //   fetchMetadata();
+  // }, [pb]);
 
     const handleSubmit = async () => {
       for (const condition of conditions) {
@@ -154,7 +155,7 @@ export default function AlertForm() {
       }
     };
 
-    console.log("last log", collectionOptions);
+    // console.log("last log", collectionOptions);
 
   return (
     <div className="main-content flex justify-center">
@@ -167,21 +168,8 @@ export default function AlertForm() {
 
           <div className="space-y-2">
           
-          <Select
-              value={collectionName}
-              onValueChange={(value) => setCollectionName(value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Provider" />
-              </SelectTrigger>
-              <SelectContent>
-                {collectionOptions.map((option) => (
-                  <SelectItem key={option} value={option}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <CollectionSelector value={collectionName} placeholder="Collection" onValueChange={(value) => setCollectionName(value)} />
+
           </div>
 
           
@@ -191,21 +179,8 @@ export default function AlertForm() {
 
             {conditions.map((condition, index) => (
             <div key={index} className="grid grid-cols-[1fr_auto_1fr_auto] gap-2 items-center">
-                <Select
-                  value={condition.variableName}
-                  onValueChange={(value) => updateCondition(index, "variableName", value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Variable name" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {fields.map((option) => (
-                      <SelectItem key={option} value={option}> 
-                        {option}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                
+                <FieldsSelector collectionName={collectionName} value={condition.variableName} placeholder="Field" onValueChange={(value) => updateCondition(index, "variableName", value)} />
                 
                 <Select
                   value={condition.condition}
