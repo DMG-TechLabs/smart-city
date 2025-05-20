@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import "@/styles/dashboard.css";
 import { utils, SlotItemMapArray, createSwapy, Swapy } from "swapy";
 import WeatherCard from "@/components/local/weather-card";
-import { WidgetList } from "@/components/local/widget-list";
 import { LocalBarChart } from "@/components/local/bar-chart";
 import { LocalLineChart } from "@/components/local/line-chart";
 import { LocalPieChart } from "@/components/local/pie-chart";
@@ -163,8 +162,40 @@ export default function Home() {
                 </TabsList>
                 <TabsContent value="line">
                   <Card className="flex flex-col h-[300px] !max-h-[300px]">
-                    <CardHeader>
+                    <CardHeader className="shrink-0">
                       <CardTitle>Line Chart</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex-1 overflow-auto space-y-2">
+                      <CollectionSelector value={selectedCollection} placeholder="Collection" onValueChange={(value) => setSelectedCollection(value)} />
+                      <FieldsSelector collectionName={selectedCollection} value={selectedField} placeholder="Field" onValueChange={(value) => setSelectedField(value)} />
+                      <FieldsSelector collectionName={selectedCollection} value={selectedField2} placeholder="Field" onValueChange={(value) => setSelectedField2(value)} />
+                    </CardContent>
+                    <CardFooter className="shrink-0">
+                      <Button onClick={() => addWidget("line", "Line Chart", selectedCollection, selectedField, selectedField2)}>Add Line Chart</Button>
+                    </CardFooter>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="bar">
+                  <Card className="flex flex-col h-[300px] !max-h-[300px]">
+                    <CardHeader className="shrink-0">
+                      <CardTitle>Bar Chart</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex-1 overflow-auto space-y-2">
+                      <CollectionSelector value={selectedCollection} placeholder="Collection" onValueChange={(value) => setSelectedCollection(value)} />
+                      <FieldsSelector collectionName={selectedCollection} value={selectedField} placeholder="Field" onValueChange={(value) => setSelectedField(value)} />
+                      <FieldsSelector collectionName={selectedCollection} value={selectedField2} placeholder="Field" onValueChange={(value) => setSelectedField2(value)} />
+                    </CardContent>
+                    <CardFooter className="shrink-0">
+                      <Button onClick={() => addWidget("bar", "Bar Chart", selectedCollection, selectedField, selectedField2)}>Add Bar Chart</Button>
+                    </CardFooter>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="pie">
+                  <Card className="flex flex-col h-[300px] !max-h-[300px]">
+                    <CardHeader className="shrink-0">
+                      <CardTitle>Pie Chart</CardTitle>
                       <CardDescription>
 
                       </CardDescription>
@@ -172,60 +203,24 @@ export default function Home() {
                     <CardContent className="flex-1 overflow-auto space-y-2">
                       <CollectionSelector value={selectedCollection} placeholder="Collection" onValueChange={(value) => setSelectedCollection(value)} />
                       <FieldsSelector collectionName={selectedCollection} value={selectedField} placeholder="Field" onValueChange={(value) => setSelectedField(value)} />
-                      <FieldsSelector collectionName={selectedCollection} value={selectedField2} placeholder="Field" onValueChange={(value) => setSelectedField2(value)} />
                     </CardContent>
-                    <CardFooter>
-                      <Button onClick={() => addWidget("line", "Line Chart", selectedCollection, selectedField, selectedField2)}>Add Line Chart</Button>
-                    </CardFooter>
-                  </Card>
-                </TabsContent>
-                <TabsContent value="bar">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Bar Chart</CardTitle>
-                      <CardDescription>
-
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <CollectionSelector value={selectedCollection} placeholder="Collection" onValueChange={(value) => setSelectedCollection(value)} />
-                      <FieldsSelector collectionName={selectedCollection} value={selectedField} placeholder="Field" onValueChange={(value) => setSelectedField(value)} />
-                      <FieldsSelector collectionName={selectedCollection} value={selectedField2} placeholder="Field" onValueChange={(value) => setSelectedField2(value)} />
-                    </CardContent>
-                    <CardFooter>
-                      <Button onClick={() => addWidget("bar", "Bar Chart", selectedCollection, selectedField, selectedField2)}>Add Bar Chart</Button>
-                    </CardFooter>
-                  </Card>
-                </TabsContent>
-                <TabsContent value="pie">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Pie Chart</CardTitle>
-                      <CardDescription>
-
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <CollectionSelector value={selectedCollection} placeholder="Collection" onValueChange={(value) => setSelectedCollection(value)} />
-                      <FieldsSelector collectionName={selectedCollection} value={selectedField} placeholder="Field" onValueChange={(value) => setSelectedField(value)} />
-                    </CardContent>
-                    <CardFooter>
+                    <CardFooter className="shrink-0">
                       <Button onClick={() => addWidget("pie", "Pie Chart", selectedCollection, selectedField, selectedField2)}>Add Pie Chart</Button>
                     </CardFooter>
                   </Card>
                 </TabsContent>
+
                 <TabsContent value="weather">
-                  <Card>
-                    <CardHeader>
+                  <Card className="flex flex-col h-[300px] !smax-h-[300px]">
+                    <CardHeader className="shrink-0">
                       <CardTitle>Weather</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-2">
+                    <CardContent className="flex-1 overflow-auto space-y-2">
                       <Button onClick={() => addWidget("weather", "Weather", selectedCollection, selectedField, selectedField2)}>Add Weather</Button>
                     </CardContent>
                   </Card>
                 </TabsContent>
               </Tabs>
-
             </div>
           </SheetContent>
         </Sheet>

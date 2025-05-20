@@ -24,7 +24,7 @@ type WidgetListProps = {
   addWeatherWidget?: () => void;
 };
 
-export function WidgetList({
+/*export function WidgetList({
   selectedCollection,
   selectedField,
   selectedField2,
@@ -45,7 +45,7 @@ export function WidgetList({
             Here are all the available widgets to show in the dashboard.
           </SheetDescription>
         </SheetHeader>
-            {/* <div className="available-widgets"> */}
+            {/* <div className="available-widgets"> }
           <div className="add-buttons">
             <TabsDemo 
               selectedCollection={selectedCollection}
@@ -62,3 +62,4 @@ export function WidgetList({
     </Sheet>
   )
 }
+*/
