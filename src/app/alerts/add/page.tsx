@@ -54,6 +54,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { Alert } from "../Alert";
+import { usePocketBase } from "../../../context/DatabaseContext.tsx";
 
 interface Condition {
   variableName: string
@@ -62,6 +63,7 @@ interface Condition {
 }
 
 export default function AlertForm() {
+  const pb = usePocketBase();
   const [name, setName] = useState("")
   const [collectionName, setCollectionName] = useState("")
   const [conditions, setConditions] = useState<Condition[]>([{ variableName: "", condition: "==", value: "" }])
@@ -100,34 +102,45 @@ export default function AlertForm() {
         }
 
         console.log("All good:", conditions);
-        // const rootCondition = new AlertCondition("AND");
-        // let ac = rootCondition.add({
-        //     field: conditions[0].variableName,
-        //     operator: conditions[0].condition,
-        //     value: conditions[0].value,
-        // });
+        const rootCondition = new AlertCondition("AND");
+        rootCondition.add({
+            collection: collectionName,
+            field: conditions[0].variableName,
+            operator: conditions[0].condition,
+            value: conditions[0].value,
+        });
 
         try {
 
             
             
-            // conditions.slice(1).forEach((cond) => {
-            //     // const parsedValue = isNaN(cond.value) ? cond.value : parseFloat(cond.value);
-            //
-            //     ac = ac.add(new AlertCondition("AND").add{
-            //         field: cond.variableName,
-            //         operator: cond.condition,
-            //         value: cond.value,
-            //     });
-            // });
-            //
-            // Create a single alert using the grouped condition
-            // const alert = new Alert("User-defined Alert", rootCondition);
+            conditions.slice(1).forEach((cond) => {
+                // const parsedValue = isNaN(cond.value) ? cond.value : parseFloat(cond.value);
 
+                rootCondition.add({
+                    collection: collectionName,
+                    field: cond.variableName,
+                    operator: cond.condition,
+                    value: cond.value,
+                });
+            });
+
+            const alert = new Alert(name, rootCondition);
+            try {
+                await pb.send("/api/addalert", {
+                    query: {
+                        name: alert.name,
+                        condition: JSON.stringify(rootCondition.toJSON()),
+                    },
+                });
+
+                console.log("Alert registered successfully");
+            } catch (err) {
+                console.error("Error registering alert:", err);
+            }
         } catch (err) {
             console.error("Error:", err);
         }
-
     };
 
 

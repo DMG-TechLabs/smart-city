@@ -1,4 +1,7 @@
 "use client";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleUser } from '@fortawesome/free-solid-svg-icons'
 import { NavigationMenuComponent } from "../ui/navigation-menu";
 import { useUser } from "@/context/UserContext";
 // import { useRouter } from "next/navigation";
