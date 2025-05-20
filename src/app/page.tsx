@@ -61,13 +61,13 @@ export default function Home() {
   useEffect(() => utils.dynamicSwapy(swapyRef.current, items, "id", slotItemMap, setSlotItemMap), [items]);
   useEffect(() => {
     swapyRef.current = createSwapy(containerRef.current!, {
-        manualSwap: true,
-        animation: "dynamic",
-        swapMode: "drop",
-        autoScrollOnDrag: true,
-        enabled: true,
-        dragAxis: "xy",
-        dragOnHold: false
+      manualSwap: true,
+      animation: "dynamic",
+      swapMode: "drop",
+      autoScrollOnDrag: true,
+      enabled: true,
+      dragAxis: "xy",
+      dragOnHold: false
     });
 
     swapyRef.current.onSwap((event) => {
@@ -127,154 +127,154 @@ export default function Home() {
   return (
     <div className="main-content">
       <ScrollArea className="widget-container">
-      <Sheet>
-      <SheetTrigger asChild>
-        <Button id="widget-button">Available Widgets</Button>
-      </SheetTrigger>
-      <SheetContent side="right" className="w-[450px] !max-w-[500px]">
-        <SheetHeader>
-          <SheetTitle>Available widgets</SheetTitle>
-          <SheetDescription>
-            Here are all the available widgets to show in the dashboard.
-          </SheetDescription>
-        </SheetHeader>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button id="widget-button">Available Widgets</Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[450px] !max-w-[500px]">
+            <SheetHeader>
+              <SheetTitle>Available widgets</SheetTitle>
+              <SheetDescription>
+                Here are all the available widgets to show in the dashboard.
+              </SheetDescription>
+            </SheetHeader>
             {/* <div className="available-widgets"> */}
-          <div className="add-buttons">
-          <Tabs defaultValue="line" className="w-[400px]">
-      <TabsList className="grid w-full grid-cols-4">
-        <TabsTrigger value="line">Line</TabsTrigger>
-        <TabsTrigger value="bar">Bar</TabsTrigger>
-        <TabsTrigger value="pie">Pie</TabsTrigger>
-        <TabsTrigger value="weather">Weather</TabsTrigger>
-      </TabsList>
-      <TabsContent value="line">
-        <Card>
-          <CardHeader>
-            <CardTitle>Line Chart</CardTitle>
-            <CardDescription>
-              
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <CollectionSelector value={selectedCollection} placeholder="Collection" onValueChange={(value) => setSelectedCollection(value)}/>
-            <FieldsSelector collectionName={selectedCollection} value={selectedField} placeholder="Field" onValueChange={(value) => setSelectedField(value)}/>
-            <FieldsSelector collectionName={selectedCollection} value={selectedField2} placeholder="Field" onValueChange={(value) => setSelectedField2(value)}/>
-          </CardContent>
-          <CardFooter>
-            <Button onClick={() => addWidget("line", "Line Chart")}>Add Line Chart</Button>
-          </CardFooter>
-        </Card>
-      </TabsContent>
-      <TabsContent value="bar">
-        <Card>
-          <CardHeader>
-            <CardTitle>Bar Chart</CardTitle>
-            <CardDescription>
+            <div className="add-buttons">
+              <Tabs defaultValue="line" className="w-[400px]">
+                <TabsList className="grid w-full grid-cols-4">
+                  <TabsTrigger value="line">Line</TabsTrigger>
+                  <TabsTrigger value="bar">Bar</TabsTrigger>
+                  <TabsTrigger value="pie">Pie</TabsTrigger>
+                  <TabsTrigger value="weather">Weather</TabsTrigger>
+                </TabsList>
+                <TabsContent value="line">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Line Chart</CardTitle>
+                      <CardDescription>
 
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <CollectionSelector value={selectedCollection} placeholder="Collection" onValueChange={(value) => setSelectedCollection(value)}/>
-            <FieldsSelector collectionName={selectedCollection} value={selectedField} placeholder="Field" onValueChange={(value) => setSelectedField(value)}/>
-            <FieldsSelector collectionName={selectedCollection} value={selectedField2} placeholder="Field" onValueChange={(value) => setSelectedField2(value)}/>
-          </CardContent>
-          <CardFooter>
-            <Button onClick={() => addWidget("bar", "Bar Chart")}>Add Bar Chart</Button>
-          </CardFooter>
-        </Card>
-      </TabsContent>
-      <TabsContent value="pie">
-        <Card>
-          <CardHeader>
-            <CardTitle>Pie Chart</CardTitle>
-            <CardDescription>
-              
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <CollectionSelector value={selectedCollection} placeholder="Collection" onValueChange={(value) => setSelectedCollection(value)}/>
-            <FieldsSelector collectionName={selectedCollection} value={selectedField} placeholder="Field" onValueChange={(value) => setSelectedField(value)}/>
-          </CardContent>
-          <CardFooter>
-            <Button onClick={() => addWidget("pie", "Pie Chart")}>Add Pie Chart</Button>
-          </CardFooter>
-        </Card>
-      </TabsContent>
-      <TabsContent value="weather">
-        <Card>
-          <CardHeader>
-            <CardTitle>Weather</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <Button onClick={() => addWidget("weather", "Weather")}>Add Weather</Button>
-          </CardContent>
-        </Card>
-      </TabsContent>
-    </Tabs>
-            
-        </div>
-      </SheetContent>
-    </Sheet>
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <CollectionSelector value={selectedCollection} placeholder="Collection" onValueChange={(value) => setSelectedCollection(value)} />
+                      <FieldsSelector collectionName={selectedCollection} value={selectedField} placeholder="Field" onValueChange={(value) => setSelectedField(value)} />
+                      <FieldsSelector collectionName={selectedCollection} value={selectedField2} placeholder="Field" onValueChange={(value) => setSelectedField2(value)} />
+                    </CardContent>
+                    <CardFooter>
+                      <Button onClick={() => addWidget("line", "Line Chart")}>Add Line Chart</Button>
+                    </CardFooter>
+                  </Card>
+                </TabsContent>
+                <TabsContent value="bar">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Bar Chart</CardTitle>
+                      <CardDescription>
 
-      <div className={`items ${slottedItems.length === 0 ? "empty" : ""}`} ref={containerRef}>
-        {slottedItems.length === 0 ? (
-          <span className="empty-message">
-            <img src="/arrow.svg" className="arrow-image" />
-            <span className="text-message">
-              They aren't any widgets displayed at the moment.<br></br>
-              Add some from the Available Widgets
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <CollectionSelector value={selectedCollection} placeholder="Collection" onValueChange={(value) => setSelectedCollection(value)} />
+                      <FieldsSelector collectionName={selectedCollection} value={selectedField} placeholder="Field" onValueChange={(value) => setSelectedField(value)} />
+                      <FieldsSelector collectionName={selectedCollection} value={selectedField2} placeholder="Field" onValueChange={(value) => setSelectedField2(value)} />
+                    </CardContent>
+                    <CardFooter>
+                      <Button onClick={() => addWidget("bar", "Bar Chart")}>Add Bar Chart</Button>
+                    </CardFooter>
+                  </Card>
+                </TabsContent>
+                <TabsContent value="pie">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Pie Chart</CardTitle>
+                      <CardDescription>
+
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <CollectionSelector value={selectedCollection} placeholder="Collection" onValueChange={(value) => setSelectedCollection(value)} />
+                      <FieldsSelector collectionName={selectedCollection} value={selectedField} placeholder="Field" onValueChange={(value) => setSelectedField(value)} />
+                    </CardContent>
+                    <CardFooter>
+                      <Button onClick={() => addWidget("pie", "Pie Chart")}>Add Pie Chart</Button>
+                    </CardFooter>
+                  </Card>
+                </TabsContent>
+                <TabsContent value="weather">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Weather</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <Button onClick={() => addWidget("weather", "Weather")}>Add Weather</Button>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+
+            </div>
+          </SheetContent>
+        </Sheet>
+
+        <div className={`items ${slottedItems.length === 0 ? "empty" : ""}`} ref={containerRef}>
+          {slottedItems.length === 0 ? (
+            <span className="empty-message">
+              <img src="/arrow.svg" className="arrow-image" />
+              <span className="text-message">
+                They aren't any widgets displayed at the moment.<br></br>
+                Add some from the Available Widgets
+              </span>
             </span>
-          </span>
-        ) : (
-        slottedItems.map(({ slotId, itemId, item }) => (
-          <div className="slot" key={slotId} data-swapy-slot={slotId}>
-            {item && (
-              <div className="item" data-swapy-item={itemId} key={itemId}>
-                {item.type === "line" && (
-                    <LocalLineChart
+          ) : (
+            slottedItems.map(({ slotId, itemId, item }) => (
+              <div className="slot" key={slotId} data-swapy-slot={slotId}>
+                {item && (
+                  <div className="item" data-swapy-item={itemId} key={itemId}>
+                    {item.type === "line" && (
+                      <LocalLineChart
                         collection={selectedCollection}
-                        x = {selectedField}
-                        y = {selectedField2}
-                    />
+                        x={selectedField}
+                        y={selectedField2}
+                      />
+                    )}
+                    {item.type === "bar" && (
+                      <LocalBarChart
+                        collection={selectedCollection}
+                        x={selectedField}
+                        y={selectedField2}
+                        limit={10}
+                      />
+                    )}
+                    {item.type === "pie" && (
+                      <LocalPieChart
+                        collection={selectedCollection}
+                        field={selectedField}
+                        limit={10}
+                      />
+                    )}
+                    {item.type === "weather" && (
+                      <WeatherCard
+                        date={dateTime ?? ""}
+                        location={weatherLocation ?? ""}
+                        temperature={parseInt(weathererature ?? "0")}
+                        description={weatherDescription ?? ""}
+                        icon={weatherIcon ?? " "}
+                      />
+                    )}
+                    <span
+                      className="delete"
+                      data-swapy-no-drag
+                      onClick={() => {
+                        setItems(items.filter((i) => i.id !== item.id));
+                      }}
+                    >
+                      <Trash2 />
+                    </span>
+                  </div>
                 )}
-                {item.type === "bar" && (
-                    <LocalBarChart
-                      collection = {selectedCollection}
-                      x= {selectedField}
-                      y= {selectedField2}
-                      limit={10}
-                    />
-                )}
-                {item.type === "pie" && (
-                    <LocalPieChart 
-                      collection= {selectedCollection}
-                      field= {selectedField}
-                      limit={10}
-                    />
-                )}
-                {item.type === "weather" && (
-                  <WeatherCard
-                    date={dateTime ?? ""}
-                    location={weatherLocation ?? ""}
-                    temperature={parseInt(weathererature ?? "0")}
-                    description={weatherDescription ?? ""}
-                    icon={weatherIcon ?? " "}
-                  />
-                )}
-                <span
-                  className="delete"
-                  data-swapy-no-drag
-                  onClick={() => {
-                    setItems(items.filter((i) => i.id !== item.id));
-                  }}
-                >
-                  <Trash2 />
-                </span>
               </div>
-            )}
-          </div>
-        )))}
-      </div>
+            )))}
+        </div>
       </ScrollArea>
     </div>
   );

@@ -35,6 +35,8 @@ export function FieldsSelector({
                         }
                     }
                 }
+                temp.push("created");
+                temp.push("updated");
                 setFields(temp);
             } catch (err) {
                 console.error('Failed to fetch collections:', err);
