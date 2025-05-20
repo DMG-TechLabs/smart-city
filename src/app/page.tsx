@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import "@/styles/dashboard.css";
 import { utils, SlotItemMapArray, createSwapy, Swapy } from "swapy";
 import WeatherCard from "@/components/local/weather-card";
@@ -61,15 +61,15 @@ export default function Home() {
   const [weatherDescription, setWeatherDescription] = useState<string | null>(null);
   const [weathererature, setWeathererature] = useState<string | null>(null);
   const [weatherIcon, setWeatherIcon] = useState<string | null>(null);
-  const { user } = useUser();
-  const router = useRouter();
-
-  if (user == null || user.email === "") {
-    router.push("/login");
-  }
 
   useEffect(() => utils.dynamicSwapy(swapyRef.current, items, "id", slotItemMap, setSlotItemMap), [items]);
   useEffect(() => {
+    const items = localStorage.getItem('swapy-items');
+    console.log("items", items);
+    if (items) {
+      setItems(JSON.parse(items));
+    }
+
     swapyRef.current = createSwapy(containerRef.current!, {
       manualSwap: true,
       animation: "dynamic",
@@ -89,7 +89,13 @@ export default function Home() {
     };
   }, []);
 
+  function deleteItem(item: SetStateAction<Item[]>) {
+    setItems(item)
+    localStorage.setItem('swapy-items', JSON.stringify(items));
+  }
+
   useEffect(() => {
+    
     async function fetchTime(): Promise<object | null> {
       const response = await fetch("/api/time");
       if (!response.ok) return null;
@@ -135,6 +141,7 @@ export default function Home() {
       field2
     };
     setItems([...items, newItem]);
+    // localStorage.setItem('swapy-items', JSON.stringify(items));
   };
 
   return (
@@ -274,7 +281,7 @@ export default function Home() {
                       className="delete"
                       data-swapy-no-drag
                       onClick={() => {
-                        setItems(items.filter((i) => i.id !== item.id));
+                        deleteItem(items.filter((i) => i.id !== item.id));
                       }}
                     >
                       <Trash2 />
