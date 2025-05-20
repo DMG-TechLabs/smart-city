@@ -9,6 +9,7 @@ import Link from "next/link";
 
 export default function Alerts() {
     const pb = usePocketBase();
+    pb.autoCancellation(false);
     const [alerts, setAlerts] = useState<Alert[]>([]);
 
     useEffect(() => {
