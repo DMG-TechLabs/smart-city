@@ -18,6 +18,7 @@ export function FieldsSelector({
 }: FieldsSelectorProps) {
     const [fieldsOptions, setFields] = useState<string[]>([]) 
     const pb = usePocketBase();
+    pb.autoCancellation(false);
 
     useEffect(() => {
         async function fetchMetadata() {
