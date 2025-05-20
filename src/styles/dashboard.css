@@ -27,7 +27,7 @@ body {
   position: fixed;
   top: 0;
   height: auto;
-  background: #efefef;
+  background: var(--secondary);
   width: 100%;
   z-index: 1;
 }
