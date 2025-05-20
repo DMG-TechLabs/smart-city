@@ -5,7 +5,7 @@
 .widget-container {
   display: flex;
   flex-direction: column;
-  width: fit-content;
+  width: 50%;
   position: absolute;
   left: 50%;
   transform: translate(-50%, 0);
@@ -15,51 +15,6 @@
 
 #widget-button {
   width: fit-content;
-}
-
-#slot {
-  border-radius: 10px;
-  height: 90%;
-  width: fit-content;
-}
-
-#slot[data-swapy-highlighted] {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  width: max-content;
-}
-
-.item {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px 0;
-  border-radius: 10px;
-  width: fit-content;
-  height: 100%;
-}
-
-.item:has(.handle) {
-  position: relative;
-}
-
-.handle {
-  cursor: grab;
-  width: 24px;
-  height: 24px;
-  background-color: black;
-  /* background-image: url(./handle.svg); */
-  opacity: 0.5;
-  position: absolute;
-  top: 14px;
-  left: 10px;
 }
 
 .delete-container {
@@ -85,7 +40,14 @@ button {
   transform: translate(-50%, -50%);
 }
 
-/*#radix-«R2fel7» {
+.add-buttons {
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  justify-content: space-between;
+}
+
+#radix-«R4v17» {
   width: fit-content !important;
   max-width: none !important;
-}*/
+}
