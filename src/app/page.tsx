@@ -8,8 +8,10 @@ import { SheetDemo } from "@/components/local/widget-list";
 import { LocalBarChart } from "@/components/local/bar-chart";
 import { LocalLineChart } from "@/components/local/line-chart";
 import { LocalPieChart } from "@/components/local/pie-chart";
-import { Trash } from "lucide-react";
+import { Trash, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import "@/styles/swapy.css"
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 
 type Item = {
   id: string;
@@ -106,7 +108,7 @@ export default function Home() {
 
   return (
     <div className="main-content">
-      <div className="widget-container">
+      <ScrollArea className="widget-container">
         <SheetDemo />
 
         <div className="add-buttons">
@@ -116,38 +118,38 @@ export default function Home() {
           <Button onClick={() => addWidget("weather", "Weather")}>Add Weather</Button>
         </div>
 
-        <div className="items" ref={containerRef}>
-          {slottedItems.map(({ slotId, itemId, item }) => (
-            <div className="slot" key={slotId} data-swapy-slot={slotId}>
-              {item && (
-                <div className="item" data-swapy-item={itemId} key={itemId}>
-                  {item.type === "line" && <LocalLineChart />}
-                  {item.type === "bar" && <LocalBarChart />}
-                  {item.type === "pie" && <LocalPieChart />}
-                  {item.type === "weather" && (
-                    <WeatherCard
-                      date={dateTime ?? ""}
-                      location={weatherLocation ?? ""}
-                      temperature={parseInt(weatherTemperature ?? "0")}
-                      description={weatherDescription ?? ""}
-                      icon={weatherIcon ?? " "}
-                    />
-                  )}
-                  <span
-                    className="delete"
-                    data-swapy-no-drag
-                    onClick={() => {
-                      setItems(items.filter((i) => i.id !== item.id));
-                    }}
-                  >
-                    <Trash />
-                  </span>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+      <div className="items" ref={containerRef}>
+        {slottedItems.map(({ slotId, itemId, item }) => (
+          <div className="slot" key={slotId} data-swapy-slot={slotId}>
+            {item && (
+              <div className="item" data-swapy-item={itemId} key={itemId}>
+                {item.type === "line" && <LocalLineChart />}
+                {item.type === "bar" && <LocalBarChart />}
+                {item.type === "pie" && <LocalPieChart />}
+                {item.type === "weather" && (
+                  <WeatherCard
+                    date={dateTime ?? ""}
+                    location={weatherLocation ?? ""}
+                    temperature={parseInt(weatherTemperature ?? "0")}
+                    description={weatherDescription ?? ""}
+                    icon={weatherIcon ?? " "}
+                  />
+                )}
+                <span
+                  className="delete"
+                  data-swapy-no-drag
+                  onClick={() => {
+                    setItems(items.filter((i) => i.id !== item.id));
+                  }}
+                >
+                  <Trash2 />
+                </span>
+              </div>
+            )}
+          </div>
+        ))}
       </div>
+      </ScrollArea>
     </div>
   );
 }
