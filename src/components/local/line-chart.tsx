@@ -1,5 +1,7 @@
 "use client"
 
+import { useEffect, useState } from "react"
+import PocketBase from "pocketbase"
 import { TrendingUp } from "lucide-react"
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 
@@ -17,53 +19,79 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-]
 
+type Props = {
+  collection: string
+  x: string
+  y: string
+  limit?: number
+}
 const chartConfig = {
   desktop: {
     label: "Desktop",
-    color: "hsl(var(--primary))",
+    color: "var(--chart-1)",
   },
 } satisfies ChartConfig
 
-export function LocalLineChart() {
+export function LocalLineChart({ collection, x, y, limit = 100 }: Props) {
+  const pb = new PocketBase("http://127.0.0.1:8090");
+  const [chartData, setChartData] = useState<any[]>([])
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const records = await pb.collection(collection).getFullList(limit, {
+          sort: `+${x}`,
+        })
+
+        const formattedData = records.map((record) => ({
+          [x]: record[x],
+          [y]: record[y],
+        }))
+
+        setChartData(formattedData)
+      } catch (error) {
+        console.error("Failed to load chart data:", error)
+      }
+    }
+
+    loadData()
+  }, [collection, x, y, limit])
+
+  function capitalize(val) {
+      return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+  }
+
   return (
-    <Card>
+    <Card className="w-90">
       <CardHeader>
-        <CardTitle>Line Chart</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>{collection} Line Chart</CardTitle>
+        <CardDescription>
+            {capitalize(y.replaceAll("_", " ").trim())} per {capitalize(x.replaceAll("_", " ").trim())}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
           <LineChart
-            accessibilityLayer
             data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
+            margin={{ left: 12, right: 12 }}
           >
-            <CartesianGrid vertical={false} />
+            <CartesianGrid vertical={true} />
             <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
+              dataKey={x}
+              tickLine={true}
+              axisLine={true}
               tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
-    />
+              tickFormatter={(value) =>
+                typeof value === "string" ? value.slice(0, 3) : value
+              }
+            />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
             <Line
-              dataKey="desktop"
+              dataKey={y}
               type="natural"
               stroke="var(--color-desktop)"
               strokeWidth={2}
@@ -73,14 +101,9 @@ export function LocalLineChart() {
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
         </div>
       </CardFooter>
     </Card>
   )
 }
-

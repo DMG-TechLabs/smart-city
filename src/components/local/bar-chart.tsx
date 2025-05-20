@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import PocketBase from "pocketbase"
-import { TrendingUp } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import {
@@ -24,7 +23,7 @@ import {
 const chartConfig = {
   value: {
     label: "Value",
-    color: "hsl(var(--chart-1))",
+    color: "var(--chart-1)",
   },
 } satisfies ChartConfig
 
@@ -82,7 +81,7 @@ export function LocalBarChart({ collection, x, y, limit = 10 }: LocalBarChartPro
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey={y} fill="var(--color-desktop)" radius={8} />
+            <Bar dataKey={y} fill="var(--color-value)" radius={8} />
           </BarChart>
         </ChartContainer>
       </CardContent>

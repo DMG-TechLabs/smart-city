@@ -43,8 +43,6 @@ export default function RootLayout({
     <UserProvider>
       <html lang="en">
         <body>
-          <header>
-          </header>
           <nav>
             <TopBarComponent />
           </nav>
