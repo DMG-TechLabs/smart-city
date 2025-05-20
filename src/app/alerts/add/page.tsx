@@ -178,7 +178,7 @@ export default function AlertForm() {
             <h3 className="font-medium">Conditions</h3>
 
             {conditions.map((condition, index) => (
-            <div key={index} className="grid grid-cols-[1fr_auto_1fr_auto] gap-2 items-center">
+            <div key={index} className="grid grid-cols-[auto_auto_1fr_auto_auto] gap-2 items-center">
                 
                 <FieldsSelector collectionName={collectionName} value={condition.variableName} placeholder="Field" onValueChange={(value) => updateCondition(index, "variableName", value)} />
                 
