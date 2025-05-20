@@ -122,7 +122,14 @@ export default function Home() {
             {item && (
               <div className="item" data-swapy-item={itemId} key={itemId}>
                 {item.type === "line" && <LocalLineChart />}
-                {item.type === "bar" && <LocalBarChart />}
+                {item.type === "bar" && (
+                    <LocalBarChart
+                       collection="Weather"
+                       x="_location_name"
+                       y="_current_uv" 
+                       limit={10}
+                    />
+                )}
                 {item.type === "pie" && <LocalPieChart />}
                 {item.type === "weather" && (
                   <WeatherCard
