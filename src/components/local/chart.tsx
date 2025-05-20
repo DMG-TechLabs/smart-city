@@ -23,6 +23,7 @@ import {
 import { DeleteButton } from "./delete-button"
 import { AlertComponent } from "./delete-dialog"
 import { ConfirmationDialog } from "./confirmation-dialog"
+import { Swapy } from "swapy"
 
 const chartData = [
   { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
@@ -57,7 +58,13 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function ChartComponent() {
+type ChartComponentProps = {
+  swapyRef: React.RefObject<Swapy | null> // or Swapy if it's not a ref
+}
+
+export function ChartComponent(
+  { swapyRef }: ChartComponentProps
+) {
   const totalVisitors = React.useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
   }, [])
@@ -71,7 +78,11 @@ export function ChartComponent() {
                 title={"Are you sure"} 
                 desc={"You can restore it from the the list with the available widget"} 
                 onContinue={()=>
-                  console.log("continue clicked")
+                  {
+                    if (swapyRef) {
+                      swapyRef.current?.destroy()
+                    }
+                  }
                 }
                 children={undefined}                
             />

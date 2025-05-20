@@ -16,6 +16,19 @@ export default function Dashboard() {
   const { user, logout } = useUser();
   const router = useRouter();
 
+  const initialItems = [
+    { id: "1", title: "Card 1" },
+    { id: "2", title: "Card 2" },
+    { id: "3", title: "Card 3" },
+    { id: "4", title: "Card 4" },
+    { id: "5", title: "Card 5" }
+  ];
+
+  const [items, setItems] = useState(initialItems);
+  const deleteComp = (id: string) => {
+    setItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
   // if (user == null || user.email === "") {
   //     router.push("/login");
   // }
@@ -54,8 +67,7 @@ export default function Dashboard() {
         swapMode: "drop",
         autoScrollOnDrag: true,
         enabled: true,
-      });
-      
+      });      
     }
 
     fetchTime().then((data) => {
@@ -89,7 +101,9 @@ export default function Dashboard() {
           <div className="items">
               <div id="slot" data-swapy-slot="a">
                   <div id="item" data-swapy-item="a">
-                      <ChartComponent />
+                      <ChartComponent 
+                        swapyRef={swapyRef}
+                      />
                   </div>
               </div>
               <div id="slot" data-swapy-slot="b">
