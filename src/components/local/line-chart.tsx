@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import PocketBase from "pocketbase"
 import { TrendingUp } from "lucide-react"
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
+import { usePocketBase } from "@/context/DatabaseContext.tsx";
 
 import {
   Card,
@@ -34,7 +35,8 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function LocalLineChart({ collection, x, y, limit = 100 }: Props) {
-  const pb = new PocketBase("http://127.0.0.1:8090");
+  const pb = usePocketBase();
+
   const [chartData, setChartData] = useState<any[]>([])
 
   useEffect(() => {
