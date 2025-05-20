@@ -3,7 +3,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
   align-items: start;
-  border: 2px #efefef solid;
+  /*border: 2px #efefef solid;*/
   padding: 20px;
 }
 
@@ -17,7 +17,8 @@
 .slot {
   background: white;
   border-radius: 8px;
-  width: fit-content;
+  width: 100%;
+  justify-items: center;
   /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
 }
 
