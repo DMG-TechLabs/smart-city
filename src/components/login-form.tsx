@@ -9,15 +9,16 @@ import { useState } from "react";
 import { useUser } from "@/context/UserContext";
 
 import PocketBase from "pocketbase";
-const pb = new PocketBase("http://127.0.0.1:8090");
 
 import { useRouter } from "next/navigation";
 import { User } from "../context/UserContext.tsx";
+import { usePocketBase } from "@/context/DatabaseContext.tsx"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const pb = usePocketBase();
   const { setUser, isLoggedIn } = useUser();
   const router = useRouter();
   const [email, setEmail] = useState("");

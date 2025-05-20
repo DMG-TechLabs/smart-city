@@ -19,6 +19,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { usePocketBase } from "@/context/DatabaseContext"
 
 type Props = {
   collection: string
@@ -27,7 +28,7 @@ type Props = {
 }
 
 export function LocalPieChart({ collection, field, limit = 5 }: Props) {
-  const pb = new PocketBase("http://127.0.0.1:8090");
+  const pb = usePocketBase();
   const [data, setData] = useState<any[]>([])
   const [config, setConfig] = useState<ChartConfig>({})
 
