@@ -58,21 +58,41 @@ export default function AlertForm() {
 
       console.log("All good:", conditions);
       const rootCondition = new AlertCondition("AND");
-      rootCondition.add({
-        collection: collectionName,
-        field: conditions[0].variableName,
-        operator: conditions[0].condition,
-        value: conditions[0].value,
-      });
+      
+      if (!isNaN(Number(conditions[0].value))) {
+        rootCondition.add({
+          collection: collectionName,
+          field: conditions[0].variableName,
+          operator: conditions[0].condition,
+          value: Number(conditions[0].value),
+        });
+      } else {
+        rootCondition.add({
+          collection: collectionName,
+          field: conditions[0].variableName,
+          operator: conditions[0].condition,
+          value: conditions[0].value,
+        });
+      }
 
       try {
         conditions.slice(1).forEach((cond) => {
-          rootCondition.add({
-            collection: collectionName,
-            field: cond.variableName,
-            operator: cond.condition,
-            value: cond.value,
-          });
+          
+          if (!isNaN(Number(cond))) {
+            rootCondition.add({
+              collection: collectionName,
+              field: cond.variableName,
+              operator: cond.condition,
+              value: Number(cond.value),
+            });         
+          }else {
+            rootCondition.add({
+              collection: collectionName,
+              field: cond.variableName,
+              operator: cond.condition,
+              value: cond.value,
+            });
+          }
         });
 
         const alert = new Alert(name, rootCondition);
