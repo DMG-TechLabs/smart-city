@@ -31,6 +31,9 @@ type Item = {
   id: string;
   title: string;
   type: "line" | "bar" | "pie" | "weather";
+  collection: string;
+  field: string;
+  field2: string;
 };
 
 const initialItems: Item[] = [
@@ -115,11 +118,14 @@ export default function Home() {
     });
   }, []);
 
-  const addWidget = (type: Item["type"], title: string) => {
+  const addWidget = (type: Item["type"], title: string, collection: string, field: string, field2: string) => {
     const newItem: Item = {
       id: `${Date.now()}`,
       title,
-      type
+      type,
+      collection,
+      field,
+      field2
     };
     setItems([...items, newItem]);
   };
@@ -161,7 +167,7 @@ export default function Home() {
                       <FieldsSelector collectionName={selectedCollection} value={selectedField2} placeholder="Field" onValueChange={(value) => setSelectedField2(value)} />
                     </CardContent>
                     <CardFooter>
-                      <Button onClick={() => addWidget("line", "Line Chart")}>Add Line Chart</Button>
+                      <Button onClick={() => addWidget("line", "Line Chart", selectedCollection, selectedField, selectedField2)}>Add Line Chart</Button>
                     </CardFooter>
                   </Card>
                 </TabsContent>
@@ -179,7 +185,7 @@ export default function Home() {
                       <FieldsSelector collectionName={selectedCollection} value={selectedField2} placeholder="Field" onValueChange={(value) => setSelectedField2(value)} />
                     </CardContent>
                     <CardFooter>
-                      <Button onClick={() => addWidget("bar", "Bar Chart")}>Add Bar Chart</Button>
+                      <Button onClick={() => addWidget("bar", "Bar Chart", selectedCollection, selectedField, selectedField2)}>Add Bar Chart</Button>
                     </CardFooter>
                   </Card>
                 </TabsContent>
@@ -196,7 +202,7 @@ export default function Home() {
                       <FieldsSelector collectionName={selectedCollection} value={selectedField} placeholder="Field" onValueChange={(value) => setSelectedField(value)} />
                     </CardContent>
                     <CardFooter>
-                      <Button onClick={() => addWidget("pie", "Pie Chart")}>Add Pie Chart</Button>
+                      <Button onClick={() => addWidget("pie", "Pie Chart", selectedCollection, selectedField, selectedField2)}>Add Pie Chart</Button>
                     </CardFooter>
                   </Card>
                 </TabsContent>
@@ -206,7 +212,7 @@ export default function Home() {
                       <CardTitle>Weather</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
-                      <Button onClick={() => addWidget("weather", "Weather")}>Add Weather</Button>
+                      <Button onClick={() => addWidget("weather", "Weather", selectedCollection, selectedField, selectedField2)}>Add Weather</Button>
                     </CardContent>
                   </Card>
                 </TabsContent>
@@ -232,23 +238,23 @@ export default function Home() {
                   <div className="item" data-swapy-item={itemId} key={itemId}>
                     {item.type === "line" && (
                       <LocalLineChart
-                        collection={selectedCollection}
-                        x={selectedField}
-                        y={selectedField2}
+                        collection={item.collection}
+                        x={item.field}
+                        y={item.field2}
                       />
                     )}
                     {item.type === "bar" && (
                       <LocalBarChart
-                        collection={selectedCollection}
-                        x={selectedField}
-                        y={selectedField2}
+                        collection={item.collection}
+                        x={item.field}
+                        y={item.field2}
                         limit={10}
                       />
                     )}
                     {item.type === "pie" && (
                       <LocalPieChart
-                        collection={selectedCollection}
-                        field={selectedField}
+                        collection={item.collection}
+                        field={item.field}
                         limit={10}
                       />
                     )}
