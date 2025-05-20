@@ -1,11 +1,135 @@
-import React from 'react'
-import Dashboard from './dashboard/page';
-import { NavigationMenuComponent } from '@/components/ui/navigation-menu';
+"use client";
+
+import { useUser } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
+import "@/styles/dashboard.css";
+import { createSwapy, Swapy } from "swapy";
+import { CardComponent } from "@/components/ui/card";
+import { NavigationMenuComponent } from "@/components/ui/navigation-menu";
+import WeatherCard from "@/components/local/weather-card";
+import { ChartComponent } from "@/components/local/chart";
+import { Sheet } from "lucide-react";
+import { SheetDemo } from "@/components/local/widget-list";
 
 export default function Home() {
+  const { user }  = useUser();
+  const router = useRouter();
+
+  const initialItems = [
+    { id: "1", title: "Card 1" },
+    { id: "2", title: "Card 2" },
+    { id: "3", title: "Card 3" },
+    { id: "4", title: "Card 4" },
+    { id: "5", title: "Card 5" }
+  ];
+
+  const [items, setItems] = useState(initialItems);
+  const deleteComp = (id: string) => {
+    setItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  // if (user == null || user.email === "") {
+  //     router.push("/login");
+  // }
+
+  const swapyRef = useRef<Swapy | null>(null);
+
+  const [dateTime, setDateTime] = useState<string | null>(null);
+  const [weatherLocation, setWeatherLocation] = useState<string | null>(null);
+  const [weatherDescription, setWeatherDescription] = useState<string | null>(
+    null
+  );
+  const [weatherTemperature, setWeatherTemperature] = useState<string | null>(
+    null
+  );
+  const [weatherIcon, setWeatherIcon] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchTime(): Promise<object | null> {
+        const response = await fetch("/api/time");
+        if (!response.ok) return null;
+        return await response.json();
+    }
+
+    async function fetchWeather(): Promise<object | null> {
+      const response = await fetch("/api/weather");
+      if (!response.ok) return null;
+      return await response.json();
+    }
+
+    if (typeof window !== "undefined") {
+      const containerRef = document.querySelector(
+        ".widget-container"
+      ) as HTMLElement;
+      swapyRef.current = createSwapy(containerRef!, {
+        animation: "spring",
+        swapMode: "drop",
+        autoScrollOnDrag: true,
+        enabled: true,
+      });      
+    }
+
+    fetchTime().then((data) => {
+      if (data && "timestamp" in data) {
+        const unixSeconds = data.timestamp as any;
+        const date = new Date(unixSeconds * 1000);
+        const weekday = date.toLocaleDateString("en-US", { weekday: "long" });
+        const day = date.getDate();
+        const month = date.toLocaleDateString("en-US", { month: "long" });
+        const year = date.getFullYear();
+
+        const formatted = `${weekday} ${day} ${month} ${year}`;
+        setDateTime(formatted);
+      }
+    });
+
+    fetchWeather().then((data) => {
+      if (!data) return;
+      const d = data as any;
+
+      setWeatherTemperature(d.current.temp_c);
+      setWeatherLocation(d.location.name);
+      setWeatherDescription(d.current.condition.text);
+      setWeatherIcon(d.current.condition.icon);
+    });
+  }, []);
+
   return (
-    <>
-        <Dashboard />
-    </>
+    <div className="main-content">
+      <div className="widget-container">
+        <SheetDemo />
+          <div className="items">
+              <div id="slot" data-swapy-slot="a">
+                  <div id="item" data-swapy-item="a">
+                      <ChartComponent 
+                        swapyRef={swapyRef}
+                      />
+                  </div>
+              </div>
+              <div id="slot" data-swapy-slot="b">
+                  <div id="item" data-swapy-item="b">
+                      <CardComponent />
+                  </div>
+              </div>
+              <div id="slot" data-swapy-slot="c">
+                  <div id="item" data-swapy-item="c">
+                      <CardComponent />
+                  </div>
+              </div>
+              <div id="slot" data-swapy-slot="d">
+                  <div id="item" data-swapy-item="d">
+                      <WeatherCard
+                          date={(dateTime) ? dateTime : ""}
+                          location={(weatherLocation) ? weatherLocation : ""}
+                          temperature={parseInt((weatherTemperature) ? weatherTemperature : "0")}
+                          description={(weatherDescription) ? weatherDescription : ""}
+                          icon={(weatherIcon) ? weatherIcon : " "}
+                      />
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
   );
 }

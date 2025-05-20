@@ -1,50 +1,5 @@
-// "use client";
-
-// import { usePocketBase } from "@/context/DatabaseContext.tsx";
-// import { Alert } from "../Alert";
-// import { AlertCondition } from "../AlertCondition";
-// import { useEffect, useState } from "react";
-//
-// export default function AlertsAdd() {
-  // const pb = usePocketBase();
-  //
-  // useEffect(() => {
-  //   async function registerAlert() {
-  //     const ac = new AlertCondition("AND")
-  //       .add({ field: "temperature", operator: ">", value: 25 })
-  //       .add(
-  //         new AlertCondition("OR")
-  //           .add({ field: "humidity", operator: "<", value: 30 })
-  //           .add({ field: "status", operator: "==", value: "warning" })
-  //       );
-  //
-  //     const alert = new Alert("New Alert", ac);
-  //
-  //     try {
-  //       await pb.send("/api/addalert", {
-  //         query: {
-  //           name: alert.name,
-  //           condition: JSON.stringify(ac.toJSON()),
-  //         },
-  //       });
-  //
-  //       console.log("Alert registered successfully");
-  //     } catch (err) {
-  //       console.error("Error registering alert:", err);
-  //     }
-  //   }
-  //
-  //   registerAlert();
-  // }, [pb]);
-
-//     return (
-//         <div className="main-content">
-//             <h1>Alerts Add</h1>
-//         </div>
-//     );
-// }
-
 "use client"
+
 import { AlertCondition } from "../AlertCondition";
 import { useState } from "react"
 import { PlusCircle, Trash2, RefreshCw } from "lucide-react"
@@ -59,7 +14,7 @@ import { usePocketBase } from "../../../context/DatabaseContext.tsx";
 interface Condition {
   variableName: string
   condition: ">" | "<" | "==" | ">=" | "<=" | "!=";
-  value: string
+  value: number | string
 }
 
 export default function AlertForm() {
@@ -94,53 +49,52 @@ export default function AlertForm() {
   }
 
     const handleSubmit = async () => {
-        for (const condition of conditions) {
-            if (!condition.variableName || !condition.condition || !condition.value) {
-            alert("Please fill out all fields in every condition.");
-            return;
-            }
+      for (const condition of conditions) {
+        if (!condition.variableName || !condition.condition || !condition.value) {
+          alert("Please fill out all fields in every condition.");
+          return;
         }
+      }
 
-        console.log("All good:", conditions);
-        const rootCondition = new AlertCondition("AND");
-        rootCondition.add({
+      console.log("All good:", conditions);
+      const rootCondition = new AlertCondition("AND");
+      rootCondition.add({
+        collection: collectionName,
+        field: conditions[0].variableName,
+        operator: conditions[0].condition,
+        value: conditions[0].value,
+      });
+
+      try {
+        conditions.slice(1).forEach((cond) => {
+          rootCondition.add({
             collection: collectionName,
-            field: conditions[0].variableName,
-            operator: conditions[0].condition,
-            value: conditions[0].value,
+            field: cond.variableName,
+            operator: cond.condition,
+            value: cond.value,
+          });
         });
 
+        const alert = new Alert(name, rootCondition);
         try {
+          await pb.send("/api/addalert", {
+            query: {
+              name: alert.name,
+              condition: JSON.stringify(rootCondition.toJSON()),
+            },
+          });
 
-            
-            
-            conditions.slice(1).forEach((cond) => {
-                // const parsedValue = isNaN(cond.value) ? cond.value : parseFloat(cond.value);
+          console.log("Alert registered successfully");
 
-                rootCondition.add({
-                    collection: collectionName,
-                    field: cond.variableName,
-                    operator: cond.condition,
-                    value: cond.value,
-                });
-            });
-
-            const alert = new Alert(name, rootCondition);
-            try {
-                await pb.send("/api/addalert", {
-                    query: {
-                        name: alert.name,
-                        condition: JSON.stringify(rootCondition.toJSON()),
-                    },
-                });
-
-                console.log("Alert registered successfully");
-            } catch (err) {
-                console.error("Error registering alert:", err);
-            }
+          setName("");
+          setCollectionName("");
+          setConditions([{ variableName: "", condition: "==", value: "" }]);
         } catch (err) {
-            console.error("Error:", err);
+          console.error("Error registering alert:", err);
         }
+      } catch (err) {
+        console.error("Error:", err);
+      }
     };
 
 
