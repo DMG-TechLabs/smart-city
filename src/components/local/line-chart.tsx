@@ -29,7 +29,7 @@ const chartData = [
 const chartConfig = {
   desktop: {
     label: "Desktop",
-    color: "hsl(var(--chart-1))",
+    color: "hsl(var(--primary))",
   },
 } satisfies ChartConfig
 
@@ -57,7 +57,7 @@ export function LocalLineChart() {
               axisLine={false}
               tickMargin={8}
               tickFormatter={(value) => value.slice(0, 3)}
-            />
+    />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}

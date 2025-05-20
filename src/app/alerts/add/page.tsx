@@ -1,27 +1,38 @@
 "use client"
 
 import { AlertCondition } from "../AlertCondition";
-import { useState } from "react"
-import { PlusCircle, Trash2, RefreshCw } from "lucide-react"
+import { useState, useEffect } from "react"
+import { PlusCircle, Trash2, RefreshCw, Replace } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { Alert } from "../Alert";
-import { usePocketBase } from "../../../context/DatabaseContext.tsx";
+import { usePocketBase } from "@/context/DatabaseContext.tsx";
+import { RecordModel } from "pocketbase";
+
 
 interface Condition {
   variableName: string
   condition: ">" | "<" | "==" | ">=" | "<=" | "!=";
   value: number | string
+  operator: "AND" | "OR"
 }
+
+
 
 export default function AlertForm() {
   const pb = usePocketBase();
   const [name, setName] = useState("")
+  const [fields, setFields] = useState<string[]>([])
+  // const [metadata, setMetadata] = useState<RecordModel[]>([])
+  const [collectionOptions, setCollectionOptions] = useState<string[]>([])
   const [collectionName, setCollectionName] = useState("")
-  const [conditions, setConditions] = useState<Condition[]>([{ variableName: "", condition: "==", value: "" }])
+  const [conditions, setConditions] = useState<Condition[]>([{ variableName: "", condition: "==", value: "", operator: "AND" }])
+
+
+  const rootCondition = new AlertCondition("AND");
 
   const conditionOptions = [
     { value: "==", label: "Equals" },
@@ -32,8 +43,15 @@ export default function AlertForm() {
     { value: "<=", label: "Less Than or Equal To" },
   ]
 
+  const operatorOptions = [
+    { value: "AND", label: "AND" },
+    { value: "OR", label: "OR" },
+  ]
+
+  const collectionOptionsTemp = [{ value: "", label: "" },]
+
   const addCondition = () => {
-    setConditions([...conditions, { variableName: "", condition: "==", value: "" }])
+    setConditions([...conditions, { variableName: "", condition: "==", value: "", operator: "AND" }])
   }
 
   const removeCondition = (index: number) => {
@@ -42,11 +60,31 @@ export default function AlertForm() {
     setConditions(newConditions)
   }
 
-  const updateCondition = (index: number, field: keyof Condition, value: ">" | "<" | "==" | ">=" | "<=" | "!=") => {
+  const updateCondition = (index: number, field: keyof Condition, value: ">" | "<" | "==" | ">=" | "<=" | "!=" | string | number) => {
     const newConditions = [...conditions]
     newConditions[index][field] = value
     setConditions(newConditions)
   }
+
+  useEffect(() => {
+    async function fetchMetadata() {
+      try {
+        collectionOptions.pop()
+        const metadata = await pb.collection("metadata").getFullList();
+        console.log("metadata", metadata);
+        for (const data of metadata) { 
+          collectionOptions.push(data.provider);
+          for (const field of data.paths) {
+            fields.push((field.path).replace("/", "_")) 
+          }
+        }
+        setCollectionOptions(collectionOptions);
+      } catch (err) {
+        console.error('Failed to fetch collections:', err);
+      }
+    }
+    fetchMetadata();
+  }, [pb]);
 
     const handleSubmit = async () => {
       for (const condition of conditions) {
@@ -57,7 +95,7 @@ export default function AlertForm() {
       }
 
       console.log("All good:", conditions);
-      const rootCondition = new AlertCondition("AND");
+      
       
       if (!isNaN(Number(conditions[0].value))) {
         rootCondition.add({
@@ -74,26 +112,25 @@ export default function AlertForm() {
           value: conditions[0].value,
         });
       }
-
       try {
         conditions.slice(1).forEach((cond) => {
-          
           if (!isNaN(Number(cond))) {
-            rootCondition.add({
-              collection: collectionName,
-              field: cond.variableName,
-              operator: cond.condition,
-              value: Number(cond.value),
-            });         
+              rootCondition.add(new AlertCondition(cond.operator).add({
+                collection: collectionName,
+                field: cond.variableName,
+                operator: cond.condition,
+                value: Number(cond.value),
+              }));         
           }else {
-            rootCondition.add({
+            rootCondition.add(new AlertCondition(cond.operator).add({
               collection: collectionName,
               field: cond.variableName,
               operator: cond.condition,
               value: cond.value,
-            });
+            }));
           }
         });
+
 
         const alert = new Alert(name, rootCondition);
         try {
@@ -108,7 +145,7 @@ export default function AlertForm() {
 
           setName("");
           setCollectionName("");
-          setConditions([{ variableName: "", condition: "==", value: "" }]);
+          setConditions([{ variableName: "", condition: "==", value: "", operator: "AND" }]);
         } catch (err) {
           console.error("Error registering alert:", err);
         }
@@ -117,6 +154,7 @@ export default function AlertForm() {
       }
     };
 
+    console.log("last log", collectionOptions);
 
   return (
     <div className="main-content flex justify-center">
@@ -128,17 +166,22 @@ export default function AlertForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="collection">Collection Name</Label>
-            <div className="flex gap-2">
-              <Input
-                id="collection"
-                value={collectionName}
-                onChange={(e) => setCollectionName(e.target.value)}
-                placeholder="Collection name"
-                className="flex-1"
-              />
-              
-            </div>
+          
+          <Select
+              value={collectionName}
+              onValueChange={(value) => setCollectionName(value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Provider" />
+              </SelectTrigger>
+              <SelectContent>
+                {collectionOptions.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           
@@ -148,11 +191,22 @@ export default function AlertForm() {
 
             {conditions.map((condition, index) => (
             <div key={index} className="grid grid-cols-[1fr_auto_1fr_auto] gap-2 items-center">
-                <Input
-                  placeholder="Variable name"
+                <Select
                   value={condition.variableName}
-                  onChange={(e) => updateCondition(index, "variableName", e.target.value)}
-                />
+                  onValueChange={(value) => updateCondition(index, "variableName", value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Variable name" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {fields.map((option) => (
+                      <SelectItem key={option} value={option}> 
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                
                 <Select
                   value={condition.condition}
                   onValueChange={(value) => updateCondition(index, "condition", value)}
@@ -173,6 +227,23 @@ export default function AlertForm() {
                   value={condition.value}
                   onChange={(e) => updateCondition(index, "value", e.target.value)}
                 />
+                
+                <Select
+                  value={condition.operator}
+                  onValueChange={(value) => updateCondition(index, "operator", value)} 
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Operator" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {operatorOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
                 <Button
                   variant="ghost"
                   size="icon"
@@ -184,6 +255,7 @@ export default function AlertForm() {
               </div>
             ))}
 
+                
             <Button variant="outline" className="w-full flex items-center justify-center gap-2" onClick={addCondition}>
               <PlusCircle className="h-4 w-4" />
               Add Condition

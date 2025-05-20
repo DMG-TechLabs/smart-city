@@ -106,6 +106,13 @@ export default function Home() {
     setItems([...items, newItem]);
   };
 
+  const chd = [
+  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
+  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
+  { browser: "firefox", visitors: 187, fill: "var(--primary)" },
+  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
+  ]
+
   return (
     <div className="main-content">
       <ScrollArea className="widget-container">
@@ -125,7 +132,9 @@ export default function Home() {
               <div className="item" data-swapy-item={itemId} key={itemId}>
                 {item.type === "line" && <LocalLineChart />}
                 {item.type === "bar" && <LocalBarChart />}
-                {item.type === "pie" && <LocalPieChart />}
+                {item.type === "pie" && <LocalPieChart
+                    chartData={chd}                 
+                  />}
                 {item.type === "weather" && (
                   <WeatherCard
                     date={dateTime ?? ""}
