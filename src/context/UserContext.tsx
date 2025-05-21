@@ -41,6 +41,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const logout = () => {
         setUser(null);
         localStorage.removeItem("user");
+        console.log("Logged out");
     };
 
     const isLoggedIn = () => {
