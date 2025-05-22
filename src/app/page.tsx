@@ -62,12 +62,22 @@ export default function Home() {
   const [weathererature, setWeatherTemperature] = useState<string | null>(null);
   const [weatherIcon, setWeatherIcon] = useState<string | null>(null);
 
-  useEffect(() => utils.dynamicSwapy(swapyRef.current, items, "id", slotItemMap, setSlotItemMap), [items]);
+  function deleteItem(newItemList: SetStateAction<Item[]>) {
+    console.log("Items: ", newItemList);
+    setItems(newItemList)
+    localStorage.setItem('swapy-items', JSON.stringify(newItemList));
+  }
+  
   useEffect(() => {
-    const items = localStorage.getItem('swapy-items');
-    console.log("items", items);
-    if (items) {
-      setItems(JSON.parse(items));
+    utils.dynamicSwapy(swapyRef.current, items, "id", slotItemMap, setSlotItemMap)
+    // localStorage.setItem('swapy-items', JSON.stringify(items));
+  }, [items]);
+
+  useEffect(() => {
+    const localItems = localStorage.getItem('swapy-items');
+    console.log("items", localItems);
+    if (localItems) {
+      setItems(JSON.parse(localItems));
     }
 
     swapyRef.current = createSwapy(containerRef.current!, {
@@ -89,10 +99,6 @@ export default function Home() {
     };
   }, []);
 
-  function deleteItem(item: SetStateAction<Item[]>) {
-    setItems(item)
-    localStorage.setItem('swapy-items', JSON.stringify(items));
-  }
 
   useEffect(() => {
     
@@ -140,8 +146,8 @@ export default function Home() {
       field,
       field2
     };
+    localStorage.setItem('swapy-items', JSON.stringify([...items, newItem]));
     setItems([...items, newItem]);
-    // localStorage.setItem('swapy-items', JSON.stringify(items));
   };
 
   return (
