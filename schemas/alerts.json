@@ -1,11 +1,11 @@
 [
   {
     "id": "pbc_3228155173",
-    "listRule": null,
-    "viewRule": null,
-    "createRule": null,
-    "updateRule": null,
-    "deleteRule": null,
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "",
+    "updateRule": "",
+    "deleteRule": "",
     "name": "alerts",
     "type": "base",
     "fields": [
@@ -69,6 +69,45 @@
         "type": "json"
       },
       {
+        "exceptDomains": null,
+        "hidden": false,
+        "id": "email89163564",
+        "name": "user_email",
+        "onlyDomains": null,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "email"
+      },
+      {
+        "hidden": false,
+        "id": "select4133540203",
+        "maxSelect": 1,
+        "name": "severity",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "select",
+        "values": [
+          "low",
+          "medium.high"
+        ]
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text4232930610",
+        "max": 0,
+        "min": 0,
+        "name": "collection",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
         "hidden": false,
         "id": "autodate2990389176",
         "name": "created",
@@ -90,7 +129,8 @@
       }
     ],
     "indexes": [
-      "CREATE UNIQUE INDEX `idx_nhuHXY2NM0` ON `alerts` (`id`)"
+      "CREATE UNIQUE INDEX `idx_nhuHXY2NM0` ON `alerts` (`id`)",
+      "CREATE UNIQUE INDEX `idx_9BKwQ7fWQO` ON `alerts` (\n  `name`,\n  `condition`\n)"
     ],
     "system": false
   }
