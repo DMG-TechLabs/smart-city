@@ -34,46 +34,48 @@ func RunAlerts(app *pocketbase.PocketBase, e *core.RecordEvent, alerts map[strin
 		if result != nil {
 			log.Println("result is not nil")
 			dbAlert, _ := e.App.FindRecordById("alerts", id)
-			message := &mailer.Message{
-				From: mail.Address{
-					Address: e.App.Settings().Meta.SenderAddress,
-					Name:    e.App.Settings().Meta.SenderName,
-				},
-				To:      []mail.Address{{Address: dbAlert.GetString("user_email")}},
-				Subject: "Alert Triggered",
-				HTML:    dbAlert.GetString("name") + " (" + dbAlert.GetString("severity") + " severity)" + " triggered ",
-				// bcc, cc, attachments and custom headers are also supported...
-			}
+			if dbAlert.GetString("collection") == e.Record.Collection().Name {
+				message := &mailer.Message{
+					From: mail.Address{
+						Address: e.App.Settings().Meta.SenderAddress,
+						Name:    e.App.Settings().Meta.SenderName,
+					},
+					To:      []mail.Address{{Address: dbAlert.GetString("user_email")}},
+					Subject: "Alert Triggered",
+					HTML:    dbAlert.GetString("name") + " (" + dbAlert.GetString("severity") + " severity)" + " triggered ",
+					// bcc, cc, attachments and custom headers are also supported...
+				}
 
-			if e.App.NewMailClient().Send(message) != nil {
-				log.Println("Error sending email")
-			} else {
-				log.Println("Email sent successfully")
-			}
+				if e.App.NewMailClient().Send(message) != nil {
+					log.Println("Error sending email")
+				} else {
+					log.Println("Email sent successfully")
+				}
 
-			alertsHistorycollection, err := app.FindCollectionByNameOrId("alertsHistory")
-			if err != nil {
-				log.Println("Error finding collection")
-				return err
+				alertsHistorycollection, err := app.FindCollectionByNameOrId("alertsHistory")
+				if err != nil {
+					log.Println("Error finding collection")
+					return err
 
-			}
+				}
 
-			alert, err := app.FindRecordById("alerts", id)
-			if err != nil {
-				log.Println("Error finding alert record")
-				log.Println("id:", id)
-				return err
-			}
-			log.Println("alert", alert)
+				alert, err := app.FindRecordById("alerts", id)
+				if err != nil {
+					log.Println("Error finding alert record")
+					log.Println("id:", id)
+					return err
+				}
+				log.Println("alert", alert)
 
-			record := core.NewRecord(alertsHistorycollection)
-			record.Set("alert", alert.Id)
-			record.Set("recordId", e.Record.Id)
-			record.Set("collection", e.Record.Collection().Name)
-			err = app.Save(record)
-			// record.Id
-			if err != nil {
-				return err
+				record := core.NewRecord(alertsHistorycollection)
+				record.Set("alert", alert.Id)
+				record.Set("recordId", e.Record.Id)
+				record.Set("collection", e.Record.Collection().Name)
+				err = app.Save(record)
+				// record.Id
+				if err != nil {
+					return err
+				}
 			}
 		}
 	}

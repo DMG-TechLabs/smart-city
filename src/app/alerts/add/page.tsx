@@ -171,6 +171,7 @@ export default function AlertForm() {
       await pb.send("/api/addalert", {
         query: {
           severity: severity,
+          collection: collectionName,
           name: alert.name,
           condition: JSON.stringify(rootCondition.toJSON()),
         },

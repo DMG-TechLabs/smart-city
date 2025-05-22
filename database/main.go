@@ -289,6 +289,7 @@ func main() {
 
 				record.Set("name", c.Request.URL.Query().Get("name"))
 				record.Set("severity", c.Request.URL.Query().Get("severity"))
+				record.Set("collection", c.Request.URL.Query().Get("collection"))
 				record.Set("enabled", true)
 				record.Set("user_email", authUser.Get("email"))
 				record.Set("condition", condition)
