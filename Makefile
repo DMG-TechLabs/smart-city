@@ -18,7 +18,12 @@ db: ## Build and serve the backend
 	go build && \
 	mv pocketbase .. && \
 	cd .. && \
-	./pocketbase serve
+	./pocketbase serve --dir ./database/pb_data
+
+.PHONY: dbdev
+dbdev: ## Serve the backend in dev mode
+	@cd ./database && \
+	go run . serve  
 
 .PHONY: npm
 npm: ## Serve the frontend

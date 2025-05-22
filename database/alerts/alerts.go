@@ -41,7 +41,7 @@ func RunAlerts(app *pocketbase.PocketBase, e *core.RecordEvent, alerts map[strin
 				},
 				To:      []mail.Address{{Address: dbAlert.GetString("user_email")}},
 				Subject: "Alert Triggered",
-				HTML:    dbAlert.GetString("name") + " triggered",
+				HTML:    dbAlert.GetString("name") + " (" + dbAlert.GetString("severity") + " severity)" + " triggered ",
 				// bcc, cc, attachments and custom headers are also supported...
 			}
 

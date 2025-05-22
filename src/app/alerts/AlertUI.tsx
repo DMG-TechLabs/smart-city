@@ -1,7 +1,7 @@
 import { ConfirmationDialog } from "@/components/local/confirmation-dialog.tsx";
 import { Alert } from "./Alert.tsx";
 import { CustomDialog } from "../../components/local/custom-dialog.tsx";
-import { ReactNode, useState } from "react";
+import { ReactNode, use, useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch.tsx";
 import { Button } from "../../components/ui/button.tsx";
 
@@ -71,6 +71,18 @@ function AlertEdit(alert: Alert, onEdit?: () => void): ReactNode {
 }
 
 export function AlertUI({ alert, onDelete, onEdit }: AlertUIProps) {
+  const [severityClass, setSeverity] = useState(""); 
+  useEffect(() => {
+    if(alert.severity == "low") {
+      setSeverity("text-green-600");
+    } else if(alert.severity == "medium") {
+      setSeverity("text-yellow-600");
+    } else if(alert.severity == "high") {
+      setSeverity("text-red-600");
+    }
+  },[alert.severity]);
+
+
   return (
     <div className="alert-ui p-4 border rounded shadow bg-white mb-4 flex items-center justify-between text-left">
       <div>
@@ -79,6 +91,12 @@ export function AlertUI({ alert, onDelete, onEdit }: AlertUIProps) {
           Status:{" "}
           <span className={alert.enabled ? "text-green-600" : "text-red-600"}>
             {alert.enabled ? "Enabled" : "Disabled"}
+          </span>
+        </p>
+        <p>
+          Severity:{" "}
+          <span className={severityClass}>
+            {alert.severity}
           </span>
         </p>
         <p>

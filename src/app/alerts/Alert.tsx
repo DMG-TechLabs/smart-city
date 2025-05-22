@@ -7,6 +7,7 @@ export class Alert {
     name: string;
     condition: AlertCondition | null;
     enabled: boolean = true;
+    severity: "low" | "medium" | "high" = "low";
 
     constructor(name: string, condition: AlertCondition | object) {
         this.name = name;

@@ -30,6 +30,7 @@ export default function AlertForm() {
   const pb = usePocketBase();
   const [name, setName] = useState("");
   const [collectionName, setCollectionName] = useState("");
+  const [severity, setSeverity] = useState("low");
   const [conditions, setConditions] = useState<Condition[]>([
     { variableName: "", condition: "==", value: "", operator: "AND" },
   ]);
@@ -48,6 +49,12 @@ export default function AlertForm() {
     { value: "<", label: "Less Than" },
     { value: ">=", label: "Greater Than or Equal To" },
     { value: "<=", label: "Less Than or Equal To" },
+  ];
+
+  const severityOptions = [
+    { value: "low", label: "Low" },
+    { value: "medium", label: "Medium" },
+    { value: "high", label: "High" },
   ];
 
   const operatorOptions = [
@@ -163,6 +170,7 @@ export default function AlertForm() {
       const alert = new Alert(name, rootCondition);
       await pb.send("/api/addalert", {
         query: {
+          severity: severity,
           name: alert.name,
           condition: JSON.stringify(rootCondition.toJSON()),
         },
@@ -201,7 +209,7 @@ export default function AlertForm() {
           <div className="space-y-2">
             <CollectionSelector
               value={collectionName}
-              placeholder="Collection"
+              placeholder="Provider"
               onValueChange={(value) => {
                 setCollectionName(value);
                 setErrors((prev) => ({ ...prev, collectionName: undefined }));
@@ -213,6 +221,27 @@ export default function AlertForm() {
               </p>
             )}
           </div>
+
+            <div className="space-y-2">
+            <Select
+                    value={severity}
+                    onValueChange={(value) =>
+                      setSeverity(value)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Severity" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {severityOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+            </div>
+          
 
           <div className="space-y-4 mt-6">
             <h3 className="font-medium">Conditions</h3>

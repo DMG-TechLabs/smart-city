@@ -288,6 +288,7 @@ func main() {
 				condition := c.Request.URL.Query().Get("condition")
 
 				record.Set("name", c.Request.URL.Query().Get("name"))
+				record.Set("severity", c.Request.URL.Query().Get("severity"))
 				record.Set("enabled", true)
 				record.Set("user_email", authUser.Get("email"))
 				record.Set("condition", condition)

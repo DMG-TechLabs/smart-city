@@ -10,6 +10,7 @@ type Alert = {
   interval?: number;
   enabled?: boolean;
   condition?: any;
+  severity: "low" | "medium" | "high";
 };
 
 type AlertHistoryRecord = {
@@ -90,6 +91,7 @@ export default function AlertHistory() {
                 <tr>
                   <th className="p-3 border-b">Alert Name</th>
                   <th className="p-3 border-b">Condition</th>
+                  <th className="p-3 border-b">Severity</th>
                   <th className="p-3 border-b">Triggered</th>
                 </tr>
               </thead>
@@ -103,6 +105,9 @@ export default function AlertHistory() {
                         {alert?.condition
                           ? formatCondition(alert.condition)
                           : "—"}
+                      </td>
+                      <td className="p-3 border-b">
+                        {alert?.severity}
                       </td>
                       <td className="p-3 border-b text-gray-600">
                         {new Date(record.created).toLocaleString()}
