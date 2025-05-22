@@ -45,7 +45,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     };
 
     const isLoggedIn = () => {
-        if (user === null || typeof user === "undefined" || user.email === "") {
+        if (user === null || user == undefined || user.email == "" || user.email == null || user.email == undefined) {  
             return false;
         }
         return user !== null;
