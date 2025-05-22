@@ -27,11 +27,12 @@ import { CollectionSelector } from "@/components/local/collection-selector";
 import { FieldsSelector } from "@/components/local/fields-selector";
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
+import { LocalAlertTable } from "@/components/local/alert-history";
 
 type Item = {
   id: string;
   title: string;
-  type: "line" | "bar" | "pie" | "weather";
+  type: "line" | "bar" | "pie" | "weather" | "alertHistory";
   collection: string;
   field: string;
   field2: string;
@@ -166,12 +167,13 @@ export default function Home() {
             </SheetHeader>
             {/* <div className="available-widgets"> */}
             <div className="add-buttons">
-              <Tabs defaultValue="line" className="w-[400px]">
-                <TabsList className="grid w-full grid-cols-4">
+              <Tabs defaultValue="line" className="w-[430px]">
+                <TabsList className="grid w-full grid-cols-5">
                   <TabsTrigger value="line">Line</TabsTrigger>
                   <TabsTrigger value="bar">Bar</TabsTrigger>
                   <TabsTrigger value="pie">Pie</TabsTrigger>
                   <TabsTrigger value="weather">Weather</TabsTrigger>
+                  <TabsTrigger value="alertHistory">Alert History</TabsTrigger>
                 </TabsList>
                 <TabsContent value="line">
                   <Card className="flex flex-col h-[300px] !max-h-[300px]">
@@ -233,6 +235,18 @@ export default function Home() {
                     </CardContent>
                   </Card>
                 </TabsContent>
+
+                <TabsContent value="alertHistory">
+                  <Card className="flex flex-col h-[300px] !smax-h-[300px]">
+                    <CardHeader className="shrink-0">
+                      <CardTitle>Alert History</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex-1 overflow-auto space-y-2">
+                      <Button onClick={() => addWidget("alertHistory", "Alert History", selectedCollection, selectedField, selectedField2)}>Add Weather</Button>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+                
               </Tabs>
             </div>
           </SheetContent>
@@ -282,6 +296,11 @@ export default function Home() {
                         description={weatherDescription ?? ""}
                         icon={weatherIcon ?? " "}
                       />
+                    )}
+                    {item.type === "alertHistory" && (
+                      <div >
+                        <LocalAlertTable newClassName={"h-[300px]"} />
+                      </div>
                     )}
                     <span
                       className="delete"
