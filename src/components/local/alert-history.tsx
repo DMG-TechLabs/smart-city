@@ -54,7 +54,7 @@ function formatCondition(cond: any): string {
 
     return JSON.stringify(cond); // fallback for unknown structure
 }
-export function LocalAlertTable(newClassName: string = "") {
+export function LocalAlertTable({newClassName}: {newClassName: string}) {
     const pb = usePocketBase();
     const [loading, setLoading] = useState(true);
     const [alerts, setAlerts] = useState<AlertHistoryRecord[]>([]);
