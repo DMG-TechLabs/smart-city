@@ -7,13 +7,14 @@ export class Alert {
     name: string;
     condition: AlertCondition | null;
     enabled: boolean = true;
-    severity: "low" | "medium" | "high" = "low";
+    severity: "low" | "medium" | "high";
 
-    constructor(name: string, condition: AlertCondition | object) {
+    constructor(name: string, condition: AlertCondition | object, severity: "low" | "medium" | "high") {
         this.name = name;
         this.condition = condition instanceof AlertCondition
             ? condition
             : AlertCondition.fromJSON(condition);
+        this.severity = severity;
     }
 
     async update(pb: PocketBase): Promise<boolean> {
@@ -67,7 +68,7 @@ export class Alert {
         console.log(record.condition);
         const condition = AlertCondition.fromJSON(record.condition);
         if(condition == null) throw new Error("Condition is null");
-        const alert = new Alert(record.name, condition);
+        const alert = new Alert(record.name, condition, record.severity);
         alert.id = record.id;
         alert.enabled = record.enabled;
         return alert;
