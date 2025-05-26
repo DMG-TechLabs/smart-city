@@ -6,7 +6,7 @@ services:
       - "8090:8090"  # PocketBase
       - "8765:8765"  # Dummy server
     volumes:
-      - ./pb_data:/app/pb_data
+      - ./database/pb_data:/app/pb_data
     environment:
       - NODE_ENV=production
     restart: always

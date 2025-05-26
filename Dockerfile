@@ -17,7 +17,7 @@ WORKDIR /app
 
 COPY --from=builder /app ./
 
-RUN pip install fastapi uvicorn
+RUN pip install fastapi uvicorn --break-system-packages
 
 RUN chmod +x /app/pocketbase
 
