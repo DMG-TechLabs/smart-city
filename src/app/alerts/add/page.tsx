@@ -30,7 +30,7 @@ export default function AlertForm() {
   const pb = usePocketBase();
   const [name, setName] = useState("");
   const [collectionName, setCollectionName] = useState("");
-  const [severity, setSeverity] = useState("low");
+  const [severity, setSeverity] = useState<"low" | "medium" | "high">("low");
   const [conditions, setConditions] = useState<Condition[]>([
     { variableName: "", condition: "==", value: "", operator: "AND" },
   ]);
@@ -192,7 +192,7 @@ export default function AlertForm() {
       });
 
 
-      const alert = new Alert(name, rootCondition);
+      const alert = new Alert(name, rootCondition, severity);
       await pb.send("/api/addalert", {
         query: {
           severity: severity,
@@ -251,7 +251,7 @@ export default function AlertForm() {
           <div className="space-y-2">
           <Select
               value={severity}
-              onValueChange={(value) => setSeverity(value)}
+              onValueChange={(value: "low" | "medium" | "high") => setSeverity(value)}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Severity" />
