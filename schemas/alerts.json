@@ -90,7 +90,8 @@
         "type": "select",
         "values": [
           "low",
-          "medium.high"
+          "medium",
+          "high"
         ]
       },
       {
