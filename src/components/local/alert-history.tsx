@@ -85,8 +85,8 @@ export function LocalAlertTable({newClassName}: {newClassName: string}) {
                     <p className="text-center">No alerts found.</p>
                 ) : (
                     <div 
-                        
                         className={"overflow-x-auto rounded border border-gray-300 shadow-s " + newClassName}
+                        style={{backgroundColor: "var(--card)"}}
                         >
                         <table className="min-w-full text-sm text-left">
                             <thead className="bg-gray-100">
