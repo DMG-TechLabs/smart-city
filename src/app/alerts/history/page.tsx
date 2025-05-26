@@ -11,7 +11,9 @@ export default function AlertHistory() {
     <div className="main-content flex justify-center">
       <div className="w-full max-w-4xl">
         <h1 className="text-2xl font-bold mb-6 text-center">Alert History</h1>
-        <LocalAlertTable />
+        <LocalAlertTable 
+          newClassName=""
+        />
       </div>
     </div>
   );

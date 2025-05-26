@@ -17,8 +17,8 @@ export class AlertCondition {
     private conditions: (Condition | AlertCondition)[] = [];
     private operator: LogicalOperator;
 
-    constructor(operator: LogicalOperator = "AND") {
-        if (operator !== "AND" && operator !== "OR") {
+    constructor(operator: LogicalOperator = "&&") {
+        if (operator !== "&&" && operator !== "||") {
             throw new Error(`Invalid logical operator: ${operator}`);
         }
         this.operator = operator;
@@ -53,7 +53,7 @@ export class AlertCondition {
             return false;
         });
 
-        return this.operator === "AND" ? results.every(Boolean) : results.some(Boolean);
+        return this.operator === "&&" ? results.every(Boolean) : results.some(Boolean);
     }
 
     toJSON(): { operator: LogicalOperator; conditions: any[] } {
@@ -89,7 +89,11 @@ export class AlertCondition {
                     ? `(${c.toString()})`
                     : `${c.field} ${c.operator} ${JSON.stringify(c.value)}`
             )
-            .join(` ${this.operator} `);
+            .join(this.operator === "&&"
+                ? " AND "
+                : this.operator === "||"
+                ? " OR "
+                : ` ${this.operator} `);
     }
 
     static toString(json): string {

@@ -5,5 +5,5 @@ export type Condition = {
     value: number | string;          // e.g., 30
 };
 
-export type LogicalOperator = "AND" | "OR";
+export type LogicalOperator = "&&" | "||"; 
 

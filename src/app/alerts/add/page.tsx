@@ -33,7 +33,7 @@ export default function AlertForm() {
   const [collectionName, setCollectionName] = useState("");
   const [severity, setSeverity] = useState<"low" | "medium" | "high">("low");
   const [conditions, setConditions] = useState<Condition[]>([
-    { variableName: "", condition: "==", value: "", operator: "AND" },
+    { variableName: "", condition: "==", value: "", operator: "&&" },
   ]);
 
   // Errors state
@@ -59,14 +59,14 @@ export default function AlertForm() {
   ];
 
   const operatorOptions = [
-    { value: "AND", label: "AND" },
-    { value: "OR", label: "OR" },
+    { value: "&&", label: "AND" },
+    { value: "||", label: "OR" },
   ];
 
   const addCondition = () => {
     setConditions([
       ...conditions,
-      { variableName: "", condition: "==", value: "", operator: "AND" },
+      { variableName: "", condition: "==", value: "", operator: "&&" },
     ]);
     setErrors((prev) => ({
       ...prev,
@@ -219,7 +219,7 @@ export default function AlertForm() {
       console.log("Alert registered successfully");
       setName("");
       setCollectionName("");
-      setConditions([{ variableName: "", condition: "==", value: "", operator: "AND" }]);
+      setConditions([{ variableName: "", condition: "==", value: "", operator: "&&" }]);
       setErrors({ conditions: [] });
     } catch (err) {
       console.error("Error registering alert:", err);
