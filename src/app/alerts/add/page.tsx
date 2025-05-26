@@ -143,29 +143,54 @@ export default function AlertForm() {
       newErrors.conditions![i] = condErrors;
     });
 
-    setErrors(newErrors);
+ 
+   setErrors(newErrors);
     return valid;
   };
 
   const handleSubmit = async () => {
     if (!validate()) {
       return;
+      
     }
+    const rootCondition = new AlertCondition(conditions[0].operator);
 
-    const rootCondition = new AlertCondition("AND");
+    const val = !isNaN(Number(conditions[0].value))
+          ? Number(conditions[0].value)
+          : conditions[0].value;
+          rootCondition.add({
+      collection: collectionName,
+      field: conditions[0].variableName,
+      operator: conditions[0].condition,
+      value: val,
+    });
+
+    let addNewConditions = false;
 
     try {
-      conditions.forEach((cond) => {
-        const val = !isNaN(Number(cond.value))
-          ? Number(cond.value)
-          : cond.value;
+      conditions.slice(1).forEach((cond) => {
+        console.log("cond", cond);
+        console.log("rootCondition", rootCondition);
+        const val = !isNaN(Number(cond.value)) ? Number(cond.value) : cond.value;
+
+        if (addNewConditions) {
+          rootCondition.add(new AlertCondition(cond.operator).add({
+            collection: collectionName,
+            field: cond.variableName,
+            operator: cond.condition,
+            value: val,
+          }));
+        } else {
         rootCondition.add({
           collection: collectionName,
           field: cond.variableName,
           operator: cond.condition,
           value: val,
         });
+        }
+        addNewConditions = !addNewConditions;
       });
+
 
       const alert = new Alert(name, rootCondition);
       await pb.send("/api/addalert", {
@@ -223,25 +248,23 @@ export default function AlertForm() {
             )}
           </div>
 
-            <div className="space-y-2">
-            <Select
-                    value={severity}
-                    onValueChange={(value) =>
-                      setSeverity(value)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Severity" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {severityOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-            </div>
+          <div className="space-y-2">
+          <Select
+              value={severity}
+              onValueChange={(value) => setSeverity(value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Severity" />
+              </SelectTrigger>
+              <SelectContent>
+                {severityOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           
 
           <div className="space-y-4 mt-6">
