@@ -18,12 +18,13 @@ import { usePocketBase } from "@/context/DatabaseContext.tsx";
 import { CollectionSelector } from "@/components/local/collection-selector";
 import { FieldsSelector } from "@/components/local/fields-selector";
 import { Alert } from "../Alert";
+import { LogicalOperator } from "../Condition";
 
 interface Condition {
   variableName: string;
   condition: ">" | "<" | "==" | ">=" | "<=" | "!=";
   value: number | string;
-  operator: "AND" | "OR";
+  operator: LogicalOperator;
 }
 
 export default function AlertForm() {
@@ -143,16 +144,15 @@ export default function AlertForm() {
       newErrors.conditions![i] = condErrors;
     });
 
- 
-   setErrors(newErrors);
+  setErrors(newErrors);
     return valid;
   };
 
   const handleSubmit = async () => {
     if (!validate()) {
       return;
-      
     }
+
     const rootCondition = new AlertCondition(conditions[0].operator);
 
     const val = !isNaN(Number(conditions[0].value))
@@ -165,31 +165,45 @@ export default function AlertForm() {
       value: val,
     });
 
-    let addNewConditions = false;
 
     try {
-      conditions.slice(1).forEach((cond) => {
-        console.log("cond", cond);
-        console.log("rootCondition", rootCondition);
-        const val = !isNaN(Number(cond.value)) ? Number(cond.value) : cond.value;
 
-        if (addNewConditions) {
-          rootCondition.add(new AlertCondition(cond.operator).add({
+      for (let i = 1; i < conditions.length; i += 2) {
+        const first = conditions[i];
+        const second = conditions[i + 1];
+
+        console.log("first", first);
+        console.log("second", second);
+        console.log("rootCondition", rootCondition);
+
+        if (second) {
+          const val1 = !isNaN(Number(first.value)) ? Number(first.value) : first.value;
+          const val2 = !isNaN(Number(second.value)) ? Number(second.value) : second.value;
+
+          rootCondition.add(new AlertCondition(first.operator).add({
             collection: collectionName,
-            field: cond.variableName,
-            operator: cond.condition,
-            value: val,
+            field: first.variableName,
+            operator: first.condition,
+            value: val1,
+          }).add({
+            collection: collectionName,
+            field: second.variableName,
+            operator: second.condition,
+            value: val2,
           }));
-        } else {
-        rootCondition.add({
-          collection: collectionName,
-          field: cond.variableName,
-          operator: cond.condition,
-          value: val,
-        });
+          
+        }else {
+          const val1 = !isNaN(Number(first.value)) ? Number(first.value) : first.value;
+
+          rootCondition.add({
+            collection: collectionName,
+            field: first.variableName,
+            operator: first.condition,
+            value: val1,
+          });
+
         }
-        addNewConditions = !addNewConditions;
-      });
+      }
 
 
       const alert = new Alert(name, rootCondition, severity);
