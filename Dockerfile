@@ -1,8 +1,9 @@
 FROM node:18 AS builder
 
 WORKDIR /app
-COPY . .
+COPY package*.json ./
 RUN npm install
+COPY . .
 
 FROM alpine:latest
 
@@ -17,13 +18,11 @@ WORKDIR /app
 
 COPY --from=builder /app ./
 
-RUN pip install fastapi uvicorn --break-system-packages
+COPY dummy/requirements.txt ./dummy/requirements.txt
+RUN pip install -r ./dummy/requirements.txt --break-system-packages
 
-RUN chmod +x /app/pocketbase
+RUN chmod +x /app/pocketbase /app/start.sh
 
 EXPOSE 3000 8090 8765
-
-COPY start.sh /app/start.sh
-RUN chmod +x /app/start.sh
 
 CMD ["./start.sh"]

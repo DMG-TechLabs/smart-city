@@ -12,6 +12,10 @@ start: ## Start the Docker containers
 stop: ## Stop the Docker containers
 	docker-compose down
 
+.PHONY: rebuild
+rebuild: ## Rebuild docker image
+	docker-compose build
+
 .PHONY: db
 db: ## Build and serve the backend
 	@cd ./database && \

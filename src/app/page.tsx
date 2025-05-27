@@ -242,7 +242,7 @@ export default function Home() {
                       <CardTitle>Alert History</CardTitle>
                     </CardHeader>
                     <CardContent className="flex-1 overflow-auto space-y-2">
-                      <Button onClick={() => addWidget("alertHistory", "Alert History", selectedCollection, selectedField, selectedField2)}>Add Weather</Button>
+                      <Button onClick={() => addWidget("alertHistory", "Alert History", selectedCollection, selectedField, selectedField2)}>Add History</Button>
                     </CardContent>
                   </Card>
                 </TabsContent>
@@ -264,8 +264,18 @@ export default function Home() {
           ) : (
             slottedItems.map(({ slotId, itemId, item }) => (
               <div className="slot" key={slotId} data-swapy-slot={slotId}>
+
                 {item && (
                   <div className="item" data-swapy-item={itemId} key={itemId}>
+                    <span
+                    className="delete"
+                    data-swapy-no-drag
+                    onClick={() => {
+                        deleteItem(items.filter((i) => i.id !== item.id));
+                    }}
+                    >
+                    <Trash2 />
+                    </span>
                     {item.type === "line" && (
                       <LocalLineChart
                         collection={item.collection}
@@ -302,15 +312,6 @@ export default function Home() {
                         <LocalAlertTable newClassName={"h-[300px]"} />
                       </div>
                     )}
-                    <span
-                      className="delete"
-                      data-swapy-no-drag
-                      onClick={() => {
-                        deleteItem(items.filter((i) => i.id !== item.id));
-                      }}
-                    >
-                      <Trash2 />
-                    </span>
                   </div>
                 )}
               </div>
