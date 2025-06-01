@@ -1,6 +1,6 @@
+// cc ./index.c -lwebc -o site
 #include <webc/webc-actions.h>
 #include <webc/webc-templates/pss.h>
-#include <webc/webc-server.h>
 
 int main(int argc, char** argv)
 {
