@@ -25,6 +25,7 @@ marp: true
 - **Custom Cron Jobs**: εκτελούνται προγραμματισμένα tasks, όπως έλεγχοι ενημέρωσης.
 - **API polling**: ανάκτηση δεδομένων από εξωτερικές πηγές σε τακτά χρονικά διαστήματα.
 - **Δυναμική δημιουργία collections** για κάθε νέο provider.
+- **Real-time emails** για κάθε triggered alert.
 
 ---
 
