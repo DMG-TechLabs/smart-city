@@ -29,7 +29,7 @@ marp: true
 
 ---
 
-### 🧠 Data Dummy Generator: `Python`
+### 🧠 Dummy Data Server/Generator: `Python`
 - Ορισμός RESTful endpoints
 - Προσομοίωση πραγματικών παρόχων με μεταβαλλόμενα δεδομένα (JSON responses)
 
