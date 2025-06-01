@@ -35,7 +35,7 @@ marp: true
 
 ---
 
-### 🎨 Frontend: `Next.js`
+### 🎨 Frontend: `NextJS`
 - SSR και dynamic routing για απόδοση και ταχύτητα
 - Responsive UI με widgets & διαδραστικότητα
 
