@@ -53,7 +53,7 @@ marp: true
 
 ### Custom Widgets
 
-<img src="./widgets.png" width=400 alt="widgets"></img>
+<img src="./widget_croped.png" width=400 alt="widgets"></img>
 
 ---
 
