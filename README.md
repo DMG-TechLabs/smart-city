@@ -3,6 +3,7 @@
 ```
 .
 ├── database: custom PocketBase db
+├── docs/presentation.pdf: Project presentation file
 ├── docker-compose.yml
 ├── Dockerfile
 ├── dummy: dummy data server/generator
